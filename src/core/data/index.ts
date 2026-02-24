@@ -427,6 +427,69 @@ export interface F3921 {
   numShares: number
 }
 
+// Schedule C expense categories (Part II, lines 8-27)
+export enum ScheduleCExpenseType {
+  advertising,
+  carAndTruck,
+  commissions,
+  contractLabor,
+  depletion,
+  depreciation,
+  employeeBenefitPrograms,
+  insurance,
+  interestMortgage,
+  interestOther,
+  legalAndProfessional,
+  officeExpense,
+  pensionAndProfitSharing,
+  rentVehicles,
+  rentOther,
+  repairs,
+  supplies,
+  taxesAndLicenses,
+  travel,
+  deductibleMeals,
+  utilities,
+  wages,
+  otherExpenses
+}
+
+export type ScheduleCExpenseTypeName = keyof typeof ScheduleCExpenseType
+
+export enum AccountingMethod {
+  cash = 'cash',
+  accrual = 'accrual',
+  other = 'other'
+}
+
+// See https://www.irs.gov/forms-pubs/about-schedule-c-form-1040
+export interface ScheduleCInput {
+  personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
+  businessName: string
+  businessActivityCode: string
+  businessDescription: string
+  ein?: string
+  businessAddress?: Address
+  accountingMethod: AccountingMethod
+
+  // Part I: Income
+  grossReceipts: number // Line 1
+  returns: number // Line 2
+  otherIncome: number // Line 6
+
+  // Part III: Cost of Goods Sold
+  beginningInventory: number // Line 35
+  purchases: number // Line 36
+  costOfLabor: number // Line 37
+  materialsAndSupplies: number // Line 38
+  otherCosts: number // Line 39
+  endingInventory: number // Line 41
+
+  // Part II: Expenses (lines 8-27)
+  expenses: Partial<{ [K in ScheduleCExpenseTypeName]: number }>
+  otherExpenseType?: string
+}
+
 // See https://www.irs.gov/instructions/i1065sk1
 export interface ScheduleK1Form1065 {
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
@@ -566,6 +629,7 @@ export interface Information<D = Date> {
   estimatedTaxes: EstimatedTaxPayments[]
   f1098es: F1098e[]
   f3921s: F3921[]
+  scheduleCInputs: ScheduleCInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
   itemizedDeductions: ItemizedDeductions | undefined
   refund?: Refund
@@ -639,6 +703,7 @@ export type EditHSAAction = ArrayItemEditAction<HealthSavingsAccountDateString>
 export type EditIraAction = ArrayItemEditAction<Ira>
 export type EditAssetAction = ArrayItemEditAction<Asset<Date>>
 export type EditF3921Action = ArrayItemEditAction<F3921>
+export type EditScheduleCAction = ArrayItemEditAction<ScheduleCInput>
 export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>
 export type EditCreditAction = ArrayItemEditAction<Credit>

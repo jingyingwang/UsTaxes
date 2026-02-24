@@ -18,6 +18,7 @@ const baseInformation: ValidatedInformation = {
     }
   ],
   credits: [],
+  scheduleCInputs: [],
   scheduleK1Form1065s: [],
   itemizedDeductions: undefined,
   w2s: [

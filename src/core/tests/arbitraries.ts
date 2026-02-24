@@ -255,6 +255,78 @@ const f3921: Arbitrary<types.F3921> = fc
     }
   })
 
+const scheduleCExpenseTypeName: Arbitrary<types.ScheduleCExpenseTypeName> =
+  fc.constantFrom(...util.enumKeys(types.ScheduleCExpenseType))
+
+const scheduleCExpenses: Arbitrary<
+  Partial<{ [K in types.ScheduleCExpenseTypeName]: number }>
+> = fc.set(scheduleCExpenseTypeName).chain((es) =>
+  fc
+    .array(expense, { minLength: es.length, maxLength: es.length })
+    .map((nums) =>
+      _.chain(es)
+        .zipWith(nums, (e, num) => [e, num])
+        .fromPairs()
+        .value()
+    )
+)
+
+const scheduleCInput: Arbitrary<types.ScheduleCInput> = fc
+  .tuple(
+    maxWords(3),
+    numStr(6),
+    maxWords(3),
+    fc.constantFrom<types.AccountingMethod>(
+      types.AccountingMethod.cash,
+      types.AccountingMethod.accrual,
+      types.AccountingMethod.other
+    ),
+    posCurrency(1000000),
+    posCurrency(10000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    scheduleCExpenses
+  )
+  .map(
+    ([
+      businessName,
+      businessActivityCode,
+      businessDescription,
+      accountingMethod,
+      grossReceipts,
+      returns,
+      otherIncome,
+      beginningInventory,
+      purchases,
+      costOfLabor,
+      materialsAndSupplies,
+      otherCosts,
+      endingInventory,
+      expenses
+    ]) => ({
+      personRole: types.PersonRole.PRIMARY,
+      businessName,
+      businessActivityCode,
+      businessDescription,
+      accountingMethod,
+      grossReceipts,
+      returns,
+      otherIncome,
+      beginningInventory,
+      purchases,
+      costOfLabor,
+      materialsAndSupplies,
+      otherCosts,
+      endingInventory,
+      expenses
+    })
+  )
+
 const scheduleK1Form1065: Arbitrary<types.ScheduleK1Form1065> = fc
   .tuple(
     maxWords(2),
@@ -662,6 +734,7 @@ export class Arbitraries {
         fc.array(estTax),
         fc.array(f1098e),
         fc.array(f3921),
+        fc.array(scheduleCInput),
         fc.array(scheduleK1Form1065),
         itemizedDeductions,
         refund,
@@ -680,6 +753,7 @@ export class Arbitraries {
           estimatedTaxes,
           f1098es,
           f3921s,
+          scheduleCInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
           refund,
@@ -696,6 +770,7 @@ export class Arbitraries {
           estimatedTaxes,
           f1098es,
           f3921s,
+          scheduleCInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
           refund,
