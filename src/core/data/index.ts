@@ -6,7 +6,8 @@ export enum TaxYears {
   Y2021 = 2021,
   Y2022 = 2022,
   Y2023 = 2023,
-  Y2024 = 2024
+  Y2024 = 2024,
+  Y2025 = 2025
 }
 
 export type TaxYear = keyof typeof TaxYears
@@ -117,7 +118,8 @@ export enum Income1099Type {
   INT = 'INT',
   DIV = 'DIV',
   R = 'R',
-  SSA = 'SSA'
+  SSA = 'SSA',
+  DA = 'DA'
 }
 
 export interface F1099BData {
@@ -125,6 +127,16 @@ export interface F1099BData {
   shortTermCostBasis: number
   longTermProceeds: number
   longTermCostBasis: number
+}
+
+export interface F1099DAData {
+  digitalAssetProceeds: number
+  digitalAssetCostBasis: number
+  digitalAssetGainOrLoss: number
+  isLongTerm: boolean
+  washSaleDisallowed: number
+  brokerName: string
+  transactionCount: number
 }
 
 export interface F1099IntData {
@@ -362,6 +374,7 @@ export type Income1099B = Income1099<Income1099Type.B, F1099BData>
 export type Income1099Div = Income1099<Income1099Type.DIV, F1099DivData>
 export type Income1099R = Income1099<Income1099Type.R, F1099RData>
 export type Income1099SSA = Income1099<Income1099Type.SSA, F1099SSAData>
+export type Income1099DA = Income1099<Income1099Type.DA, F1099DAData>
 
 export type Supported1099 =
   | Income1099Int
@@ -369,6 +382,7 @@ export type Supported1099 =
   | Income1099Div
   | Income1099R
   | Income1099SSA
+  | Income1099DA
 
 export enum PropertyType {
   singleFamily,
@@ -661,6 +675,8 @@ export type InformationDateString = Information<string>
  * gain. An asset is closed when it gets a closeDate.
  */
 export type AssetType = 'Security' | 'Real Estate'
+export type WashSaleCode = 'W' | undefined
+
 export interface Asset<D = Date> {
   name: string
   positionType: AssetType
@@ -673,6 +689,8 @@ export interface Asset<D = Date> {
   closeFee?: number
   quantity: number
   state?: State
+  washSaleDisallowed?: number
+  washSaleCode?: WashSaleCode
 }
 
 export type SoldAsset<D> = Asset<D> & {

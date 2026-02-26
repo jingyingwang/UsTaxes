@@ -45,6 +45,16 @@ const showIncome = (a: Supported1099): ReactElement => {
     case Income1099Type.DIV: {
       return <Currency value={a.form.dividends} />
     }
+    case Income1099Type.DA: {
+      return (
+        <span>
+          Digital Asset Gain/Loss:{' '}
+          <Currency value={a.form.digitalAssetGainOrLoss} />
+          <br />
+          Transactions: {a.form.transactionCount}
+        </span>
+      )
+    }
     case Income1099Type.R: {
       return (
         <span>
@@ -100,6 +110,13 @@ interface F1099UserInput {
   // benefitsPaid: string | number
   // benefitsRepaid: string | number
   netBenefits: string | number
+  // DA fields
+  digitalAssetProceeds: string | number
+  digitalAssetCostBasis: string | number
+  digitalAssetGainOrLoss: string | number
+  daIsLongTerm: string
+  daWashSaleDisallowed: string | number
+  daTransactionCount: string | number
 }
 
 const blankUserInput: F1099UserInput = {
@@ -123,7 +140,14 @@ const blankUserInput: F1099UserInput = {
   // SSA fields
   // benefitsPaid: '',
   // benefitsRepaid: '',
-  netBenefits: ''
+  netBenefits: '',
+  // DA fields
+  digitalAssetProceeds: '',
+  digitalAssetCostBasis: '',
+  digitalAssetGainOrLoss: '',
+  daIsLongTerm: 'false',
+  daWashSaleDisallowed: '',
+  daTransactionCount: ''
 }
 
 const toUserInput = (f: Supported1099): F1099UserInput => ({
@@ -149,6 +173,9 @@ const toUserInput = (f: Supported1099): F1099UserInput => ({
         return f.form
       }
       case Income1099Type.SSA: {
+        return f.form
+      }
+      case Income1099Type.DA: {
         return f.form
       }
     }
@@ -217,6 +244,22 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
           // benefitsRepaid: Number(input.benefitsRepaid),
           netBenefits: Number(input.netBenefits),
           federalIncomeTaxWithheld: Number(input.federalIncomeTaxWithheld)
+        }
+      }
+    }
+    case Income1099Type.DA: {
+      return {
+        payer: input.payer,
+        personRole: input.personRole ?? PersonRole.PRIMARY,
+        type: input.formType,
+        form: {
+          digitalAssetProceeds: Number(input.digitalAssetProceeds ?? 0),
+          digitalAssetCostBasis: Number(input.digitalAssetCostBasis ?? 0),
+          digitalAssetGainOrLoss: Number(input.digitalAssetGainOrLoss ?? 0),
+          isLongTerm: input.daIsLongTerm === 'true',
+          washSaleDisallowed: Number(input.daWashSaleDisallowed ?? 0),
+          brokerName: input.payer,
+          transactionCount: Number(input.daTransactionCount ?? 0)
         }
       }
     }
@@ -394,20 +437,48 @@ export default function F1099Info(): ReactElement {
     </Grid>
   )
 
-  const specificFields = {
+  const daFields = (
+    <Grid container spacing={2}>
+      <LabeledInput
+        label="Digital Asset Proceeds"
+        patternConfig={Patterns.currency}
+        name="digitalAssetProceeds"
+      />
+      <LabeledInput
+        label="Digital Asset Cost Basis"
+        patternConfig={Patterns.currency}
+        name="digitalAssetCostBasis"
+      />
+      <LabeledInput
+        label="Gain or Loss"
+        patternConfig={Patterns.currency}
+        name="digitalAssetGainOrLoss"
+      />
+      <LabeledInput
+        label="Wash Sale Loss Disallowed"
+        patternConfig={Patterns.currency}
+        name="daWashSaleDisallowed"
+      />
+      <LabeledInput label="Number of Transactions" name="daTransactionCount" />
+    </Grid>
+  )
+
+  const specificFields: Record<Income1099Type, ReactElement> = {
     [Income1099Type.INT]: intFields,
     [Income1099Type.B]: bFields,
     [Income1099Type.DIV]: divFields,
     [Income1099Type.R]: rFields,
-    [Income1099Type.SSA]: ssaFields
+    [Income1099Type.SSA]: ssaFields,
+    [Income1099Type.DA]: daFields
   }
 
-  const titles = {
+  const titles: Record<Income1099Type, string> = {
     [Income1099Type.INT]: '1099-INT',
     [Income1099Type.B]: '1099-B',
     [Income1099Type.DIV]: '1099-DIV',
     [Income1099Type.R]: '1099-R',
-    [Income1099Type.SSA]: 'SSA-1099'
+    [Income1099Type.SSA]: 'SSA-1099',
+    [Income1099Type.DA]: '1099-DA'
   }
 
   const form: ReactElement | undefined = (

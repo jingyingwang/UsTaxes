@@ -1,6 +1,7 @@
 import {
   FilingStatus,
   Income1099B,
+  Income1099DA,
   Income1099Div,
   Income1099Int,
   Income1099R,
@@ -114,6 +115,9 @@ export default abstract class F1040Base extends Form {
 
   f1099ssas = (): Income1099SSA[] =>
     this.f1099sByType(Income1099Type.SSA) as Income1099SSA[]
+
+  f1099DAs = (): Income1099DA[] =>
+    this.f1099sByType(Income1099Type.DA) as Income1099DA[]
 
   fullName = (person: Person): string =>
     `${person.firstName} ${person.lastName}`
