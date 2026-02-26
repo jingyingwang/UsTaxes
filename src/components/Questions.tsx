@@ -17,7 +17,8 @@ const emptyQuestions: Responses = {
   FINCEN_114: false,
   FINCEN_114_ACCOUNT_COUNTRY: '',
   FOREIGN_TRUST_RELATIONSHIP: false,
-  LIVE_APART_FROM_SPOUSE: false
+  LIVE_APART_FROM_SPOUSE: false,
+  HSA_TESTING_PERIOD_FAILED: false
 }
 
 const Questions = (): ReactElement => {

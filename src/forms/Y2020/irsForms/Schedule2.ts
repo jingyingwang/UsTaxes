@@ -15,7 +15,14 @@ export default class Schedule2 extends F1040Attachment {
   }
 
   isNeeded = (): boolean =>
-    this.f1040.f8959.isNeeded() || this.f1040.f8960.isNeeded()
+    this.f1040.f8959.isNeeded() ||
+    this.f1040.f8960.isNeeded() ||
+    (this.f1040.f8889.l17b() ?? 0) > 0 ||
+    this.f1040.f8889.l21() > 0 ||
+    this.f1040.f8889.excessContributionPenalty() > 0 ||
+    (this.f1040.f8889Spouse?.l17b() ?? 0) > 0 ||
+    (this.f1040.f8889Spouse?.l21() ?? 0) > 0 ||
+    (this.f1040.f8889Spouse?.excessContributionPenalty() ?? 0) > 0
 
   // Part I: Tax
   l1 = (): number | undefined => undefined // TODO: Alternative Minimum Tax (form 6251)
@@ -25,7 +32,11 @@ export default class Schedule2 extends F1040Attachment {
   // Part II: Other Tax
   l4 = (): number | undefined => undefined // TODO: self-employment tax (schedule SE)
   l5 = (): number | undefined => undefined // TODO: unreported FICA tax
-  l6 = (): number | undefined => undefined // TODO: additional tax on retirement accounts
+  l6 = (): number | undefined =>
+    sumFields([
+      this.f1040.f8889.excessContributionPenalty(),
+      this.f1040.f8889Spouse?.excessContributionPenalty()
+    ])
   l7a = (): number | undefined => undefined // TODO: household employment taxes
   l7b = (): number | undefined => undefined // TODO: repayment of first-time homebuyer credit
   l8 = (): number | undefined => {

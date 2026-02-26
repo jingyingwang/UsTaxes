@@ -61,49 +61,52 @@ export default class F8889 extends F1040Attachment {
     }
   }
 
-  calculatePerMonthLimits = (): void => {
-    for (
-      let index = 0;
-      index < this.perMonthContributions.amount.length;
-      index++
-    ) {
-      // for each month check each HSA to see if we are covered.
-      this.hsas.forEach((h) => {
-        const firstDayOfThisMonth = new Date(CURRENT_YEAR, index, 1)
-        if (
-          h.startDate <= firstDayOfThisMonth &&
-          h.endDate >= firstDayOfThisMonth
-        ) {
-          // the coverage limit for that month is based on the type of coverage of the
-          // HSA. If you have both types of HSA coverage for that month, then the family
-          // coverage limit wins out. Since family coverage limit is higher we can just
-          // take the max of the coverage limit for this month.
-          if (
-            this.perMonthContributions.amount[index] <
-            healthSavingsAccounts.contributionLimit[h.coverageType]
-          ) {
-            this.perMonthContributions.amount[index] =
-              healthSavingsAccounts.contributionLimit[h.coverageType]
-            this.perMonthContributions.type[index] = h.coverageType
-          }
+  coverageOn = (date: Date): ContributionType | undefined => {
+    let hasSelfOnly = false
+    for (const hsa of this.hsas) {
+      if (hsa.startDate <= date && hsa.endDate >= date) {
+        if (hsa.coverageType === 'family') {
+          return 'family'
         }
-      })
-    }
-    // The calculated coverage type is whichever one was in effect for longer
-    let familyMonthCount = 0
-    let singleMonthCount = 0
-    this.perMonthContributions.amount.forEach((m) => {
-      if (m == healthSavingsAccounts.contributionLimit.family) {
-        familyMonthCount += 1
-      } else if (m == healthSavingsAccounts.contributionLimit['self-only']) {
-        singleMonthCount += 1
+        hasSelfOnly = true
       }
-    })
+    }
+    return hasSelfOnly ? 'self-only' : undefined
+  }
+
+  calculatePerMonthLimits = (): void => {
+    this.perMonthContributions.amount = new Array<number>(12).fill(0)
+    this.perMonthContributions.type = new Array<ContributionType>(12)
+    for (let index = 0; index < 12; index++) {
+      const coverage = this.coverageOn(new Date(CURRENT_YEAR, index, 1))
+      if (coverage !== undefined) {
+        this.perMonthContributions.amount[index] =
+          healthSavingsAccounts.contributionLimit[coverage]
+        this.perMonthContributions.type[index] = coverage
+      }
+    }
+  }
+
+  coverageTypeForLine1 = (): ContributionType => {
+    const lastMonthCoverage = this.lastMonthCoverage()
+    if (lastMonthCoverage !== undefined) {
+      this.calculatedCoverageType = lastMonthCoverage
+      return lastMonthCoverage
+    }
+
+    this.calculatePerMonthLimits()
+    const familyMonthCount = this.perMonthContributions.type.filter(
+      (t) => t === 'family'
+    ).length
+    const singleMonthCount = this.perMonthContributions.type.filter(
+      (t) => t === 'self-only'
+    ).length
     if (familyMonthCount >= singleMonthCount) {
       this.calculatedCoverageType = 'family'
     } else {
       this.calculatedCoverageType = 'self-only'
     }
+    return this.calculatedCoverageType
   }
 
   /* If you are an eligible individual on the first day of the last month of your tax year 
@@ -111,31 +114,34 @@ export default class F8889 extends F1040Attachment {
      for the entire year.
     */
   lastMonthRule = (): boolean => {
-    return this.hsas.some((hsa) => hsa.endDate >= this.firstDayOfLastMonth)
+    return this.coverageOn(this.firstDayOfLastMonth) !== undefined
   }
 
   /*If, on the first day of the last month of your tax year (December 1 for most taxpayers), 
     you had family coverage, check the "family" box.
   */
-  lastMonthCoverage = (): string | undefined => {
-    let coverage = undefined
-    for (const hsa of this.hsas) {
-      if (hsa.endDate >= this.firstDayOfLastMonth) {
-        if (hsa.coverageType == 'family') {
-          coverage = 'family'
-          break
-        }
-        coverage = 'self-only'
-      }
-    }
-    return coverage
-  }
+  lastMonthCoverage = (): ContributionType | undefined =>
+    this.coverageOn(this.firstDayOfLastMonth)
 
   fullYearHsa = (): boolean => {
-    return this.hsas.some(
-      (hsa) =>
-        hsa.startDate <= new Date(CURRENT_YEAR, 0, 1) &&
-        hsa.endDate >= this.firstDayOfLastMonth
+    this.calculatePerMonthLimits()
+    return this.perMonthContributions.amount.every((m) => m > 0)
+  }
+
+  bornBefore = (age: number): boolean =>
+    this.person.dateOfBirth < new Date(CURRENT_YEAR - (age - 1), 0, 2)
+
+  isAge55OrOlder = (): boolean => this.bornBefore(55)
+
+  isAge65OrOlder = (): boolean => this.bornBefore(65)
+
+  additionalContribution = (): number =>
+    this.isAge55OrOlder() ? healthSavingsAccounts.catchUpContribution : 0
+
+  contributionLimitWithoutLastMonthRule = (): number => {
+    this.calculatePerMonthLimits()
+    return Math.round(
+      this.perMonthContributions.amount.reduce((a, b) => a + b) / 12
     )
   }
 
@@ -148,29 +154,35 @@ export default class F8889 extends F1040Attachment {
       for the entire year. You are treated as having the same HDHP coverage for the entire year as you had on 
       the first day of the last month of your tax year.
       */
+    const coverageType = this.coverageTypeForLine1()
+    // If, on the first day of the last month of your tax year (December 1 for most taxpayers),
+    // you had family coverage, check the "family" box.
     if (this.lastMonthRule()) {
-      // If, on the first day of the last month of your tax year (December 1 for most taxpayers),
-      // you had family coverage, check the "family" box.
-      const lastMonthCoverage = this.lastMonthCoverage()
-      if (lastMonthCoverage !== undefined) {
-        if (lastMonthCoverage === 'family') {
-          this.calculatedCoverageType = 'family'
-          return healthSavingsAccounts.contributionLimit.family
-        } else if (lastMonthCoverage === 'self-only') {
-          this.calculatedCoverageType = 'self-only'
-          return healthSavingsAccounts.contributionLimit['self-only']
-        }
-      }
+      return healthSavingsAccounts.contributionLimit[coverageType]
     }
     /* If you don't have coverage in the last month, then you need to figure out
        your contribution limit. If you don't have coverage for that month then
        your contribution limit is 0. So let's initialize our per-month contribution
        limit based on that.
      */
+    return this.contributionLimitWithoutLastMonthRule()
+  }
+
+  proratedFamilyContributionLimit = (): number => {
     this.calculatePerMonthLimits()
-    return Math.round(
-      this.perMonthContributions.amount.reduce((a, b) => a + b) / 12
-    )
+    const familyMonths: number = this.perMonthContributions.type.filter(
+      (t) => t === 'family'
+    ).length
+    const familyContribution: number =
+      (familyMonths * healthSavingsAccounts.contributionLimit['family']) /
+      12 /
+      2
+
+    const selfMonths: number = 12 - familyMonths
+    const selfContribution: number =
+      (selfMonths * healthSavingsAccounts.contributionLimit['self-only']) / 12
+
+    return familyContribution + selfContribution
   }
 
   splitFamilyContributionLimit = (): number | undefined => {
@@ -193,25 +205,7 @@ export default class F8889 extends F1040Attachment {
       // rules say any contribution allowcation is allowed
       return Math.round(this.l5() / 2)
     } else {
-      // get the number of months of family coverage
-      const familyMonths: number = this.perMonthContributions.type.filter(
-        (t) => t === 'family'
-      ).length
-
-      // TODO: This hard codes the allocation at 50% for each spouse but the
-      // rules say any contribution allowcation is allowed
-      const familyContribution: number =
-        (familyMonths * healthSavingsAccounts.contributionLimit['family']) /
-        12 /
-        2
-
-      // Add this to the contributions of the self-only portion of the year
-      const selfMonths: number = 12 - familyMonths
-
-      const selfContribution: number =
-        (selfMonths * healthSavingsAccounts.contributionLimit['self-only']) / 12
-
-      return familyContribution + selfContribution
+      return this.proratedFamilyContributionLimit()
     }
   }
 
@@ -229,8 +223,7 @@ export default class F8889 extends F1040Attachment {
   l4 = (): number => sumFields([this.f8853?.l1(), this.f8853?.l2()])
   l5 = (): number => Math.max(0, this.l3() - this.l4())
   l6 = (): number | undefined => this.splitFamilyContributionLimit()
-  // TODO: Additional contirbution amount. Need to know the age of the user
-  l7 = (): number | undefined => undefined
+  l7 = (): number => this.additionalContribution()
   l8 = (): number => sumFields([this.l6(), this.l7()])
   // Employer contributions are listed in W2 box 12 with code W
   l9 = (): number =>
@@ -245,45 +238,82 @@ export default class F8889 extends F1040Attachment {
     this.hsas.reduce((total, hsa) => hsa.totalDistributions + total, 0)
   l14b = (): number | undefined => undefined
   l14c = (): number => Math.max(0, this.l14a() - (this.l14b() ?? 0))
-  l15 = (): number =>
-    this.hsas.reduce((total, hsa) => hsa.qualifiedDistributions + total, 0)
+  l15 = (): number => {
+    const qualified = this.hsas.reduce(
+      (total, hsa) => hsa.qualifiedDistributions + total,
+      0
+    )
+    return Math.min(this.l14c(), qualified)
+  }
   l16 = (): number => Math.max(0, this.l14c() - this.l15())
-  l17a = (): boolean => false
+  l17a = (): boolean => this.isAge65OrOlder()
   // TODO: add in logic for when line 17a is true
-  l17b = (): number | undefined => Math.round(this.l16() * 0.2)
+  l17b = (): number | undefined =>
+    this.l17a() ? 0 : Math.round(this.l16() * 0.2)
 
-  l18 = (): number | undefined => undefined
-  l19 = (): number | undefined => undefined
+  testingPeriodFailed = (): boolean =>
+    this.state.questions.HSA_TESTING_PERIOD_FAILED ?? false
+
+  redeterminedContributionLimit = (): number => {
+    const baseLimit = this.hsas.some((h) => h.coverageType === 'family')
+      ? this.proratedFamilyContributionLimit()
+      : this.contributionLimitWithoutLastMonthRule()
+    return baseLimit + this.additionalContribution()
+  }
+
+  totalContributions = (): number =>
+    sumFields([this.l2(), this.l9(), this.l10()])
+
+  excessContributions = (): number =>
+    Math.max(0, this.totalContributions() - this.l8())
+
+  excessContributionPenalty = (): number =>
+    Math.round(this.excessContributions() * 0.06)
+
+  l18 = (): number => {
+    if (!this.testingPeriodFailed()) return 0
+    if (!this.lastMonthRule()) return 0
+    const redetermined = this.redeterminedContributionLimit()
+    const totalContributions = sumFields([this.l2(), this.l9()])
+    return Math.max(0, totalContributions - redetermined)
+  }
+  l19 = (): number => {
+    if (!this.testingPeriodFailed()) return 0
+    return this.l10() ?? 0
+  }
   l20 = (): number => sumFields([this.l18(), this.l19()])
   l21 = (): number => Math.round(this.l20() * 0.1)
 
-  fields = (): Field[] => [
-    `${this.person.firstName} ${this.person.lastName}`,
-    this.person.ssid,
-    this.calculatedCoverageType === 'self-only', // line 1: self-only check box
-    this.calculatedCoverageType === 'family', // line 1: family checkbox
-    this.l2(),
-    this.l3(),
-    this.l4(),
-    this.l5(),
-    this.l6(),
-    this.l7(),
-    this.l8(),
-    this.l9(),
-    this.l10(),
-    this.l11(),
-    this.l12(),
-    this.l13(),
-    this.l14a(),
-    this.l14b(),
-    this.l14c(),
-    this.l15(),
-    this.l16(),
-    this.l17a(),
-    this.l17b(),
-    this.l18(),
-    this.l19(),
-    this.l20(),
-    this.l21()
-  ]
+  fields = (): Field[] => {
+    const coverageType = this.coverageTypeForLine1()
+    return [
+      `${this.person.firstName} ${this.person.lastName}`,
+      this.person.ssid,
+      coverageType === 'self-only', // line 1: self-only check box
+      coverageType === 'family', // line 1: family checkbox
+      this.l2(),
+      this.l3(),
+      this.l4(),
+      this.l5(),
+      this.l6(),
+      this.l7(),
+      this.l8(),
+      this.l9(),
+      this.l10(),
+      this.l11(),
+      this.l12(),
+      this.l13(),
+      this.l14a(),
+      this.l14b(),
+      this.l14c(),
+      this.l15(),
+      this.l16(),
+      this.l17a(),
+      this.l17b(),
+      this.l18(),
+      this.l19(),
+      this.l20(),
+      this.l21()
+    ]
+  }
 }

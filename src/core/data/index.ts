@@ -592,6 +592,7 @@ export interface QuestionTag {
   FINCEN_114_ACCOUNT_COUNTRY: string
   FOREIGN_TRUST_RELATIONSHIP: boolean
   LIVE_APART_FROM_SPOUSE: boolean
+  HSA_TESTING_PERIOD_FAILED: boolean
 }
 
 export type QuestionTagName = keyof QuestionTag
@@ -604,7 +605,8 @@ export const questionTagNames: QuestionTagName[] = [
   'FINCEN_114',
   'FINCEN_114_ACCOUNT_COUNTRY',
   'FOREIGN_TRUST_RELATIONSHIP',
-  'LIVE_APART_FROM_SPOUSE'
+  'LIVE_APART_FROM_SPOUSE',
+  'HSA_TESTING_PERIOD_FAILED'
 ]
 
 export type ValueTag = 'string' | 'boolean'

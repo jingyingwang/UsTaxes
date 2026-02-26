@@ -234,7 +234,8 @@ export const healthSavingsAccounts = {
   contributionLimit: {
     'self-only': 3650,
     family: 7300
-  }
+  },
+  catchUpContribution: 1000
 }
 
 export const amt = {

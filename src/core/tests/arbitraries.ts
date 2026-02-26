@@ -491,7 +491,8 @@ const questionTagArbs = {
   FINCEN_114: fc.boolean(),
   FINCEN_114_ACCOUNT_COUNTRY: words,
   FOREIGN_TRUST_RELATIONSHIP: fc.boolean(),
-  LIVE_APART_FROM_SPOUSE: fc.boolean()
+  LIVE_APART_FROM_SPOUSE: fc.boolean(),
+  HSA_TESTING_PERIOD_FAILED: fc.boolean()
 }
 
 export const questions: Arbitrary<Responses> = fc

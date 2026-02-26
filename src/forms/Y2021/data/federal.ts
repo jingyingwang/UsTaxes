@@ -231,7 +231,8 @@ export const healthSavingsAccounts = {
   contributionLimit: {
     'self-only': 3600,
     family: 7200
-  }
+  },
+  catchUpContribution: 1000
 }
 
 // line 11 caps based on step one in instructions

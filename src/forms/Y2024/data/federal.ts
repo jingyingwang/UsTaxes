@@ -234,7 +234,8 @@ export const healthSavingsAccounts = {
   contributionLimit: {
     'self-only': 4150,
     family: 8300
-  }
+  },
+  catchUpContribution: 1000
 }
 // https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2024
 // https://www.irs.gov/instructions/i6251
