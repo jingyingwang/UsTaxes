@@ -18,7 +18,11 @@ export default class Schedule2 extends F1040Attachment {
   l6 = (): number | undefined => undefined // TODO: additional tax on retirement accounts
   l7 = (): number | undefined => sumFields([this.l5(), this.l6()])
   l8box = (): boolean => false // TODO: implement this after l8 is implemented.
-  l8 = (): number | undefined => undefined // TODO: additional tax on IRAs or other tax favored accoutns, form 5329
+  l8 = (): number | undefined =>
+    sumFields([
+      this.f1040.f8889.excessContributionPenalty(),
+      this.f1040.f8889Spouse?.excessContributionPenalty()
+    ])
   l9 = (): number | undefined => undefined // TODO: household employment taxes, schedule H
   l10 = (): number | undefined => undefined // repayment of firsttime homebuyer credit, form 5405
   l11 = (): number | undefined => this.f1040.f8959.toSchedule2l11()

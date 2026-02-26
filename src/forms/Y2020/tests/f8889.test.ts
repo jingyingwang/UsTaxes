@@ -245,6 +245,28 @@ describe('Health Savings Accounts', () => {
     expect(f8889.calculatedCoverageType).toEqual('family')
   })
 
+  it('should not apply the last-month rule if coverage starts after December 1', () => {
+    const information = cloneDeep(baseInformation)
+    information.healthSavingsAccounts = [
+      {
+        coverageType: 'self-only',
+        contributions: 100,
+        personRole: PersonRole.PRIMARY,
+        startDate: new Date(CURRENT_YEAR, 11, 2), // Dec 2nd
+        endDate: new Date(CURRENT_YEAR, 11, 31),
+        label: 'late coverage',
+        totalDistributions: 0,
+        qualifiedDistributions: 0
+      }
+    ]
+
+    const f1040 = new F1040(information)
+    const f8889 = new F8889(f1040, information.taxPayer.primaryPerson)
+    expect(f8889.lastMonthRule()).toEqual(false)
+    expect(f8889.lastMonthCoverage()).toEqual(undefined)
+    expect(f8889.contributionLimit()).toEqual(0)
+  })
+
   it('should split the family contribution correctly', () => {
     const information = cloneDeep(baseInformation)
     information.healthSavingsAccounts = [
@@ -274,6 +296,120 @@ describe('Health Savings Accounts', () => {
     const f8889 = new F8889(f1040, information.taxPayer.primaryPerson)
     expect(f8889.splitFamilyContributionLimit()).toEqual(3550)
     expect(f8889.calculatedCoverageType).toEqual('self-only')
+  })
+
+  it('should include the catch-up contribution for eligible taxpayers', () => {
+    const information = cloneDeep(baseInformation)
+    information.taxPayer.primaryPerson.dateOfBirth = new Date('01/01/1950')
+    information.healthSavingsAccounts = [
+      {
+        coverageType: 'self-only',
+        contributions: 0,
+        personRole: PersonRole.PRIMARY,
+        startDate: new Date(CURRENT_YEAR, 0, 1),
+        endDate: new Date(CURRENT_YEAR, 11, 31),
+        label: 'catch-up',
+        totalDistributions: 0,
+        qualifiedDistributions: 0
+      }
+    ]
+
+    const f1040 = new F1040(information)
+    const f8889 = new F8889(f1040, information.taxPayer.primaryPerson)
+    const l6 = f8889.l6()
+    expect(l6).toBeDefined()
+    expect(f8889.l7()).toEqual(1000)
+    expect(f8889.l8()).toEqual((l6 ?? 0) + 1000)
+  })
+
+  it('should calculate additional tax on nonqualified distributions', () => {
+    const information = cloneDeep(baseInformation)
+    information.healthSavingsAccounts = [
+      {
+        coverageType: 'self-only',
+        contributions: 0,
+        personRole: PersonRole.PRIMARY,
+        startDate: new Date(CURRENT_YEAR, 0, 1),
+        endDate: new Date(CURRENT_YEAR, 11, 31),
+        label: 'distributions',
+        totalDistributions: 1000,
+        qualifiedDistributions: 600
+      }
+    ]
+
+    const f1040 = new F1040(information)
+    const f8889 = new F8889(f1040, information.taxPayer.primaryPerson)
+    expect(f8889.l16()).toEqual(400)
+    expect(f8889.l17b()).toEqual(80)
+  })
+
+  it('should not charge the additional tax when age 65 or older', () => {
+    const information = cloneDeep(baseInformation)
+    information.taxPayer.primaryPerson.dateOfBirth = new Date('01/01/1940')
+    information.healthSavingsAccounts = [
+      {
+        coverageType: 'self-only',
+        contributions: 0,
+        personRole: PersonRole.PRIMARY,
+        startDate: new Date(CURRENT_YEAR, 0, 1),
+        endDate: new Date(CURRENT_YEAR, 11, 31),
+        label: 'age 65',
+        totalDistributions: 1000,
+        qualifiedDistributions: 600
+      }
+    ]
+
+    const f1040 = new F1040(information)
+    const f8889 = new F8889(f1040, information.taxPayer.primaryPerson)
+    expect(f8889.l17a()).toEqual(true)
+    expect(f8889.l17b()).toEqual(0)
+  })
+
+  it('should calculate testing period income and tax when the period fails', () => {
+    const information = cloneDeep(baseInformation)
+    information.questions = { HSA_TESTING_PERIOD_FAILED: true }
+    information.healthSavingsAccounts = [
+      {
+        coverageType: 'self-only',
+        contributions: 3550,
+        personRole: PersonRole.PRIMARY,
+        startDate: new Date(CURRENT_YEAR, 10, 1), // Nov 1st
+        endDate: new Date(CURRENT_YEAR, 11, 31), // Dec 31st
+        label: 'testing period',
+        totalDistributions: 0,
+        qualifiedDistributions: 0
+      }
+    ]
+
+    const f1040 = new F1040(information)
+    const f8889 = new F8889(f1040, information.taxPayer.primaryPerson)
+    const redetermined = Math.round(
+      (healthSavingsAccounts.contributionLimit['self-only'] * 2) / 12
+    )
+    const expected = Math.max(0, 3550 - redetermined)
+    expect(f8889.l18()).toEqual(expected)
+    expect(f8889.l20()).toEqual(expected)
+    expect(f8889.l21()).toEqual(Math.round(expected * 0.1))
+  })
+
+  it('should assess a 6% penalty on excess contributions', () => {
+    const information = cloneDeep(baseInformation)
+    information.healthSavingsAccounts = [
+      {
+        coverageType: 'self-only',
+        contributions: 4550,
+        personRole: PersonRole.PRIMARY,
+        startDate: new Date(CURRENT_YEAR, 0, 1),
+        endDate: new Date(CURRENT_YEAR, 11, 31),
+        label: 'excess',
+        totalDistributions: 0,
+        qualifiedDistributions: 0
+      }
+    ]
+
+    const f1040 = new F1040(information)
+    const f8889 = new F8889(f1040, information.taxPayer.primaryPerson)
+    expect(f8889.excessContributionPenalty()).toEqual(60)
   })
 
   it('Should apply employer contributions to only the form belonging to the right person', () => {

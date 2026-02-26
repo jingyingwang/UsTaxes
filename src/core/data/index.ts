@@ -879,6 +879,7 @@ export interface QuestionTag {
   FORM_8938_INCOME_REPORTED: string
   FOREIGN_TRUST_RELATIONSHIP: boolean
   LIVE_APART_FROM_SPOUSE: boolean
+  HSA_TESTING_PERIOD_FAILED: boolean
 }
 
 export type QuestionTagName = keyof QuestionTag
@@ -895,7 +896,8 @@ export const questionTagNames: QuestionTagName[] = [
   'FORM_8938_MAX_VALUE',
   'FORM_8938_INCOME_REPORTED',
   'FOREIGN_TRUST_RELATIONSHIP',
-  'LIVE_APART_FROM_SPOUSE'
+  'LIVE_APART_FROM_SPOUSE',
+  'HSA_TESTING_PERIOD_FAILED'
 ]
 
 export type ValueTag = 'string' | 'boolean'

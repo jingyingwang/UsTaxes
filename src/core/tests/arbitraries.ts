@@ -817,7 +817,8 @@ const questionTagArbs = {
   FORM_8938_MAX_VALUE: words,
   FORM_8938_INCOME_REPORTED: words,
   FOREIGN_TRUST_RELATIONSHIP: fc.boolean(),
-  LIVE_APART_FROM_SPOUSE: fc.boolean()
+  LIVE_APART_FROM_SPOUSE: fc.boolean(),
+  HSA_TESTING_PERIOD_FAILED: fc.boolean()
 }
 
 export const questions: Arbitrary<Responses> = fc

@@ -45,7 +45,9 @@ export default class Schedule2 extends F1040Attachment {
   l8 = (): number | undefined =>
     sumFields([
       this.f1040.f5329.toSchedule2l8(),
-      this.f1040.f5329Spouse?.toSchedule2l8()
+      this.f1040.f5329Spouse?.toSchedule2l8(),
+      this.f1040.f8889.excessContributionPenalty(),
+      this.f1040.f8889Spouse?.excessContributionPenalty()
     ]) || undefined
   l9 = (): number | undefined => this.f1040.scheduleH?.toSchedule2l9()
   l10 = (): number | undefined => undefined // repayment of firsttime homebuyer credit, form 5405

@@ -82,6 +82,12 @@ export const questions: Question[] = [
     (s: Information) =>
       s.taxPayer.filingStatus == FilingStatus.MFS &&
       s.f1099s.some((i) => i.type == Income1099Type.SSA)
+  ),
+  q(
+    'HSA_TESTING_PERIOD_FAILED',
+    'Did you fail the HSA testing period after using the last-month rule or a qualified HSA funding distribution?',
+    'boolean',
+    (s: Information) => s.healthSavingsAccounts.length > 0
   )
 ]
 

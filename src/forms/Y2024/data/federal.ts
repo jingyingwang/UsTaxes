@@ -234,7 +234,8 @@ export const healthSavingsAccounts = {
   contributionLimit: {
     'self-only': 4150,
     family: 8300
-  }
+  },
+  catchUpContribution: 1000
 }
 
 // IRS underpayment penalty rate for 2024 (Rev. Rul. 2024-01, 2024-07, 2024-14, 2024-22)
