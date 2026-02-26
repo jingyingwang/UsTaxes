@@ -490,6 +490,19 @@ export interface ScheduleCInput {
   otherExpenseType?: string
 }
 
+// See https://www.irs.gov/forms-pubs/about-form-8839
+export interface AdoptionCreditInput {
+  childFirstName: string
+  childLastName: string
+  childSSN: string
+  yearOfBirth: number
+  isDisabled: boolean // child has special needs
+  isForeignChild: boolean // child born outside the US
+  adoptionFinalized: boolean // was the adoption finalized this year
+  qualifiedExpenses: number // qualified adoption expenses paid
+  priorYearCarryforward: number // credit carryforward from prior years
+}
+
 // See https://www.irs.gov/instructions/i1065sk1
 export interface ScheduleK1Form1065 {
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
@@ -630,6 +643,7 @@ export interface Information<D = Date> {
   f1098es: F1098e[]
   f3921s: F3921[]
   scheduleCInputs: ScheduleCInput[]
+  adoptionCreditInputs: AdoptionCreditInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
   itemizedDeductions: ItemizedDeductions | undefined
   refund?: Refund
@@ -704,6 +718,7 @@ export type EditIraAction = ArrayItemEditAction<Ira>
 export type EditAssetAction = ArrayItemEditAction<Asset<Date>>
 export type EditF3921Action = ArrayItemEditAction<F3921>
 export type EditScheduleCAction = ArrayItemEditAction<ScheduleCInput>
+export type EditAdoptionCreditAction = ArrayItemEditAction<AdoptionCreditInput>
 export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>
 export type EditCreditAction = ArrayItemEditAction<Credit>

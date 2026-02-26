@@ -17,6 +17,7 @@ export const blankState: Information = {
   f1098es: [],
   f3921s: [],
   scheduleCInputs: [],
+  adoptionCreditInputs: [],
   scheduleK1Form1065s: [],
   itemizedDeductions: undefined,
   stateResidencies: [],
@@ -319,6 +320,31 @@ const formReducer = (
       return {
         ...newState,
         scheduleCInputs: newScheduleCs
+      }
+    }
+    case ActionName.ADD_ADOPTION_CREDIT: {
+      return {
+        ...newState,
+        adoptionCreditInputs: [
+          ...newState.adoptionCreditInputs,
+          action.formData
+        ]
+      }
+    }
+    case ActionName.EDIT_ADOPTION_CREDIT: {
+      const newAdoptionCredits = [...newState.adoptionCreditInputs]
+      newAdoptionCredits.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        adoptionCreditInputs: newAdoptionCredits
+      }
+    }
+    case ActionName.REMOVE_ADOPTION_CREDIT: {
+      const newAdoptionCredits = [...newState.adoptionCreditInputs]
+      newAdoptionCredits.splice(action.formData, 1)
+      return {
+        ...newState,
+        adoptionCreditInputs: newAdoptionCredits
       }
     }
     case ActionName.ADD_SCHEDULE_K1_F1065: {

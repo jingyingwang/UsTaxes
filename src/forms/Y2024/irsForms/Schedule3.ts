@@ -47,7 +47,8 @@ export default class Schedule3 extends F1040Attachment {
     return claimableExcessFica
   }
 
-  isNeeded = (): boolean => this.claimableExcessSSTaxWithholding() > 0
+  isNeeded = (): boolean =>
+    this.claimableExcessSSTaxWithholding() > 0 || this.l8() > 0
 
   deductions = (): number => 0
   // Part I: Nonrefundable credits
@@ -58,7 +59,7 @@ export default class Schedule3 extends F1040Attachment {
   l5 = (): number | undefined => undefined
   l6a = (): number | undefined => undefined // TODO: other credits
   l6b = (): number | undefined => undefined // TODO: other credits
-  l6c = (): number | undefined => undefined // TODO: other credits
+  l6c = (): number | undefined => this.f1040.f8839?.toSchedule3L6c()
   l6d = (): number | undefined => undefined // TODO: other credits
   l6e = (): number | undefined => undefined // TODO: other credits
   l6f = (): number | undefined => undefined // TODO: other credits

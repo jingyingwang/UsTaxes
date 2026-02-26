@@ -327,6 +327,42 @@ const scheduleCInput: Arbitrary<types.ScheduleCInput> = fc
     })
   )
 
+const adoptionCreditInput: Arbitrary<types.AdoptionCreditInput> = fc
+  .tuple(
+    word, // childFirstName
+    word, // childLastName
+    numStr(9), // childSSN
+    fc.integer({ min: 2000, max: 2025 }), // yearOfBirth
+    fc.boolean(), // isDisabled
+    fc.boolean(), // isForeignChild
+    fc.boolean(), // adoptionFinalized
+    posCurrency(20000), // qualifiedExpenses
+    posCurrency(5000) // priorYearCarryforward
+  )
+  .map(
+    ([
+      childFirstName,
+      childLastName,
+      childSSN,
+      yearOfBirth,
+      isDisabled,
+      isForeignChild,
+      adoptionFinalized,
+      qualifiedExpenses,
+      priorYearCarryforward
+    ]) => ({
+      childFirstName,
+      childLastName,
+      childSSN,
+      yearOfBirth,
+      isDisabled,
+      isForeignChild,
+      adoptionFinalized,
+      qualifiedExpenses,
+      priorYearCarryforward
+    })
+  )
+
 const scheduleK1Form1065: Arbitrary<types.ScheduleK1Form1065> = fc
   .tuple(
     maxWords(2),
@@ -735,6 +771,7 @@ export class Arbitraries {
         fc.array(f1098e),
         fc.array(f3921),
         fc.array(scheduleCInput),
+        fc.array(adoptionCreditInput, { maxLength: 3 }),
         fc.array(scheduleK1Form1065),
         itemizedDeductions,
         refund,
@@ -754,6 +791,7 @@ export class Arbitraries {
           f1098es,
           f3921s,
           scheduleCInputs,
+          adoptionCreditInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
           refund,
@@ -771,6 +809,7 @@ export class Arbitraries {
           f1098es,
           f3921s,
           scheduleCInputs,
+          adoptionCreditInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
           refund,

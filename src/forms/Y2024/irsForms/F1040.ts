@@ -14,6 +14,7 @@ import F8814 from './F8814'
 import F8888 from './F8888'
 import F8889 from './F8889'
 import F8910 from './F8910'
+import F8839 from './F8839'
 import F8936 from './F8936'
 import F8959 from './F8959'
 import F8995, { getF8995PhaseOutIncome } from './F8995'
@@ -90,6 +91,7 @@ export default class F1040 extends F1040Base {
   f6251: F6251
   f8814?: F8814
   f8582?: F8582
+  f8839?: F8839
   f8853?: F8853
   f8863?: F8863
   f8888?: F8888
@@ -136,6 +138,7 @@ export default class F1040 extends F1040Base {
       this.f8889Spouse = new F8889(this, this.info.taxPayer.spouse)
     }
 
+    this.f8839 = new F8839(this)
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
 
@@ -200,6 +203,7 @@ export default class F1040 extends F1040Base {
       this.f5695,
       this.f6251,
       this.f8814,
+      this.f8839,
       this.f8888,
       this.f8889,
       this.f8889Spouse,
