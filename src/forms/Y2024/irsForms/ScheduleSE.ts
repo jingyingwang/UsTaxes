@@ -9,6 +9,7 @@ export default class ScheduleSE extends F1040Attachment {
   sequenceIndex = 14
 
   isNeeded = (): boolean =>
+    this.f1040.scheduleFs.length > 0 ||
     this.f1040.info.scheduleK1Form1065s
       .map(
         (k1) =>
@@ -35,7 +36,7 @@ export default class ScheduleSE extends F1040Attachment {
   }
 
   l1a = (): number => {
-    const schFL34 = 0 // TODO: Net farm profit or (loss) from Schedule F, line 34
+    const schFL34 = this.f1040.netFarmProfit() ?? 0
     const k1B14 = 0 // TODO: If a farm partnership
     return schFL34 + k1B14
   }

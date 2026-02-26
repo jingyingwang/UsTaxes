@@ -17,6 +17,7 @@ export const blankState: Information = {
   f1098es: [],
   f3921s: [],
   scheduleCInputs: [],
+  scheduleFInputs: [],
   scheduleK1Form1065s: [],
   itemizedDeductions: undefined,
   stateResidencies: [],
@@ -319,6 +320,28 @@ const formReducer = (
       return {
         ...newState,
         scheduleCInputs: newScheduleCs
+      }
+    }
+    case ActionName.ADD_SCHEDULE_F: {
+      return {
+        ...newState,
+        scheduleFInputs: [...newState.scheduleFInputs, action.formData]
+      }
+    }
+    case ActionName.EDIT_SCHEDULE_F: {
+      const newScheduleFs = [...newState.scheduleFInputs]
+      newScheduleFs.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        scheduleFInputs: newScheduleFs
+      }
+    }
+    case ActionName.REMOVE_SCHEDULE_F: {
+      const newScheduleFs = [...newState.scheduleFInputs]
+      newScheduleFs.splice(action.formData, 1)
+      return {
+        ...newState,
+        scheduleFInputs: newScheduleFs
       }
     }
     case ActionName.ADD_SCHEDULE_K1_F1065: {

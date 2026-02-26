@@ -49,6 +49,7 @@ import F4136 from './F4136'
 import F2439 from './F2439'
 import F2441 from './F2441'
 import ScheduleC from './ScheduleC'
+import ScheduleF from './ScheduleF'
 import F8949 from './F8949'
 import F6251 from './F6251'
 import F4137 from './F4137'
@@ -72,6 +73,7 @@ export default class F1040 extends F1040Base {
   scheduleB: ScheduleB
   scheduleC?: ScheduleC
   scheduleD: ScheduleD
+  scheduleFs: ScheduleF[]
   scheduleE: ScheduleE
   scheduleSE: ScheduleSE
   scheduleEIC: ScheduleEIC
@@ -120,6 +122,9 @@ export default class F1040 extends F1040Base {
     this.scheduleD = new ScheduleD(this)
     this.scheduleE = new ScheduleE(this)
     this.scheduleEIC = new ScheduleEIC(this)
+    this.scheduleFs = this.info.scheduleFInputs.map(
+      (input) => new ScheduleF(this, input)
+    )
     this.scheduleSE = new ScheduleSE(this)
 
     this.schedule1 = new Schedule1(this)
@@ -170,6 +175,11 @@ export default class F1040 extends F1040Base {
     return this._f8949s
   }
 
+  netFarmProfit = (): number | undefined =>
+    this.scheduleFs.length > 0
+      ? this.scheduleFs.reduce((sum, sf) => sum + sf.l34(), 0)
+      : undefined
+
   totalQbi = () =>
     this.info.scheduleK1Form1065s
       .map((k1) => k1.section199AQBI)
@@ -190,6 +200,7 @@ export default class F1040 extends F1040Base {
       this.scheduleB,
       this.scheduleD,
       this.scheduleE,
+      ...this.scheduleFs,
       this.scheduleSE,
       this.scheduleR,
       this.scheduleEIC,

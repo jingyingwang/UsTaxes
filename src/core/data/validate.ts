@@ -95,3 +95,7 @@ export const scheduleC =
   fns.ScheduleCInput as ValidateFunction<types.ScheduleCInput>
 export const editScheduleCAction =
   fns.EditScheduleCAction as ValidateFunction<types.EditScheduleCAction>
+export const scheduleF =
+  fns.ScheduleFInput as ValidateFunction<types.ScheduleFInput>
+export const editScheduleFAction =
+  fns.EditScheduleFAction as ValidateFunction<types.EditScheduleFAction>

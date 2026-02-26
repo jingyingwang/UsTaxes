@@ -490,6 +490,68 @@ export interface ScheduleCInput {
   otherExpenseType?: string
 }
 
+// Schedule F expense categories (Part II, lines 12-32)
+export enum ScheduleFExpenseType {
+  carAndTruck,
+  chemicals,
+  conservation,
+  customHire,
+  depreciation,
+  employeeBenefitPrograms,
+  feed,
+  fertilizers,
+  freight,
+  gasoline,
+  insurance,
+  interestMortgage,
+  interestOther,
+  labor,
+  pensionAndProfitSharing,
+  rentVehicles,
+  rentOther,
+  repairs,
+  seeds,
+  storage,
+  supplies,
+  taxes,
+  utilities,
+  veterinary,
+  otherExpenses
+}
+
+export type ScheduleFExpenseTypeName = keyof typeof ScheduleFExpenseType
+
+// See https://www.irs.gov/forms-pubs/about-schedule-f-form-1040
+export interface ScheduleFInput {
+  personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
+  farmName: string
+  principalProduct: string
+  ein?: string
+  farmAddress?: Address
+  accountingMethod: AccountingMethod
+
+  // Part I: Farm Income — Cash Method
+  salesLivestock: number // Line 1a (sales of livestock/other resale items)
+  costBasisLivestock: number // Line 1b (cost or other basis)
+  salesRaised: number // Line 2 (sales of livestock, produce, grains, etc. you raised)
+  cooperativeDistributions: number // Line 3a
+  cooperativeDistributionsTaxable: number // Line 3b
+  agriculturalProgramPayments: number // Line 4a
+  agriculturalProgramPaymentsTaxable: number // Line 4b
+  cccLoansReported: number // Line 5a (CCC loans reported under election)
+  cccLoansForfeited: number // Line 5b (CCC loans forfeited)
+  cropInsuranceProceeds: number // Line 6a
+  cropInsuranceTaxable: number // Line 6b
+  customHireIncome: number // Line 7
+  otherFarmIncome: number // Line 8
+
+  // Part II: Farm Expenses (lines 12-32)
+  expenses: Partial<{ [K in ScheduleFExpenseTypeName]: number }>
+  otherExpenseType?: string
+}
+
+export type EditScheduleFAction = ArrayItemEditAction<ScheduleFInput>
+
 // See https://www.irs.gov/instructions/i1065sk1
 export interface ScheduleK1Form1065 {
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
@@ -630,6 +692,7 @@ export interface Information<D = Date> {
   f1098es: F1098e[]
   f3921s: F3921[]
   scheduleCInputs: ScheduleCInput[]
+  scheduleFInputs: ScheduleFInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
   itemizedDeductions: ItemizedDeductions | undefined
   refund?: Refund

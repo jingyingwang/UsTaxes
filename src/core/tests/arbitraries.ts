@@ -327,6 +327,87 @@ const scheduleCInput: Arbitrary<types.ScheduleCInput> = fc
     })
   )
 
+const scheduleFExpenseTypeName: Arbitrary<types.ScheduleFExpenseTypeName> =
+  fc.constantFrom(...util.enumKeys(types.ScheduleFExpenseType))
+
+const scheduleFExpenses: Arbitrary<
+  Partial<{ [K in types.ScheduleFExpenseTypeName]: number }>
+> = fc.set(scheduleFExpenseTypeName).chain((es) =>
+  fc
+    .array(expense, { minLength: es.length, maxLength: es.length })
+    .map((nums) =>
+      _.chain(es)
+        .zipWith(nums, (e, num) => [e, num])
+        .fromPairs()
+        .value()
+    )
+)
+
+const scheduleFInput: Arbitrary<types.ScheduleFInput> = fc
+  .tuple(
+    maxWords(3),
+    maxWords(3),
+    fc.constantFrom<types.AccountingMethod>(
+      types.AccountingMethod.cash,
+      types.AccountingMethod.accrual,
+      types.AccountingMethod.other
+    ),
+    posCurrency(1000000),
+    posCurrency(1000000),
+    posCurrency(1000000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    scheduleFExpenses
+  )
+  .map(
+    ([
+      farmName,
+      principalProduct,
+      accountingMethod,
+      salesLivestock,
+      costBasisLivestock,
+      salesRaised,
+      cooperativeDistributions,
+      cooperativeDistributionsTaxable,
+      agriculturalProgramPayments,
+      agriculturalProgramPaymentsTaxable,
+      cccLoansReported,
+      cccLoansForfeited,
+      cropInsuranceProceeds,
+      cropInsuranceTaxable,
+      customHireIncome,
+      otherFarmIncome,
+      expenses
+    ]) => ({
+      personRole: types.PersonRole.PRIMARY,
+      farmName,
+      principalProduct,
+      accountingMethod,
+      salesLivestock,
+      costBasisLivestock,
+      salesRaised,
+      cooperativeDistributions,
+      cooperativeDistributionsTaxable,
+      agriculturalProgramPayments,
+      agriculturalProgramPaymentsTaxable,
+      cccLoansReported,
+      cccLoansForfeited,
+      cropInsuranceProceeds,
+      cropInsuranceTaxable,
+      customHireIncome,
+      otherFarmIncome,
+      expenses
+    })
+  )
+
 const scheduleK1Form1065: Arbitrary<types.ScheduleK1Form1065> = fc
   .tuple(
     maxWords(2),
@@ -735,6 +816,7 @@ export class Arbitraries {
         fc.array(f1098e),
         fc.array(f3921),
         fc.array(scheduleCInput),
+        fc.constant([] as types.ScheduleFInput[]),
         fc.array(scheduleK1Form1065),
         itemizedDeductions,
         refund,
@@ -754,6 +836,7 @@ export class Arbitraries {
           f1098es,
           f3921s,
           scheduleCInputs,
+          scheduleFInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
           refund,
@@ -771,6 +854,7 @@ export class Arbitraries {
           f1098es,
           f3921s,
           scheduleCInputs,
+          scheduleFInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
           refund,
