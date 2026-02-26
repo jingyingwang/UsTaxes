@@ -58,12 +58,9 @@ const toLine = (position: SoldAsset<Date>): Line => {
   const cost = position.openPrice * position.quantity
   const washCode = position.washSaleCode ?? undefined
   const washAmount = position.washSaleDisallowed ?? undefined
-  const gainOrLoss =
-    proceeds -
-    cost +
-    (washAmount ?? 0) -
-    (position.closeFee ?? 0) -
-    position.openFee
+  // IRS Form 8949: Column (h) = Column (d) - Column (e) + Column (g)
+  // Fees are NOT included per-line; they factor into section totals
+  const gainOrLoss = proceeds - cost + (washAmount ?? 0)
 
   return [
     position.name,
