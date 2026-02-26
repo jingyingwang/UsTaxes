@@ -632,6 +632,7 @@ export interface Information<D = Date> {
   scheduleCInputs: ScheduleCInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
   itemizedDeductions: ItemizedDeductions | undefined
+  priorYearTax?: number
   refund?: Refund
   taxPayer: TaxPayer<D>
   questions: Responses
