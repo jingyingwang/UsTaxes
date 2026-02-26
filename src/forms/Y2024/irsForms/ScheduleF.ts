@@ -80,7 +80,7 @@ export default class ScheduleF extends F1040Attachment {
   // Line 10: Total expenses (sum of expense categories)
   totalExpenses = (): number => {
     const expenses = this.input.expenses
-    return Object.values(expenses).reduce((sum: number, v) => sum + (v ?? 0), 0)
+    return Object.values(expenses).reduce((sum: number, v) => sum + v, 0)
   }
 
   // Line 33: Total expenses
