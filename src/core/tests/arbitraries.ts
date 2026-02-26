@@ -516,6 +516,105 @@ const scheduleK1Form1065: Arbitrary<types.ScheduleK1Form1065> = fc
     }
   )
 
+const scheduleK1Form1120S: Arbitrary<types.ScheduleK1Form1120S> = fc
+  .tuple(
+    maxWords(2),
+    ein,
+    posCurrency(1000000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000)
+  )
+  .map(
+    ([
+      corporationName,
+      ein,
+      ordinaryBusinessIncome,
+      netRentalRealEstateIncome,
+      otherNetRentalIncome,
+      interestIncome,
+      ordinaryDividends,
+      qualifiedDividends,
+      royalties,
+      netShortTermCapitalGain,
+      netLongTermCapitalGain,
+      section199AQBI
+    ]) => ({
+      personRole: types.PersonRole.PRIMARY,
+      corporationName,
+      corporationEin: ein,
+      isForeign: false,
+      isPassive: false,
+      ordinaryBusinessIncome,
+      netRentalRealEstateIncome,
+      otherNetRentalIncome,
+      interestIncome,
+      ordinaryDividends,
+      qualifiedDividends,
+      royalties,
+      netShortTermCapitalGain,
+      netLongTermCapitalGain,
+      section199AQBI
+    })
+  )
+
+const scheduleK1Form1041: Arbitrary<types.ScheduleK1Form1041> = fc
+  .tuple(
+    maxWords(2),
+    ein,
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(1000000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000),
+    posCurrency(100000)
+  )
+  .map(
+    ([
+      estateTrustName,
+      ein,
+      interestIncome,
+      ordinaryDividends,
+      qualifiedDividends,
+      netShortTermCapitalGain,
+      netLongTermCapitalGain,
+      otherPortfolioAndNonbusinessIncome,
+      ordinaryBusinessIncome,
+      netRentalRealEstateIncome,
+      otherRentalIncome,
+      directlyApportionedDeductions,
+      section199AQBI
+    ]) => ({
+      personRole: types.PersonRole.PRIMARY,
+      estateTrustName,
+      estateTrustEin: ein,
+      isForeign: false,
+      isPassive: false,
+      interestIncome,
+      ordinaryDividends,
+      qualifiedDividends,
+      netShortTermCapitalGain,
+      netLongTermCapitalGain,
+      otherPortfolioAndNonbusinessIncome,
+      ordinaryBusinessIncome,
+      netRentalRealEstateIncome,
+      otherRentalIncome,
+      directlyApportionedDeductions,
+      section199AQBI
+    })
+  )
+
 const itemizedDeductions: Arbitrary<types.ItemizedDeductions> = fc
   .tuple(
     posCurrency(2500),
@@ -911,6 +1010,8 @@ export class Arbitraries {
         fc.constant([] as types.ScheduleFInput[]),
         fc.array(scheduleK1Form1065),
         fc.array(form6781Input, { maxLength: 2 }),
+        fc.array(scheduleK1Form1120S),
+        fc.array(scheduleK1Form1041),
         itemizedDeductions,
         refund,
         this.taxPayer(),
@@ -935,6 +1036,8 @@ export class Arbitraries {
           scheduleFInputs,
           scheduleK1Form1065s,
           form6781,
+          scheduleK1Form1120Ss,
+          scheduleK1Form1041s,
           itemizedDeductions,
           refund,
           taxPayer,
@@ -957,6 +1060,8 @@ export class Arbitraries {
           scheduleFInputs,
           scheduleK1Form1065s,
           form6781,
+          scheduleK1Form1120Ss,
+          scheduleK1Form1041s,
           itemizedDeductions,
           form2441Input: undefined,
           refund,

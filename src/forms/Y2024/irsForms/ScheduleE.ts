@@ -4,7 +4,8 @@ import {
   PropertyType,
   PropertyExpenseTypeName,
   RoyaltyIncome,
-  RoyaltyExpenseTypeName
+  RoyaltyExpenseTypeName,
+  ScheduleK1Form1041
 } from 'ustaxes/core/data'
 import { displayNegPos, sumFields } from 'ustaxes/core/irsForms/util'
 import _ from 'lodash'
@@ -45,7 +46,9 @@ export default class ScheduleE extends F1040Attachment {
   isNeeded = (): boolean =>
     this.f1040.info.realEstate.length > 0 ||
     this.f1040.info.royaltyIncomes.length > 0 ||
-    this.f1040.info.scheduleK1Form1065s.length > 0
+    this.f1040.info.scheduleK1Form1065s.length > 0 ||
+    this.f1040.info.scheduleK1Form1120Ss.length > 0 ||
+    this.f1040.info.scheduleK1Form1041s.length > 0
 
   addressString = (address: Address): string =>
     [
@@ -212,24 +215,39 @@ export default class ScheduleE extends F1040Attachment {
 
   l26 = (): number => sumFields([this.l24(), this.l25()])
 
+  // Combine partnership (1065) and S-Corp (1120-S) K-1s for Part II lines 28-32
+  partnershipAndSCorpK1s = (): {
+    isPassive: boolean
+    ordinaryBusinessIncome: number
+  }[] => [
+    ...this.f1040.info.scheduleK1Form1065s.map((k1) => ({
+      isPassive: k1.isPassive,
+      ordinaryBusinessIncome: k1.ordinaryBusinessIncome
+    })),
+    ...this.f1040.info.scheduleK1Form1120Ss.map((k1) => ({
+      isPassive: k1.isPassive,
+      ordinaryBusinessIncome: k1.ordinaryBusinessIncome
+    }))
+  ]
+
   l29ah = (): number | undefined =>
-    this.f1040.info.scheduleK1Form1065s.reduce(
+    this.partnershipAndSCorpK1s().reduce(
       (t, k1) => t + Math.max(0, k1.isPassive ? k1.ordinaryBusinessIncome : 0),
       0
     )
   l29ak = (): number | undefined =>
-    this.f1040.info.scheduleK1Form1065s.reduce(
+    this.partnershipAndSCorpK1s().reduce(
       (t, k1) => t + Math.max(0, k1.isPassive ? 0 : k1.ordinaryBusinessIncome),
       0
     )
 
   l29bg = (): number | undefined =>
-    this.f1040.info.scheduleK1Form1065s.reduce(
+    this.partnershipAndSCorpK1s().reduce(
       (t, k1) => t + Math.min(0, k1.isPassive ? k1.ordinaryBusinessIncome : 0),
       0
     )
   l29bi = (): number | undefined =>
-    this.f1040.info.scheduleK1Form1065s.reduce(
+    this.partnershipAndSCorpK1s().reduce(
       (t, k1) => t + Math.min(0, k1.isPassive ? 0 : k1.ordinaryBusinessIncome),
       0
     )
@@ -240,13 +258,40 @@ export default class ScheduleE extends F1040Attachment {
     sumFields([this.l29bg(), this.l29bi(), this.l29bj()])
   l32 = (): number | undefined => sumFields([this.l30(), this.l31()])
 
-  l34ad = (): number | undefined => undefined
-  l34af = (): number | undefined => undefined
-  l34bc = (): number | undefined => undefined
-  l34be = (): number | undefined => undefined
+  // Estate and trust (1041) K-1s for Part II lines 33-37
+  estateAndTrustK1s = (): ScheduleK1Form1041[] =>
+    this.f1040.info.scheduleK1Form1041s
 
-  // TODO: Real estate trust income or loss
-  l37 = (): number | undefined => undefined
+  l34ad = (): number | undefined =>
+    this.estateAndTrustK1s().reduce(
+      (t, k1) => t + Math.max(0, k1.isPassive ? k1.ordinaryBusinessIncome : 0),
+      0
+    ) || undefined
+  l34af = (): number | undefined =>
+    this.estateAndTrustK1s().reduce(
+      (t, k1) => t + Math.max(0, k1.isPassive ? 0 : k1.ordinaryBusinessIncome),
+      0
+    ) || undefined
+  l34bc = (): number | undefined =>
+    this.estateAndTrustK1s().reduce(
+      (t, k1) => t + Math.min(0, k1.isPassive ? k1.ordinaryBusinessIncome : 0),
+      0
+    ) || undefined
+  l34be = (): number | undefined =>
+    this.estateAndTrustK1s().reduce(
+      (t, k1) => t + Math.min(0, k1.isPassive ? 0 : k1.ordinaryBusinessIncome),
+      0
+    ) || undefined
+
+  // Real estate trust income or loss (from 1041 K-1s)
+  l37 = (): number | undefined => {
+    const total = this.estateAndTrustK1s().reduce(
+      (t, k1) =>
+        t + sumFields([k1.netRentalRealEstateIncome, k1.otherRentalIncome]),
+      0
+    )
+    return total !== 0 ? total : undefined
+  }
 
   // TODO: REMICS income or loss
   l39 = (): number | undefined => undefined
@@ -260,20 +305,39 @@ export default class ScheduleE extends F1040Attachment {
   fields = (): Field[] => {
     const [p0, p1, p2] = [0, 1, 2].map((i) => this.propForRow(i))
 
+    // Combine 1065 and 1120-S K-1s for l28 section
+    const allPartnershipK1s: {
+      name: string
+      type: string
+      isForeign: boolean
+      ein: string
+      isPassive: boolean
+      ordinaryBusinessIncome: number
+    }[] = [
+      ...this.f1040.info.scheduleK1Form1065s.map((k1) => ({
+        name: k1.partnershipName,
+        type: k1.partnerOrSCorp,
+        isForeign: k1.isForeign,
+        ein: k1.partnershipEin,
+        isPassive: k1.isPassive,
+        ordinaryBusinessIncome: k1.ordinaryBusinessIncome
+      })),
+      ...this.f1040.info.scheduleK1Form1120Ss.map((k1) => ({
+        name: k1.corporationName,
+        type: 'S',
+        isForeign: k1.isForeign,
+        ein: k1.corporationEin,
+        isPassive: k1.isPassive,
+        ordinaryBusinessIncome: k1.ordinaryBusinessIncome
+      }))
+    ]
     // TODO: Support more than 4 K1s
-    const k1s = this.f1040.info.scheduleK1Form1065s
+    const k1s = allPartnershipK1s
     const l28Fields: Field[] = []
     l28Fields.push(
       ...k1s
         .slice(0, 4)
-        .flatMap((k1) => [
-          k1.partnershipName,
-          k1.partnerOrSCorp,
-          k1.isForeign,
-          k1.partnershipEin,
-          false,
-          false
-        ])
+        .flatMap((k1) => [k1.name, k1.type, k1.isForeign, k1.ein, false, false])
     )
     l28Fields.push(
       ...Array<undefined>(6 * Math.max(0, 4 - k1s.length)).fill(undefined)

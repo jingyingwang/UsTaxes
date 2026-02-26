@@ -678,25 +678,60 @@ export interface Form2441Input {
   dependentCareBenefits: number
 }
 // Form 1040X - Amended Return data
-// Each entry represents one line being amended with three-column layout:
-//   Column A: Original amount from the originally filed return
-//   Column B: Net change (positive = increase, negative = decrease)
-//   Column C: Corrected amount (computed as A + B)
 export interface AmendedReturnLine {
-  lineDescription: string // Which 1040 line is being amended (e.g., "1 - Wages")
-  columnA: number // Original amount
-  columnB: number // Net change
-  explanation: string // Part III explanation for why this line changed
+  lineDescription: string
+  columnA: number
+  columnB: number
+  explanation: string
 }
 
 export interface AmendedReturnData {
-  taxYearAmended: string // e.g., "2023"
+  taxYearAmended: string
   filingStatus: FilingStatus
   lines: AmendedReturnLine[]
-  partIIIExplanation: string // Overall explanation of changes
+  partIIIExplanation: string
 }
 
 export type EditAmendedReturnAction = ArrayItemEditAction<AmendedReturnData>
+
+// See https://www.irs.gov/instructions/i1120ssk1
+export interface ScheduleK1Form1120S {
+  personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
+  corporationName: string
+  corporationEin: string
+  isForeign: boolean
+  isPassive: boolean
+  ordinaryBusinessIncome: number
+  netRentalRealEstateIncome: number
+  otherNetRentalIncome: number
+  interestIncome: number
+  ordinaryDividends: number
+  qualifiedDividends: number
+  royalties: number
+  netShortTermCapitalGain: number
+  netLongTermCapitalGain: number
+  section199AQBI: number
+}
+
+// See https://www.irs.gov/instructions/i1041sk1
+export interface ScheduleK1Form1041 {
+  personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
+  estateTrustName: string
+  estateTrustEin: string
+  isForeign: boolean
+  isPassive: boolean
+  interestIncome: number
+  ordinaryDividends: number
+  qualifiedDividends: number
+  netShortTermCapitalGain: number
+  netLongTermCapitalGain: number
+  otherPortfolioAndNonbusinessIncome: number
+  ordinaryBusinessIncome: number
+  netRentalRealEstateIncome: number
+  otherRentalIncome: number
+  directlyApportionedDeductions: number
+  section199AQBI: number
+}
 
 export interface ItemizedDeductions {
   medicalAndDental: string | number
@@ -859,6 +894,8 @@ export interface Information<D = Date> {
   scheduleK1Form1065s: ScheduleK1Form1065[]
   form6781: Form6781Input[]
   installmentSales?: InstallmentSale[]
+  scheduleK1Form1120Ss: ScheduleK1Form1120S[]
+  scheduleK1Form1041s: ScheduleK1Form1041[]
   itemizedDeductions: ItemizedDeductions | undefined
   casualtyTheftLosses?: CasualtyTheftLoss[]
   priorYearTax?: number
@@ -957,6 +994,10 @@ export type EditRoyaltyIncomeAction = ArrayItemEditAction<RoyaltyIncome>
 export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>
 export type EditForm6781Action = ArrayItemEditAction<Form6781Input>
+export type EditScheduleK1Form1120SAction =
+  ArrayItemEditAction<ScheduleK1Form1120S>
+export type EditScheduleK1Form1041Action =
+  ArrayItemEditAction<ScheduleK1Form1041>
 export type EditCreditAction = ArrayItemEditAction<Credit>
 export type EditNOLCarryforwardAction = ArrayItemEditAction<NOLCarryforward>
 export type EditF8801InputAction = F8801Input | undefined

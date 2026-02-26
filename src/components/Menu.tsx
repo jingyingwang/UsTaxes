@@ -46,6 +46,8 @@ import { StockOptions } from './income/StockOptions'
 import { ESPPOptions } from './income/ESPPOptions'
 import { PartnershipIncome } from './income/PartnershipIncome'
 import AmendedReturn from './amended/AmendedReturn'
+import { SCorpIncome } from './income/SCorpIncome'
+import { EstateAndTrustIncome } from './income/EstateAndTrustIncome'
 import { TaxYear } from 'ustaxes/core/data'
 import { AdvanceChildTaxCredit } from './Y2021/AdvanceChildTaxCredit'
 import { YearsTaxesState } from 'ustaxes/redux'
@@ -141,6 +143,12 @@ export const drawerSections: Section[] = [
         'Partnership Income',
         Urls.income.partnershipIncome,
         <PartnershipIncome />
+      ),
+      item('S-Corp Income (K-1)', Urls.income.sCorpIncome, <SCorpIncome />),
+      item(
+        'Estate & Trust Income (K-1)',
+        Urls.income.estateAndTrustIncome,
+        <EstateAndTrustIncome />
       )
     ]
   },

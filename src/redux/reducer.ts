@@ -22,6 +22,8 @@ export const blankState: Information = {
   scheduleFInputs: [],
   scheduleK1Form1065s: [],
   form6781: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
   itemizedDeductions: undefined,
   casualtyTheftLosses: [],
   form2441Input: undefined,
@@ -413,6 +415,53 @@ const formReducer = (
       return {
         ...newState,
         scheduleK1Form1065s: newK1s
+      }
+    }
+    case ActionName.ADD_SCHEDULE_K1_F1120S: {
+      return {
+        ...newState,
+        scheduleK1Form1120Ss: [
+          ...newState.scheduleK1Form1120Ss,
+          action.formData
+        ]
+      }
+    }
+    case ActionName.EDIT_SCHEDULE_K1_F1120S: {
+      const newK1s = [...newState.scheduleK1Form1120Ss]
+      newK1s.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        scheduleK1Form1120Ss: newK1s
+      }
+    }
+    case ActionName.REMOVE_SCHEDULE_K1_F1120S: {
+      const newK1s = [...newState.scheduleK1Form1120Ss]
+      newK1s.splice(action.formData, 1)
+      return {
+        ...newState,
+        scheduleK1Form1120Ss: newK1s
+      }
+    }
+    case ActionName.ADD_SCHEDULE_K1_F1041: {
+      return {
+        ...newState,
+        scheduleK1Form1041s: [...newState.scheduleK1Form1041s, action.formData]
+      }
+    }
+    case ActionName.EDIT_SCHEDULE_K1_F1041: {
+      const newK1s = [...newState.scheduleK1Form1041s]
+      newK1s.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        scheduleK1Form1041s: newK1s
+      }
+    }
+    case ActionName.REMOVE_SCHEDULE_K1_F1041: {
+      const newK1s = [...newState.scheduleK1Form1041s]
+      newK1s.splice(action.formData, 1)
+      return {
+        ...newState,
+        scheduleK1Form1041s: newK1s
       }
     }
     case ActionName.SET_ITEMIZED_DEDUCTIONS: {

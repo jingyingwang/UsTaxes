@@ -22,6 +22,8 @@ import {
   F3922,
   CasualtyTheftLoss,
   ScheduleK1Form1065,
+  ScheduleK1Form1120S,
+  ScheduleK1Form1041,
   ScheduleCInput,
   Form6781Input,
   ScheduleFInput,
@@ -55,9 +57,10 @@ import {
   EditScheduleCAction,
   EditScheduleFAction,
   EditScheduleK1Form1065Action,
-  EditForm6781Action
+  EditForm6781Action,
   EditRoyaltyIncomeAction,
-  EditScheduleK1Form1065Action
+  EditScheduleK1Form1120SAction,
+  EditScheduleK1Form1041Action
 } from 'ustaxes/core/data'
 import * as validators from 'ustaxes/core/data/validate'
 import { index as indexValidator } from 'ustaxes/core/data/validate'
@@ -131,6 +134,12 @@ export enum ActionName {
   ADD_FORM_6781 = 'FORM_6781/ADD',
   EDIT_FORM_6781 = 'FORM_6781/EDIT',
   REMOVE_FORM_6781 = 'FORM_6781/REMOVE',
+  ADD_SCHEDULE_K1_F1120S = 'SCHEDULE_K1_F1120S/ADD',
+  EDIT_SCHEDULE_K1_F1120S = 'SCHEDULE_K1_F1120S/EDIT',
+  REMOVE_SCHEDULE_K1_F1120S = 'SCHEDULE_K1_F1120S/REMOVE',
+  ADD_SCHEDULE_K1_F1041 = 'SCHEDULE_K1_F1041/ADD',
+  EDIT_SCHEDULE_K1_F1041 = 'SCHEDULE_K1_F1041/EDIT',
+  REMOVE_SCHEDULE_K1_F1041 = 'SCHEDULE_K1_F1041/REMOVE',
   ADD_CREDIT = 'CREDIT/ADD',
   EDIT_CREDIT = 'CREDIT/EDIT',
   REMOVE_CREDIT = 'CREDIT/REMOVE',
@@ -264,6 +273,30 @@ type RemoveScheduleK1Form1065 = Save<
 type AddForm6781 = Save<typeof ActionName.ADD_FORM_6781, Form6781Input>
 type EditForm6781 = Save<typeof ActionName.EDIT_FORM_6781, EditForm6781Action>
 type RemoveForm6781 = Save<typeof ActionName.REMOVE_FORM_6781, number>
+type AddScheduleK1Form1120S = Save<
+  typeof ActionName.ADD_SCHEDULE_K1_F1120S,
+  ScheduleK1Form1120S
+>
+type EditScheduleK1Form1120S = Save<
+  typeof ActionName.EDIT_SCHEDULE_K1_F1120S,
+  EditScheduleK1Form1120SAction
+>
+type RemoveScheduleK1Form1120S = Save<
+  typeof ActionName.REMOVE_SCHEDULE_K1_F1120S,
+  number
+>
+type AddScheduleK1Form1041 = Save<
+  typeof ActionName.ADD_SCHEDULE_K1_F1041,
+  ScheduleK1Form1041
+>
+type EditScheduleK1Form1041 = Save<
+  typeof ActionName.EDIT_SCHEDULE_K1_F1041,
+  EditScheduleK1Form1041Action
+>
+type RemoveScheduleK1Form1041 = Save<
+  typeof ActionName.REMOVE_SCHEDULE_K1_F1041,
+  number
+>
 type AddCredit = Save<typeof ActionName.ADD_CREDIT, Credit>
 type EditCredit = Save<typeof ActionName.EDIT_CREDIT, EditCreditAction>
 type RemoveCredit = Save<typeof ActionName.REMOVE_CREDIT, number>
@@ -361,6 +394,12 @@ export type Actions =
   | AddForm6781
   | EditForm6781
   | RemoveForm6781
+  | AddScheduleK1Form1120S
+  | EditScheduleK1Form1120S
+  | RemoveScheduleK1Form1120S
+  | AddScheduleK1Form1041
+  | EditScheduleK1Form1041
+  | RemoveScheduleK1Form1041
   | AddCredit
   | EditCredit
   | RemoveCredit
@@ -725,6 +764,24 @@ export const removeForm6781: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_FORM_6781,
   indexValidator
 )
+
+export const addScheduleK1Form1120S: ActionCreator<ScheduleK1Form1120S> =
+  makeActionCreator(ActionName.ADD_SCHEDULE_K1_F1120S)
+
+export const editScheduleK1Form1120S: ActionCreator<EditScheduleK1Form1120SAction> =
+  makeActionCreator(ActionName.EDIT_SCHEDULE_K1_F1120S)
+
+export const removeScheduleK1Form1120S: ActionCreator<number> =
+  makeActionCreator(ActionName.REMOVE_SCHEDULE_K1_F1120S, indexValidator)
+
+export const addScheduleK1Form1041: ActionCreator<ScheduleK1Form1041> =
+  makeActionCreator(ActionName.ADD_SCHEDULE_K1_F1041)
+
+export const editScheduleK1Form1041: ActionCreator<EditScheduleK1Form1041Action> =
+  makeActionCreator(ActionName.EDIT_SCHEDULE_K1_F1041)
+
+export const removeScheduleK1Form1041: ActionCreator<number> =
+  makeActionCreator(ActionName.REMOVE_SCHEDULE_K1_F1041, indexValidator)
 
 export const addCredit: ActionCreator<Credit> = makeActionCreator(
   ActionName.ADD_CREDIT,

@@ -14,7 +14,9 @@ import {
   Address,
   IncomeW2,
   Property,
-  ScheduleK1Form1065
+  ScheduleK1Form1065,
+  ScheduleK1Form1120S,
+  ScheduleK1Form1041
 } from '.'
 
 const anonymizePerson = (person: Person): Person => {
@@ -129,6 +131,24 @@ const anonymizeK1 = (
   partnershipEin: '888888888'
 })
 
+const anonymizeK1Form1120S = (
+  k1: ScheduleK1Form1120S,
+  idx: number
+): ScheduleK1Form1120S => ({
+  ...k1,
+  corporationName: `s-corp ${idx}`,
+  corporationEin: '777777777'
+})
+
+const anonymizeK1Form1041 = (
+  k1: ScheduleK1Form1041,
+  idx: number
+): ScheduleK1Form1041 => ({
+  ...k1,
+  estateTrustName: `trust ${idx}`,
+  estateTrustEin: '666666666'
+})
+
 export const anonymizeInformation = (info: Information): Information => ({
   ...info,
   f1098es: info.f1098es.map(anonymizeF1098e),
@@ -148,7 +168,9 @@ export const anonymizeInformation = (info: Information): Information => ({
   taxPayer: anonymizeTaxPayer(info.taxPayer),
   w2s: info.w2s.map(anonymizeW2),
   realEstate: info.realEstate.map(anonymizeRealEstate),
-  scheduleK1Form1065s: info.scheduleK1Form1065s.map(anonymizeK1)
+  scheduleK1Form1065s: info.scheduleK1Form1065s.map(anonymizeK1),
+  scheduleK1Form1120Ss: info.scheduleK1Form1120Ss.map(anonymizeK1Form1120S),
+  scheduleK1Form1041s: info.scheduleK1Form1041s.map(anonymizeK1Form1041)
 })
 
 export default (input: YearsTaxesState): YearsTaxesState => ({
