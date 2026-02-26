@@ -110,8 +110,8 @@ describe('AMT', () => {
       {
         name: 'ESPP Transfer',
         personRole: PersonRole.PRIMARY,
-        fmvOnGrantDate: 50,
-        fmvOnExerciseDate: 80,
+        fmvPerShareOnGrant: 50,
+        fmvPerShareOnExercise: 80,
         exercisePricePerShare: 42.5,
         numShares: 100
       }
@@ -129,8 +129,8 @@ describe('AMT', () => {
       {
         name: 'ESPP Transfer',
         personRole: PersonRole.PRIMARY,
-        fmvOnGrantDate: 50,
-        fmvOnExerciseDate: 80,
+        fmvPerShareOnGrant: 50,
+        fmvPerShareOnExercise: 80,
         exercisePricePerShare: 42.5,
         numShares: 100
       }

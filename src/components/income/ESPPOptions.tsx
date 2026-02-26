@@ -29,8 +29,8 @@ import { intentionallyFloat } from 'ustaxes/core/util'
 interface F3922UserInput {
   name: string
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
-  fmvOnGrantDate?: string
-  fmvOnExerciseDate?: string
+  fmvPerShareOnGrant?: string
+  fmvPerShareOnExercise?: string
   exercisePricePerShare?: string
   numShares?: string
 }
@@ -38,8 +38,8 @@ interface F3922UserInput {
 const blankUserInput: F3922UserInput = {
   name: '',
   personRole: PersonRole.PRIMARY,
-  fmvOnGrantDate: '',
-  fmvOnExerciseDate: '',
+  fmvPerShareOnGrant: '',
+  fmvPerShareOnExercise: '',
   exercisePricePerShare: '',
   numShares: ''
 }
@@ -48,8 +48,8 @@ const toUserInput = (f: F3922): F3922UserInput => ({
   ...blankUserInput,
   name: f.name,
   personRole: f.personRole,
-  fmvOnGrantDate: f.fmvOnGrantDate.toString(),
-  fmvOnExerciseDate: f.fmvOnExerciseDate.toString(),
+  fmvPerShareOnGrant: f.fmvPerShareOnGrant.toString(),
+  fmvPerShareOnExercise: f.fmvPerShareOnExercise.toString(),
   exercisePricePerShare: f.exercisePricePerShare.toString(),
   numShares: f.numShares.toString()
 })
@@ -58,8 +58,8 @@ const toF3922 = (input: F3922UserInput): F3922 | undefined => {
   const {
     name,
     personRole,
-    fmvOnGrantDate,
-    fmvOnExerciseDate,
+    fmvPerShareOnGrant,
+    fmvPerShareOnExercise,
     exercisePricePerShare,
     numShares
   } = input
@@ -69,8 +69,8 @@ const toF3922 = (input: F3922UserInput): F3922 | undefined => {
   return {
     name,
     personRole,
-    fmvOnGrantDate: Number(fmvOnGrantDate),
-    fmvOnExerciseDate: Number(fmvOnExerciseDate),
+    fmvPerShareOnGrant: Number(fmvPerShareOnGrant),
+    fmvPerShareOnExercise: Number(fmvPerShareOnExercise),
     exercisePricePerShare: Number(exercisePricePerShare),
     numShares: Number(numShares)
   }
@@ -135,7 +135,7 @@ export const ESPPOptions = (): ReactElement => {
           <span>
             {f3922.numShares} shares @{' '}
             <Currency plain={true} value={f3922.exercisePricePerShare} />;{' '}
-            <Currency plain={true} value={f3922.fmvOnExerciseDate} /> FMV
+            <Currency plain={true} value={f3922.fmvPerShareOnExercise} /> FMV
           </span>
         )
       }}
@@ -147,12 +147,12 @@ export const ESPPOptions = (): ReactElement => {
         <LabeledInput
           label="FMV per share on grant date"
           patternConfig={Patterns.currency}
-          name="fmvOnGrantDate"
+          name="fmvPerShareOnGrant"
         />
         <LabeledInput
           label="FMV per share on exercise date"
           patternConfig={Patterns.currency}
-          name="fmvOnExerciseDate"
+          name="fmvPerShareOnExercise"
         />
         <LabeledInput
           label="Exercise price per share"

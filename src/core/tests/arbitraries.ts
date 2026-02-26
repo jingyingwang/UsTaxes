@@ -262,13 +262,13 @@ const f3922: Arbitrary<types.F3922> = fc
     posCurrency(100),
     fc.integer({ min: 1, max: 500 })
   )
-  .map(([name, exercisePricePerShare, fmvOnGrantDate, numShares]) => {
-    const fmvOnExerciseDate = fmvOnGrantDate + 1
+  .map(([name, exercisePricePerShare, fmvPerShareOnGrant, numShares]) => {
+    const fmvPerShareOnExercise = fmvPerShareOnGrant + 1
     return {
       name,
       personRole: types.PersonRole.PRIMARY,
-      fmvOnGrantDate,
-      fmvOnExerciseDate,
+      fmvPerShareOnGrant,
+      fmvPerShareOnExercise,
       exercisePricePerShare,
       numShares
     }

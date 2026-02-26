@@ -453,8 +453,8 @@ export interface F3921 {
 export interface F3922 {
   name: string
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
-  fmvOnGrantDate: number // Box 3: FMV per share on date of grant
-  fmvOnExerciseDate: number // Box 4: FMV per share on date of exercise
+  fmvPerShareOnGrant: number // Box 3: FMV per share on date of grant
+  fmvPerShareOnExercise: number // Box 4: FMV per share on date of exercise
   exercisePricePerShare: number // Box 5: Exercise price paid per share
   numShares: number // Box 6: Number of shares transferred
 }
