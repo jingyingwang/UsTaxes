@@ -50,6 +50,28 @@ export const questions: Question[] = [
     (s: Information) => s.questions.FINCEN_114 ?? false
   ),
   qr(
+    'FORM_8938_REQUIRED',
+    'Did you have specified foreign financial assets that exceeded the Form 8938 (FATCA) threshold ($50,000 if living in the U.S., $200,000 if living abroad)?'
+  ),
+  q(
+    'FORM_8938_ASSET_CATEGORIES',
+    'List the categories of specified foreign financial assets you held (for example: foreign bank or brokerage accounts, foreign stocks/securities, foreign partnership interests, foreign trusts/estates, or foreign retirement/pension accounts)',
+    'string',
+    (s: Information) => s.questions.FORM_8938_REQUIRED ?? false
+  ),
+  q(
+    'FORM_8938_MAX_VALUE',
+    'Enter the maximum value of all specified foreign financial assets during the tax year (in USD)',
+    'string',
+    (s: Information) => s.questions.FORM_8938_REQUIRED ?? false
+  ),
+  q(
+    'FORM_8938_INCOME_REPORTED',
+    'List the income types from these assets reported on your return (interest, dividends, capital gains, rent/royalties, other)',
+    'string',
+    (s: Information) => s.questions.FORM_8938_REQUIRED ?? false
+  ),
+  qr(
     'FOREIGN_TRUST_RELATIONSHIP',
     'During this tax year, did you receive a distribution from, or were you the grantor of, or a transferor to, a foreign trust?'
   ),

@@ -529,6 +529,10 @@ const questionTagArbs = {
   FOREIGN_ACCOUNT_EXISTS: fc.boolean(),
   FINCEN_114: fc.boolean(),
   FINCEN_114_ACCOUNT_COUNTRY: words,
+  FORM_8938_REQUIRED: fc.boolean(),
+  FORM_8938_ASSET_CATEGORIES: words,
+  FORM_8938_MAX_VALUE: words,
+  FORM_8938_INCOME_REPORTED: words,
   FOREIGN_TRUST_RELATIONSHIP: fc.boolean(),
   LIVE_APART_FROM_SPOUSE: fc.boolean()
 }
