@@ -9,6 +9,7 @@ import {
 } from 'ustaxes/core/data'
 import federalBrackets, { CURRENT_YEAR } from '../data/federal'
 import F4972 from './F4972'
+import F5329 from './F5329'
 import F5695 from './F5695'
 import F8814 from './F8814'
 import F8888 from './F8888'
@@ -88,6 +89,8 @@ export default class F1040 extends F1040Base {
   f4797?: F4797
   f4952?: F4952
   f4972?: F4972
+  f5329: F5329
+  f5329Spouse?: F5329
   f5695?: F5695
   f6251: F6251
   f6781: F6781
@@ -148,6 +151,11 @@ export default class F1040 extends F1040Base {
     this.f8606 = new F8606(this, PersonRole.PRIMARY)
     if (this.info.taxPayer.spouse) {
       this.f8606Spouse = new F8606(this, PersonRole.SPOUSE)
+    }
+
+    this.f5329 = new F5329(this, PersonRole.PRIMARY)
+    if (this.info.taxPayer.spouse) {
+      this.f5329Spouse = new F5329(this, PersonRole.SPOUSE)
     }
 
     this.f8959 = new F8959(this)
@@ -212,6 +220,8 @@ export default class F1040 extends F1040Base {
       this.f4797,
       this.f4952,
       this.f4972,
+      this.f5329,
+      this.f5329Spouse,
       this.f5695,
       this.f6251,
       this.f6781,
