@@ -41,6 +41,7 @@ import HealthSavingsAccounts from './savingsAccounts/healthSavingsAccounts'
 import IRA from './savingsAccounts/IRA'
 import OtherInvestments from './income/OtherInvestments'
 import { StockOptions } from './income/StockOptions'
+import { ESPPOptions } from './income/ESPPOptions'
 import { PartnershipIncome } from './income/PartnershipIncome'
 import { TaxYear } from 'ustaxes/core/data'
 import { AdvanceChildTaxCredit } from './Y2021/AdvanceChildTaxCredit'
@@ -131,6 +132,7 @@ export const drawerSections: Section[] = [
         <OtherInvestments />
       ),
       item('Stock options', Urls.income.stockOptions, <StockOptions />),
+      item('ESPP transfers', Urls.income.esppOptions, <ESPPOptions />),
       item(
         'Partnership Income',
         Urls.income.partnershipIncome,

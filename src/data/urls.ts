@@ -15,6 +15,7 @@ const Urls = {
     realEstate: '/income/realestate',
     otherInvestments: '/income/otherinvestments',
     stockOptions: '/income/stockoptions',
+    esppOptions: '/income/esppoptions',
     partnershipIncome: '/income/partnershipincome'
   },
   payments: {

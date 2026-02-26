@@ -18,6 +18,7 @@ import {
   Asset,
   ItemizedDeductions,
   F3921,
+  F3922,
   ScheduleK1Form1065,
   ScheduleCInput,
   Form6781Input,
@@ -40,6 +41,7 @@ import {
   EditIraAction,
   EditAssetAction,
   EditF3921Action,
+  EditF3922Action,
   EditScheduleCAction,
   EditScheduleK1Form1065Action,
   EditForm6781Action
@@ -94,6 +96,9 @@ export enum ActionName {
   ADD_F3921 = 'F3921/ADD',
   EDIT_F3921 = 'F3921/EDIT',
   REMOVE_F3921 = 'F3921/REMOVE',
+  ADD_F3922 = 'F3922/ADD',
+  EDIT_F3922 = 'F3922/EDIT',
+  REMOVE_F3922 = 'F3922/REMOVE',
   ADD_SCHEDULE_C = 'SCHEDULE_C/ADD',
   EDIT_SCHEDULE_C = 'SCHEDULE_C/EDIT',
   REMOVE_SCHEDULE_C = 'SCHEDULE_C/REMOVE',
@@ -176,6 +181,9 @@ type RemoveAssets = Save<typeof ActionName.REMOVE_ASSETS, number[]>
 type AddF3921 = Save<typeof ActionName.ADD_F3921, F3921>
 type EditF3921 = Save<typeof ActionName.EDIT_F3921, EditF3921Action>
 type RemoveF3921 = Save<typeof ActionName.REMOVE_F3921, number>
+type AddF3922 = Save<typeof ActionName.ADD_F3922, F3922>
+type EditF3922 = Save<typeof ActionName.EDIT_F3922, EditF3922Action>
+type RemoveF3922 = Save<typeof ActionName.REMOVE_F3922, number>
 type AddScheduleC = Save<typeof ActionName.ADD_SCHEDULE_C, ScheduleCInput>
 type EditScheduleC = Save<
   typeof ActionName.EDIT_SCHEDULE_C,
@@ -249,6 +257,9 @@ export type Actions =
   | AddF3921
   | EditF3921
   | RemoveF3921
+  | AddF3922
+  | EditF3922
+  | RemoveF3922
   | AddScheduleC
   | EditScheduleC
   | RemoveScheduleC
@@ -529,6 +540,19 @@ export const editF3921: ActionCreator<EditF3921Action> = makeActionCreator(
 
 export const removeF3921: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_F3921,
+  indexValidator
+)
+
+export const addF3922: ActionCreator<F3922> = makeActionCreator(
+  ActionName.ADD_F3922
+)
+
+export const editF3922: ActionCreator<EditF3922Action> = makeActionCreator(
+  ActionName.EDIT_F3922
+)
+
+export const removeF3922: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_F3922,
   indexValidator
 )
 

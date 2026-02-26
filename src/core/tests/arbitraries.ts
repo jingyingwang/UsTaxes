@@ -255,6 +255,25 @@ const f3921: Arbitrary<types.F3921> = fc
     }
   })
 
+const f3922: Arbitrary<types.F3922> = fc
+  .tuple(
+    maxWords(2),
+    posCurrency(100),
+    posCurrency(100),
+    fc.integer({ min: 1, max: 500 })
+  )
+  .map(([name, exercisePricePerShare, fmvOnGrantDate, numShares]) => {
+    const fmvOnExerciseDate = fmvOnGrantDate + 1
+    return {
+      name,
+      personRole: types.PersonRole.PRIMARY,
+      fmvOnGrantDate,
+      fmvOnExerciseDate,
+      exercisePricePerShare,
+      numShares
+    }
+  })
+
 const scheduleCExpenseTypeName: Arbitrary<types.ScheduleCExpenseTypeName> =
   fc.constantFrom(...util.enumKeys(types.ScheduleCExpenseType))
 
@@ -766,6 +785,7 @@ export class Arbitraries {
         fc.array(estTax),
         fc.array(f1098e),
         fc.array(f3921),
+        fc.array(f3922),
         fc.array(scheduleCInput),
         fc.array(scheduleK1Form1065),
         fc.array(form6781Input, { maxLength: 2 }),
@@ -786,6 +806,7 @@ export class Arbitraries {
           estimatedTaxes,
           f1098es,
           f3921s,
+          f3922s,
           scheduleCInputs,
           scheduleK1Form1065s,
           form6781,
@@ -804,6 +825,7 @@ export class Arbitraries {
           estimatedTaxes,
           f1098es,
           f3921s,
+          f3922s,
           scheduleCInputs,
           scheduleK1Form1065s,
           form6781,

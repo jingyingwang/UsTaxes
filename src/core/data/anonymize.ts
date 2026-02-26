@@ -1,6 +1,7 @@
 import { YearsTaxesState } from 'ustaxes/redux'
 import {
   F3921,
+  F3922,
   Ira,
   Supported1099,
   Dependent,
@@ -81,6 +82,11 @@ const anonymizeF3921 = (f: F3921, idx: number): F3921 => ({
   name: `3921 name ${idx}`
 })
 
+const anonymizeF3922 = (f: F3922, idx: number): F3922 => ({
+  ...f,
+  name: `3922 name ${idx}`
+})
+
 const anonymizeIra = (ira: Ira, idx: number): Ira => ({
   ...ira,
   payer: `ira payer ${idx}`
@@ -128,6 +134,7 @@ export const anonymizeInformation = (info: Information): Information => ({
   f1098es: info.f1098es.map(anonymizeF1098e),
   f1099s: info.f1099s.map(anonymizeF1099),
   f3921s: info.f3921s.map(anonymizeF3921),
+  f3922s: info.f3922s.map(anonymizeF3922),
   individualRetirementArrangements:
     info.individualRetirementArrangements.map(anonymizeIra),
   refund:

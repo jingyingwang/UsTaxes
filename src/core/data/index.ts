@@ -448,6 +448,17 @@ export interface F3921 {
   numShares: number
 }
 
+// IRS Form 3922: Transfer of Stock Acquired Through an Employee Stock Purchase Plan
+// See https://www.irs.gov/forms-pubs/about-form-3922
+export interface F3922 {
+  name: string
+  personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
+  fmvOnGrantDate: number // Box 3: FMV per share on date of grant
+  fmvOnExerciseDate: number // Box 4: FMV per share on date of exercise
+  exercisePricePerShare: number // Box 5: Exercise price paid per share
+  numShares: number // Box 6: Number of shares transferred
+}
+
 // Schedule C expense categories (Part II, lines 8-27)
 export enum ScheduleCExpenseType {
   advertising,
@@ -664,6 +675,7 @@ export interface Information<D = Date> {
   estimatedTaxes: EstimatedTaxPayments[]
   f1098es: F1098e[]
   f3921s: F3921[]
+  f3922s: F3922[]
   scheduleCInputs: ScheduleCInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
   form6781: Form6781Input[]
@@ -743,6 +755,7 @@ export type EditHSAAction = ArrayItemEditAction<HealthSavingsAccountDateString>
 export type EditIraAction = ArrayItemEditAction<Ira>
 export type EditAssetAction = ArrayItemEditAction<Asset<Date>>
 export type EditF3921Action = ArrayItemEditAction<F3921>
+export type EditF3922Action = ArrayItemEditAction<F3922>
 export type EditScheduleCAction = ArrayItemEditAction<ScheduleCInput>
 export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>

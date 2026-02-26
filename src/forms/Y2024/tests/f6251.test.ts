@@ -19,6 +19,7 @@ const baseInformation: ValidatedInformation = {
     }
   ],
   credits: [],
+  f3922s: [],
   scheduleCInputs: [],
   scheduleK1Form1065s: [],
   form6781: [],
@@ -100,5 +101,45 @@ describe('AMT', () => {
     const f6251 = new F6251(f1040)
     expect(f6251.isNeeded()).toEqual(false)
     expect(Math.round(f6251.l11())).toEqual(0)
+  })
+
+  it('ESPP (F3922) should NOT affect AMT adjustment', () => {
+    const information = cloneDeep(baseInformation)
+    information.f3921s = []
+    information.f3922s = [
+      {
+        name: 'ESPP Transfer',
+        personRole: PersonRole.PRIMARY,
+        fmvOnGrantDate: 50,
+        fmvOnExerciseDate: 80,
+        exercisePricePerShare: 42.5,
+        numShares: 100
+      }
+    ]
+
+    const f1040 = new F1040(information, [])
+    const f6251 = new F6251(f1040)
+    // ESPP discount element does NOT create AMT adjustment (only ISOs do)
+    expect(f6251.l2i()).toEqual(0)
+  })
+
+  it('ISO and ESPP combined: only ISO triggers AMT', () => {
+    const information = cloneDeep(baseInformation)
+    information.f3922s = [
+      {
+        name: 'ESPP Transfer',
+        personRole: PersonRole.PRIMARY,
+        fmvOnGrantDate: 50,
+        fmvOnExerciseDate: 80,
+        exercisePricePerShare: 42.5,
+        numShares: 100
+      }
+    ]
+
+    const f1040 = new F1040(information, [])
+    const f6251 = new F6251(f1040)
+    // Only ISO contributes to AMT: (101 - 1) * 1000 = 100000
+    expect(f6251.l2i()).toEqual(100000)
+    expect(f6251.isNeeded()).toEqual(true)
   })
 })

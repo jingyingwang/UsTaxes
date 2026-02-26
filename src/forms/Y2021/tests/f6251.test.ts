@@ -18,6 +18,7 @@ const baseInformation: ValidatedInformation = {
     }
   ],
   credits: [],
+  f3922s: [],
   scheduleCInputs: [],
   scheduleK1Form1065s: [],
   form6781: [],
