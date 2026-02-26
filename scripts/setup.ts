@@ -69,7 +69,9 @@ const moduleCode = standaloneCode(ajv, {
   CapitalLossCarryforward: '#/definitions/CapitalLossCarryforward',
   CostBasisMethod: '#/definitions/CostBasisMethod',
   Form6781Input: '#/definitions/Form6781Input',
-  EditForm6781Action: '#/definitions/EditForm6781Action'
+  EditForm6781Action: '#/definitions/EditForm6781Action',
+  ScheduleFInput: '#/definitions/ScheduleFInput',
+  EditScheduleFAction: '#/definitions/EditScheduleFAction'
 })
 
 fs.writeFileSync(outputPath, moduleCode)

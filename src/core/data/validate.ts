@@ -103,3 +103,7 @@ export const form6781 =
   fns.Form6781Input as ValidateFunction<types.Form6781Input>
 export const editForm6781Action =
   fns.EditForm6781Action as ValidateFunction<types.EditForm6781Action>
+export const scheduleF =
+  fns.ScheduleFInput as ValidateFunction<types.ScheduleFInput>
+export const editScheduleFAction =
+  fns.EditScheduleFAction as ValidateFunction<types.EditScheduleFAction>

@@ -18,6 +18,7 @@ export default class Schedule1 extends F1040Attachment {
     (this.f1040.scheduleC?.isNeeded() ?? false) ||
     this.f1040.scheduleE.isNeeded() ||
     (this.f1040.f4684.toSchedule1Line4() ?? 0) !== 0 ||
+    this.f1040.scheduleFs.length > 0 ||
     (this.f1040.studentLoanInterestWorksheet !== undefined &&
       this.f1040.studentLoanInterestWorksheet.notMFS() &&
       this.f1040.studentLoanInterestWorksheet.isNotDependent()) ||
@@ -31,7 +32,7 @@ export default class Schedule1 extends F1040Attachment {
   l3 = (): number | undefined => this.f1040.scheduleC?.totalL31()
   l4 = (): number | undefined => this.f1040.f4684.toSchedule1Line4()
   l5 = (): number | undefined => this.f1040.scheduleE.l41()
-  l6 = (): number | undefined => undefined
+  l6 = (): number | undefined => this.f1040.netFarmProfit()
   l7 = (): number | undefined => undefined
   l8a = (): number | undefined => undefined
   l8b = (): number | undefined => undefined

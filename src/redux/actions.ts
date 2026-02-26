@@ -23,6 +23,7 @@ import {
   ScheduleK1Form1065,
   ScheduleCInput,
   Form6781Input,
+  ScheduleFInput,
   TaxYear,
   HealthSavingsAccountDateString,
   InformationDateString,
@@ -45,6 +46,7 @@ import {
   EditF3921Action,
   EditF3922Action,
   EditScheduleCAction,
+  EditScheduleFAction,
   EditScheduleK1Form1065Action,
   EditForm6781Action
 } from 'ustaxes/core/data'
@@ -107,6 +109,9 @@ export enum ActionName {
   ADD_SCHEDULE_C = 'SCHEDULE_C/ADD',
   EDIT_SCHEDULE_C = 'SCHEDULE_C/EDIT',
   REMOVE_SCHEDULE_C = 'SCHEDULE_C/REMOVE',
+  ADD_SCHEDULE_F = 'SCHEDULE_F/ADD',
+  EDIT_SCHEDULE_F = 'SCHEDULE_F/EDIT',
+  REMOVE_SCHEDULE_F = 'SCHEDULE_F/REMOVE',
   ADD_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/ADD',
   EDIT_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/EDIT',
   REMOVE_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/REMOVE',
@@ -208,6 +213,12 @@ type EditScheduleC = Save<
   EditScheduleCAction
 >
 type RemoveScheduleC = Save<typeof ActionName.REMOVE_SCHEDULE_C, number>
+type AddScheduleF = Save<typeof ActionName.ADD_SCHEDULE_F, ScheduleFInput>
+type EditScheduleF = Save<
+  typeof ActionName.EDIT_SCHEDULE_F,
+  EditScheduleFAction
+>
+type RemoveScheduleF = Save<typeof ActionName.REMOVE_SCHEDULE_F, number>
 type AddScheduleK1Form1065 = Save<
   typeof ActionName.ADD_SCHEDULE_K1_F1065,
   ScheduleK1Form1065
@@ -285,6 +296,9 @@ export type Actions =
   | AddScheduleC
   | EditScheduleC
   | RemoveScheduleC
+  | AddScheduleF
+  | EditScheduleF
+  | RemoveScheduleF
   | AddScheduleK1Form1065
   | EditScheduleK1Form1065
   | RemoveScheduleK1Form1065
@@ -600,6 +614,19 @@ export const editScheduleC: ActionCreator<EditScheduleCAction> =
 
 export const removeScheduleC: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_SCHEDULE_C,
+  indexValidator
+)
+
+export const addScheduleF: ActionCreator<ScheduleFInput> = makeActionCreator(
+  ActionName.ADD_SCHEDULE_F,
+  validators.scheduleF
+)
+
+export const editScheduleF: ActionCreator<EditScheduleFAction> =
+  makeActionCreator(ActionName.EDIT_SCHEDULE_F)
+
+export const removeScheduleF: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_SCHEDULE_F,
   indexValidator
 )
 
