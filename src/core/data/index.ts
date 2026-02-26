@@ -162,11 +162,47 @@ export const PlanType1099Texts: { [k in keyof typeof PlanType1099]: string } = {
   Pension: '401(k), 403(b), or 457(b) plan'
 }
 
+// IRS Form 1099-R Box 7 distribution codes
+export enum DistributionCode {
+  EARLY_NO_EXCEPTION = '1', // Early distribution, no known exception
+  EARLY_EXCEPTION = '2', // Early distribution, exception applies
+  DISABILITY = '3', // Disability
+  DEATH = '4', // Death
+  NORMAL = '7', // Normal distribution
+  EXCESS_CONTRIBUTIONS = '8', // Excess contributions plus earnings/excess deferrals
+  COST_OF_LIFE_INSURANCE = '9', // Cost of current life insurance protection
+  ROLLOVER = 'G', // Direct rollover to qualified plan, 403(b), IRA, etc.
+  ROLLOVER_ROTH = 'H' // Direct rollover of Roth account to Roth IRA
+}
+
+export const DistributionCodeTexts: {
+  [k in keyof typeof DistributionCode]: string
+} = {
+  EARLY_NO_EXCEPTION: '1 - Early distribution, no known exception',
+  EARLY_EXCEPTION: '2 - Early distribution, exception applies',
+  DISABILITY: '3 - Disability',
+  DEATH: '4 - Death',
+  NORMAL: '7 - Normal distribution',
+  EXCESS_CONTRIBUTIONS:
+    '8 - Excess contributions plus earnings/excess deferrals',
+  COST_OF_LIFE_INSURANCE: '9 - Cost of current life insurance protection',
+  ROLLOVER: 'G - Direct rollover to qualified plan, 403(b), IRA',
+  ROLLOVER_ROTH: 'H - Direct rollover of Roth account to Roth IRA'
+}
+
 export interface F1099RData {
-  grossDistribution: number
-  taxableAmount: number
-  federalIncomeTaxWithheld: number
+  grossDistribution: number // Box 1
+  taxableAmount: number // Box 2a
+  federalIncomeTaxWithheld: number // Box 4
   planType: PlanType1099
+  distributionCode?: DistributionCode // Box 7
+  capitalGain?: number // Box 3
+  employeeContributions?: number // Box 5
+  taxableAmountNotDetermined?: boolean // Box 2b checkbox
+  isTotalDistribution?: boolean // Box 2b checkbox
+  isIraSepSimple?: boolean // Box 7 IRA/SEP/SIMPLE checkbox
+  stateTaxWithheld?: number // Box 12
+  stateDistribution?: number // Box 14
 }
 
 export interface F1099SSAData {

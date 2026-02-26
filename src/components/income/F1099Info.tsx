@@ -13,12 +13,15 @@ import {
   Supported1099,
   Income1099Type,
   PlanType1099,
-  PlanType1099Texts
+  PlanType1099Texts,
+  DistributionCode,
+  DistributionCodeTexts
 } from 'ustaxes/core/data'
 import {
   Currency,
   formatSSID,
   GenericLabeledDropdown,
+  LabeledCheckbox,
   LabeledInput,
   boxLabel
 } from 'ustaxes/components/input'
@@ -48,7 +51,7 @@ const showIncome = (a: Supported1099): ReactElement => {
     case Income1099Type.R: {
       return (
         <span>
-          Plan Type: {a.form.planType}
+          Plan Type: {PlanType1099Texts[a.form.planType]}
           <br />
           Gross Distribution: <Currency value={a.form.grossDistribution} />
           <br />
@@ -56,6 +59,12 @@ const showIncome = (a: Supported1099): ReactElement => {
           <br />
           Federal Income Tax Withheld:{' '}
           <Currency value={a.form.federalIncomeTaxWithheld} />
+          {a.form.distributionCode !== undefined && (
+            <>
+              <br />
+              Distribution Code: {a.form.distributionCode}
+            </>
+          )}
         </span>
       )
     }
@@ -96,6 +105,14 @@ interface F1099UserInput {
   taxableAmount: string | number
   federalIncomeTaxWithheld: string | number
   RPlanType: PlanType1099
+  RDistributionCode: DistributionCode
+  RCapitalGain: string | number
+  REmployeeContributions: string | number
+  RTaxableAmountNotDetermined: boolean
+  RIsTotalDistribution: boolean
+  RIsIraSepSimple: boolean
+  RStateTaxWithheld: string | number
+  RStateDistribution: string | number
   // SSA fields
   // benefitsPaid: string | number
   // benefitsRepaid: string | number
@@ -120,6 +137,14 @@ const blankUserInput: F1099UserInput = {
   taxableAmount: '',
   federalIncomeTaxWithheld: '',
   RPlanType: PlanType1099.Pension,
+  RDistributionCode: DistributionCode.NORMAL,
+  RCapitalGain: '',
+  REmployeeContributions: '',
+  RTaxableAmountNotDetermined: false,
+  RIsTotalDistribution: false,
+  RIsIraSepSimple: false,
+  RStateTaxWithheld: '',
+  RStateDistribution: '',
   // SSA fields
   // benefitsPaid: '',
   // benefitsRepaid: '',
@@ -146,7 +171,21 @@ const toUserInput = (f: Supported1099): F1099UserInput => ({
         return f.form
       }
       case Income1099Type.R: {
-        return f.form
+        return {
+          grossDistribution: f.form.grossDistribution,
+          taxableAmount: f.form.taxableAmount,
+          federalIncomeTaxWithheld: f.form.federalIncomeTaxWithheld,
+          RPlanType: f.form.planType,
+          RDistributionCode: f.form.distributionCode ?? DistributionCode.NORMAL,
+          RCapitalGain: f.form.capitalGain ?? '',
+          REmployeeContributions: f.form.employeeContributions ?? '',
+          RTaxableAmountNotDetermined:
+            f.form.taxableAmountNotDetermined ?? false,
+          RIsTotalDistribution: f.form.isTotalDistribution ?? false,
+          RIsIraSepSimple: f.form.isIraSepSimple ?? false,
+          RStateTaxWithheld: f.form.stateTaxWithheld ?? '',
+          RStateDistribution: f.form.stateDistribution ?? ''
+        }
       }
       case Income1099Type.SSA: {
         return f.form
@@ -195,6 +234,10 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
       }
     }
     case Income1099Type.R: {
+      const capitalGain = Number(input.RCapitalGain)
+      const employeeContributions = Number(input.REmployeeContributions)
+      const stateTaxWithheld = Number(input.RStateTaxWithheld)
+      const stateDistribution = Number(input.RStateDistribution)
       return {
         payer: input.payer,
         personRole: input.personRole ?? PersonRole.PRIMARY,
@@ -203,7 +246,15 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
           grossDistribution: Number(input.grossDistribution),
           taxableAmount: Number(input.taxableAmount),
           federalIncomeTaxWithheld: Number(input.federalIncomeTaxWithheld),
-          planType: PlanType1099.Pension
+          planType: input.RPlanType,
+          distributionCode: input.RDistributionCode,
+          ...(capitalGain > 0 ? { capitalGain } : {}),
+          ...(employeeContributions > 0 ? { employeeContributions } : {}),
+          taxableAmountNotDetermined: input.RTaxableAmountNotDetermined,
+          isTotalDistribution: input.RIsTotalDistribution,
+          isIraSepSimple: input.RIsIraSepSimple,
+          ...(stateTaxWithheld > 0 ? { stateTaxWithheld } : {}),
+          ...(stateDistribution > 0 ? { stateDistribution } : {})
         }
       }
     }
@@ -345,18 +396,65 @@ export default function F1099Info(): ReactElement {
         patternConfig={Patterns.currency}
         name="taxableAmount"
       />
+      <LabeledCheckbox
+        label="Box 2b - Taxable amount not determined"
+        name="RTaxableAmountNotDetermined"
+      />
+      <LabeledCheckbox
+        label="Box 2b - Total distribution"
+        name="RIsTotalDistribution"
+      />
+      <LabeledInput
+        label={boxLabel('3', 'Capital Gain (included in Box 2a)')}
+        patternConfig={Patterns.currency}
+        name="RCapitalGain"
+      />
       <LabeledInput
         label={boxLabel('4', 'Federal Income Tax Withheld')}
         patternConfig={Patterns.currency}
         name="federalIncomeTaxWithheld"
       />
+      <LabeledInput
+        label={boxLabel(
+          '5',
+          'Employee Contributions / Designated Roth Contributions'
+        )}
+        patternConfig={Patterns.currency}
+        name="REmployeeContributions"
+      />
+      <GenericLabeledDropdown<DistributionCode, F1099UserInput>
+        label="Box 7 - Distribution Code"
+        dropDownData={Object.values(DistributionCode)}
+        valueMapping={(x) => x}
+        keyMapping={(_, i) => i}
+        textMapping={(code) =>
+          DistributionCodeTexts[
+            Object.keys(DistributionCode).find(
+              (k) =>
+                DistributionCode[k as keyof typeof DistributionCode] === code
+            ) as keyof typeof DistributionCode
+          ]
+        }
+        name="RDistributionCode"
+      />
+      <LabeledCheckbox label="Box 7 - IRA/SEP/SIMPLE" name="RIsIraSepSimple" />
       <GenericLabeledDropdown<PlanType1099, F1099UserInput>
-        label="Type of 1099-R"
+        label="Type of Plan"
         dropDownData={Object.values(PlanType1099)}
         valueMapping={(x) => x}
         keyMapping={(_, i) => i}
         textMapping={(status) => PlanType1099Texts[status]}
         name="RPlanType"
+      />
+      <LabeledInput
+        label={boxLabel('12', 'State Tax Withheld')}
+        patternConfig={Patterns.currency}
+        name="RStateTaxWithheld"
+      />
+      <LabeledInput
+        label={boxLabel('14', 'State Distribution')}
+        patternConfig={Patterns.currency}
+        name="RStateDistribution"
       />
     </Grid>
   )
