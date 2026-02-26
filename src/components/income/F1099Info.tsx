@@ -29,7 +29,25 @@ import { intentionallyFloat } from 'ustaxes/core/util'
 const showIncome = (a: Supported1099): ReactElement => {
   switch (a.type) {
     case Income1099Type.INT: {
-      return <Currency value={a.form.income} />
+      return (
+        <span>
+          Interest Income: <Currency value={a.form.income} />
+          {(a.form.taxExemptInterest ?? 0) > 0 && (
+            <>
+              <br />
+              Tax-Exempt Interest:{' '}
+              <Currency value={a.form.taxExemptInterest ?? 0} />
+            </>
+          )}
+          {(a.form.earlyWithdrawalPenalty ?? 0) > 0 && (
+            <>
+              <br />
+              Early Withdrawal Penalty:{' '}
+              <Currency value={a.form.earlyWithdrawalPenalty ?? 0} />
+            </>
+          )}
+        </span>
+      )
     }
     case Income1099Type.B: {
       const ltg = a.form.longTermProceeds - a.form.longTermCostBasis
@@ -43,7 +61,19 @@ const showIncome = (a: Supported1099): ReactElement => {
       )
     }
     case Income1099Type.DIV: {
-      return <Currency value={a.form.dividends} />
+      return (
+        <span>
+          Total Dividends: <Currency value={a.form.dividends} />
+          <br />
+          Qualified: <Currency value={a.form.qualifiedDividends} />
+          {(a.form.foreignTaxPaid ?? 0) > 0 && (
+            <>
+              <br />
+              Foreign Tax Paid: <Currency value={a.form.foreignTaxPaid ?? 0} />
+            </>
+          )}
+        </span>
+      )
     }
     case Income1099Type.R: {
       return (
@@ -81,6 +111,8 @@ interface F1099UserInput {
   payer: string
   // Int fields
   interest: string | number
+  taxExemptInterest: string | number
+  earlyWithdrawalPenalty: string | number
   // B Fields
   shortTermProceeds: string | number
   shortTermCostBasis: string | number
@@ -90,6 +122,7 @@ interface F1099UserInput {
   dividends: string | number
   qualifiedDividends: string | number
   totalCapitalGainsDistributions: string | number
+  foreignTaxPaid: string | number
   personRole?: PersonRole.PRIMARY | PersonRole.SPOUSE
   // R fields
   grossDistribution: string | number
@@ -106,6 +139,8 @@ const blankUserInput: F1099UserInput = {
   formType: undefined,
   payer: '',
   interest: '',
+  taxExemptInterest: '',
+  earlyWithdrawalPenalty: '',
   // B Fields
   shortTermProceeds: '',
   shortTermCostBasis: '',
@@ -115,6 +150,7 @@ const blankUserInput: F1099UserInput = {
   dividends: '',
   qualifiedDividends: '',
   totalCapitalGainsDistributions: '',
+  foreignTaxPaid: '',
   // R fields
   grossDistribution: '',
   taxableAmount: '',
@@ -136,14 +172,19 @@ const toUserInput = (f: Supported1099): F1099UserInput => ({
     switch (f.type) {
       case Income1099Type.INT: {
         return {
-          interest: f.form.income
+          interest: f.form.income,
+          taxExemptInterest: f.form.taxExemptInterest ?? '',
+          earlyWithdrawalPenalty: f.form.earlyWithdrawalPenalty ?? ''
         }
       }
       case Income1099Type.B: {
         return f.form
       }
       case Income1099Type.DIV: {
-        return f.form
+        return {
+          ...f.form,
+          foreignTaxPaid: f.form.foreignTaxPaid ?? ''
+        }
       }
       case Income1099Type.R: {
         return f.form
@@ -158,12 +199,16 @@ const toUserInput = (f: Supported1099): F1099UserInput => ({
 const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
   switch (input.formType) {
     case Income1099Type.INT: {
+      const taxExempt = Number(input.taxExemptInterest)
+      const earlyPenalty = Number(input.earlyWithdrawalPenalty)
       return {
         payer: input.payer,
         personRole: input.personRole ?? PersonRole.PRIMARY,
         type: input.formType,
         form: {
-          income: Number(input.interest)
+          income: Number(input.interest),
+          ...(taxExempt > 0 ? { taxExemptInterest: taxExempt } : {}),
+          ...(earlyPenalty > 0 ? { earlyWithdrawalPenalty: earlyPenalty } : {})
         }
       }
     }
@@ -181,6 +226,7 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
       }
     }
     case Income1099Type.DIV: {
+      const foreignTax = Number(input.foreignTaxPaid)
       return {
         payer: input.payer,
         personRole: input.personRole ?? PersonRole.PRIMARY,
@@ -190,7 +236,8 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
           qualifiedDividends: Number(input.qualifiedDividends),
           totalCapitalGainsDistributions: Number(
             input.totalCapitalGainsDistributions
-          )
+          ),
+          ...(foreignTax > 0 ? { foreignTaxPaid: foreignTax } : {})
         }
       }
     }
@@ -262,13 +309,21 @@ export default function F1099Info(): ReactElement {
   const intFields = (
     <Grid container spacing={2}>
       <LabeledInput
-        label={
-          <>
-            <strong>Box 1</strong> - Interest Income
-          </>
-        }
+        label={boxLabel('1', 'Interest Income')}
         patternConfig={Patterns.currency}
         name="interest"
+      />
+      <LabeledInput
+        label={boxLabel('2', 'Early Withdrawal Penalty')}
+        patternConfig={Patterns.currency}
+        name="earlyWithdrawalPenalty"
+        required={false}
+      />
+      <LabeledInput
+        label={boxLabel('8', 'Tax-Exempt Interest')}
+        patternConfig={Patterns.currency}
+        name="taxExemptInterest"
+        required={false}
       />
     </Grid>
   )
@@ -324,6 +379,12 @@ export default function F1099Info(): ReactElement {
         label={boxLabel('2a', 'Total capital gains distributions')}
         patternConfig={Patterns.currency}
         name="totalCapitalGainsDistributions"
+      />
+      <LabeledInput
+        label={boxLabel('7', 'Foreign Tax Paid')}
+        patternConfig={Patterns.currency}
+        name="foreignTaxPaid"
+        required={false}
       />
     </Grid>
   )

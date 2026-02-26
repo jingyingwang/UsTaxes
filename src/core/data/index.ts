@@ -129,12 +129,15 @@ export interface F1099BData {
 
 export interface F1099IntData {
   income: number
+  taxExemptInterest?: number // Box 8
+  earlyWithdrawalPenalty?: number // Box 2
 }
 
 export interface F1099DivData {
   dividends: number
   qualifiedDividends: number
   totalCapitalGainsDistributions: number
+  foreignTaxPaid?: number // Box 7
 }
 /*
  TODO: Add in logic for various different distributions

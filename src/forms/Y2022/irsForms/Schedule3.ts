@@ -1,5 +1,5 @@
 import F1040Attachment from './F1040Attachment'
-import { PersonRole } from 'ustaxes/core/data'
+import { FilingStatus, PersonRole } from 'ustaxes/core/data'
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import { FormTag } from 'ustaxes/core/irsForms/Form'
 import { fica } from '../data/federal'
@@ -47,11 +47,21 @@ export default class Schedule3 extends F1040Attachment {
     return claimableExcessFica
   }
 
-  isNeeded = (): boolean => this.claimableExcessSSTaxWithholding() > 0
+  isNeeded = (): boolean =>
+    this.claimableExcessSSTaxWithholding() > 0 || (this.l1() ?? 0) > 0
 
   deductions = (): number => 0
   // Part I: Nonrefundable credits
-  l1 = (): number | undefined => undefined
+  // Foreign tax credit from 1099-DIV Box 7
+  // Can claim directly (without Form 1116) when total ≤ $300 (single) or $600 (MFJ)
+  l1 = (): number | undefined => {
+    const foreignTax = this.f1040.totalForeignTaxPaid()
+    if (foreignTax <= 0) return undefined
+    const limit =
+      this.f1040.info.taxPayer.filingStatus === FilingStatus.MFJ ? 600 : 300
+    // Only claim directly if under the threshold; otherwise Form 1116 is needed
+    return foreignTax <= limit ? foreignTax : undefined
+  }
   l2 = (): number | undefined => undefined
   l3 = (): number | undefined => this.f1040.f8863?.l19()
   l4 = (): number | undefined => undefined

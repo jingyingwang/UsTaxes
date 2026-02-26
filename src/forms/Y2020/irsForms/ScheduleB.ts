@@ -66,8 +66,11 @@ export default class ScheduleB extends F1040Attachment {
 
   l2 = (): number => sumFields(this.f1040.f1099Ints().map((f) => f.form.income))
 
-  // TODO: Interest from tax exempt savings bonds
-  l3 = (): number | undefined => undefined
+  // Tax-exempt interest from 1099-INT Box 8
+  l3 = (): number | undefined => {
+    const total = this.f1040.totalTaxExemptInterest()
+    return total > 0 ? total : undefined
+  }
 
   l4 = (): number => this.l2() - (this.l3() ?? 0)
 
