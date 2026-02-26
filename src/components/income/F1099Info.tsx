@@ -253,13 +253,13 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
         personRole: input.personRole ?? PersonRole.PRIMARY,
         type: input.formType,
         form: {
-          digitalAssetProceeds: Number(input.digitalAssetProceeds ?? 0),
-          digitalAssetCostBasis: Number(input.digitalAssetCostBasis ?? 0),
-          digitalAssetGainOrLoss: Number(input.digitalAssetGainOrLoss ?? 0),
+          digitalAssetProceeds: Number(input.digitalAssetProceeds),
+          digitalAssetCostBasis: Number(input.digitalAssetCostBasis),
+          digitalAssetGainOrLoss: Number(input.digitalAssetGainOrLoss),
           isLongTerm: input.daIsLongTerm === 'true',
-          washSaleDisallowed: Number(input.daWashSaleDisallowed ?? 0),
+          washSaleDisallowed: Number(input.daWashSaleDisallowed),
           brokerName: input.payer,
-          transactionCount: Number(input.daTransactionCount ?? 0)
+          transactionCount: Number(input.daTransactionCount)
         }
       }
     }

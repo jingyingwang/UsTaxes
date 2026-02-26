@@ -33,7 +33,7 @@ describe('F8949 (Y2025 Enhanced)', () => {
   })
 
   it('should compute wash sale adjustments for replacement purchases within window', async () => {
-    await testKit.with1040Assert((forms, info, assets): Promise<void> => {
+    await testKit.with1040Assert((forms): Promise<void> => {
       const f8949Forms = forms.filter((s) => s.tag === 'f8949')
       for (const form of f8949Forms) {
         const f = form as unknown as F8949
