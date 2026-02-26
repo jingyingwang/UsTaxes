@@ -12,6 +12,7 @@ const Urls = {
   income: {
     w2s: '/income/w2jobinfo',
     f1099s: '/income/f1099s',
+    csvImport: '/income/import',
     realEstate: '/income/realestate',
     otherInvestments: '/income/otherinvestments',
     stockOptions: '/income/stockoptions',

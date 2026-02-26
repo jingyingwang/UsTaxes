@@ -26,6 +26,7 @@ import PrimaryTaxpayer from './TaxPayer'
 import RefundBankAccount from './RefundBankAccount'
 import SpouseAndDependent from './TaxPayer/SpouseAndDependent'
 import F1099Info from './income/F1099Info'
+import CSVImport from './import/CSVImport'
 import EstimatedTaxes from './payments/EstimatedTaxes'
 import RealEstate from './income/RealEstate'
 import GettingStarted from './GettingStarted'
@@ -124,6 +125,7 @@ export const drawerSections: Section[] = [
     items: [
       item('Wages (W2)', Urls.income.w2s, <W2JobInfo />),
       item('Income (1099)', Urls.income.f1099s, <F1099Info />),
+      item('CSV Import', Urls.income.csvImport, <CSVImport />),
       item('Rental income', Urls.income.realEstate, <RealEstate />),
       item(
         'Other investments',
