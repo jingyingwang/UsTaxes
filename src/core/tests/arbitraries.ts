@@ -209,10 +209,53 @@ export const f1099Div: Arbitrary<types.Income1099Div> = fc
     personRole: types.PersonRole.PRIMARY
   }))
 
+export const distributionCode: Arbitrary<types.DistributionCode> =
+  fc.constantFrom(
+    ...util
+      .enumKeys(types.DistributionCode)
+      .map((k) => types.DistributionCode[k])
+  )
+
+export const f1099RData: Arbitrary<types.F1099RData> = fc
+  .tuple(
+    posCurrency(500000), // grossDistribution
+    posCurrency(500000), // taxableAmount
+    posCurrency(100000), // federalIncomeTaxWithheld
+    fc.constantFrom(
+      ...util.enumKeys(types.PlanType1099).map((k) => types.PlanType1099[k])
+    ),
+    distributionCode
+  )
+  .map(
+    ([
+      grossDistribution,
+      taxableAmount,
+      federalIncomeTaxWithheld,
+      planType,
+      distributionCode
+    ]) => ({
+      grossDistribution,
+      taxableAmount: Math.min(taxableAmount, grossDistribution),
+      federalIncomeTaxWithheld,
+      planType,
+      distributionCode
+    })
+  )
+
+export const f1099R: Arbitrary<types.Income1099R> = fc
+  .tuple(payerName, f1099RData)
+  .map(([payer, form]) => ({
+    type: types.Income1099Type.R,
+    form,
+    payer,
+    personRole: types.PersonRole.PRIMARY
+  }))
+
 export const f1099: Arbitrary<types.Supported1099> = fc.oneof(
   f1099B,
   f1099Div,
-  f1099Int
+  f1099Int,
+  f1099R
 )
 
 const propExpenseTypeName: Arbitrary<types.PropertyExpenseTypeName> =

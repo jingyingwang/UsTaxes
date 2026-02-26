@@ -1,6 +1,7 @@
 import {
   AccountType,
   Dependent,
+  DistributionCode,
   FilingStatus,
   IncomeW2,
   PersonRole,
@@ -54,6 +55,7 @@ import F6251 from './F6251'
 import F4137 from './F4137'
 import F8919 from './F8919'
 import F8853 from './F8853'
+import F5329 from './F5329'
 import F8582 from './F8582'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
@@ -86,6 +88,7 @@ export default class F1040 extends F1040Base {
   f4797?: F4797
   f4952?: F4952
   f4972?: F4972
+  f5329?: F5329
   f5695?: F5695
   f6251: F6251
   f8814?: F8814
@@ -138,6 +141,12 @@ export default class F1040 extends F1040Base {
 
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
+
+    // Create Form 5329 if there are early distributions
+    const f5329 = new F5329(this)
+    if (f5329.isNeeded()) {
+      this.f5329 = f5329
+    }
 
     if (this.f1099ssas().length > 0) {
       const ssws = new SocialSecurityBenefitsWorksheet(this)
@@ -197,6 +206,7 @@ export default class F1040 extends F1040Base {
       this.f4797,
       this.f4952,
       this.f4972,
+      this.f5329,
       this.f5695,
       this.f6251,
       this.f8814,
@@ -311,9 +321,15 @@ export default class F1040 extends F1040Base {
       .filter((element) => element.form.planType === planType)
       .reduce((res, f1099) => res + f1099.form.grossDistribution, 0)
 
+  // Rollovers (code G/H) are not taxable - they should show $0 on lines 4b/5b
   totalTaxableFrom1099R = (planType: PlanType1099): number =>
     this.f1099rs()
       .filter((element) => element.form.planType === planType)
+      .filter(
+        (element) =>
+          element.form.distributionCode !== DistributionCode.ROLLOVER &&
+          element.form.distributionCode !== DistributionCode.ROLLOVER_ROTH
+      )
       .reduce((res, f1099) => res + f1099.form.taxableAmount, 0)
 
   l1a = (): number => this.wages()
