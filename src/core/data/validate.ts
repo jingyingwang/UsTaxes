@@ -95,3 +95,7 @@ export const scheduleC =
   fns.ScheduleCInput as ValidateFunction<types.ScheduleCInput>
 export const editScheduleCAction =
   fns.EditScheduleCAction as ValidateFunction<types.EditScheduleCAction>
+export const capitalLossCarryforward =
+  fns.CapitalLossCarryforward as ValidateFunction<types.CapitalLossCarryforward>
+export const costBasisMethod =
+  fns.CostBasisMethod as ValidateFunction<types.CostBasisMethod>

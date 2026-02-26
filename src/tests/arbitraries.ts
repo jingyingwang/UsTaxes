@@ -3,7 +3,13 @@ import * as util from 'ustaxes/core/util'
 import * as arbitraries from 'ustaxes/core/tests/arbitraries'
 import { YearsTaxesState } from 'ustaxes/redux'
 import prand from 'pure-rand'
-import { Asset, AssetType, TaxYear, TaxYears } from 'ustaxes/core/data'
+import {
+  Asset,
+  AssetType,
+  CostBasisMethod,
+  TaxYear,
+  TaxYears
+} from 'ustaxes/core/data'
 
 export const taxYear: fc.Arbitrary<TaxYear> = fc.constantFrom(
   ...util.enumKeys(TaxYears)
@@ -41,7 +47,7 @@ export const positionDate: fc.Arbitrary<Asset<Date>> = fc
         fc.nat(),
         arbitraries.state
       )
-      .map(
+      .chain(
         ([
           name,
           giftedDate,
@@ -51,19 +57,44 @@ export const positionDate: fc.Arbitrary<Asset<Date>> = fc
           openFee,
           closeFee,
           state
-        ]) => ({
-          name,
-          openDate,
-          closeDate,
-          giftedDate: closeDate === undefined ? giftedDate : undefined,
-          openPrice,
-          closePrice,
-          openFee,
-          closeFee: closeDate === undefined ? undefined : closeFee,
-          positionType,
-          quantity: positionType === 'Real Estate' ? 1 : quantity,
-          state
-        })
+        ]) =>
+          fc
+            .tuple(
+              fc.oneof(
+                fc.constant<CostBasisMethod | undefined>(undefined),
+                fc.constant(CostBasisMethod.FIFO),
+                fc.constant(CostBasisMethod.SpecificId),
+                fc.constant(CostBasisMethod.AverageCost)
+              ),
+              fc.oneof(
+                fc.constant<number | undefined>(undefined),
+                fc.nat({ max: 10000 })
+              ),
+              fc.oneof(
+                fc.constant<boolean | undefined>(undefined),
+                fc.boolean()
+              )
+            )
+            .map(
+              ([costBasisMethod, washSaleAdjustment, basisReportedToIRS]) => ({
+                name,
+                openDate,
+                closeDate,
+                giftedDate: closeDate === undefined ? giftedDate : undefined,
+                openPrice,
+                closePrice,
+                openFee,
+                closeFee: closeDate === undefined ? undefined : closeFee,
+                positionType,
+                quantity: positionType === 'Real Estate' ? 1 : quantity,
+                state,
+                costBasisMethod,
+                washSaleAdjustment:
+                  closeDate !== undefined ? washSaleAdjustment : undefined,
+                basisReportedToIRS:
+                  closeDate !== undefined ? basisReportedToIRS : undefined
+              })
+            )
       )
   )
 

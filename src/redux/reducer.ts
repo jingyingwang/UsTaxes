@@ -435,6 +435,12 @@ const formReducer = (
         credits: newCredits
       }
     }
+    case ActionName.SET_CAPITAL_LOSS_CARRYFORWARD: {
+      return {
+        ...newState,
+        capitalLossCarryforward: action.formData
+      }
+    }
 
     default: {
       return newState
