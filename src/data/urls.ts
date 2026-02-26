@@ -35,7 +35,8 @@ const Urls = {
   },
   credits: {
     main: '/credits',
-    eic: '/credits/eic'
+    eic: '/credits/eic',
+    education: '/credits/education'
   },
   amendedReturn: '/amended/f1040x',
   createPdf: '/createpdf',

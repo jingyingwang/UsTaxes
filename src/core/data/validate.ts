@@ -71,6 +71,7 @@ export const property = fns.Property as ValidateFunction<types.Property>
 export const propertyType =
   fns.PropertyType as ValidateFunction<types.PropertyType>
 export const f1098e = fns.F1098e as ValidateFunction<types.F1098e>
+export const f1098t = fns.F1098t as ValidateFunction<types.F1098t>
 export const itemizedDeductions =
   fns.ItemizedDeductions as ValidateFunction<types.ItemizedDeductions>
 export const responses = fns.Responses as ValidateFunction<types.Responses>
@@ -91,6 +92,8 @@ export const editHSAAction =
   fns.EditHSAAction as ValidateFunction<types.EditHSAAction>
 export const editCreditAction =
   fns.EditCreditAction as ValidateFunction<types.EditCreditAction>
+export const edit1098tAction =
+  fns.Edit1098tAction as ValidateFunction<types.Edit1098tAction>
 export const scheduleC =
   fns.ScheduleCInput as ValidateFunction<types.ScheduleCInput>
 export const editScheduleCAction =

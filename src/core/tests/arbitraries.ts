@@ -242,6 +242,55 @@ const f1098e: Arbitrary<types.F1098e> = fc
     interest
   }))
 
+const f1098t: Arbitrary<types.F1098t> = fc
+  .tuple(
+    maxWords(3),
+    fc.constantFrom(
+      types.EducationCreditType.AOTC,
+      types.EducationCreditType.LLC
+    ),
+    posCurrency(20000),
+    expense,
+    expense,
+    expense,
+    expense,
+    expense,
+    fc.boolean(),
+    fc.boolean(),
+    fc.integer({ min: 0, max: 4 }),
+    fc.boolean()
+  )
+  .map(
+    ([
+      institution,
+      creditType,
+      paymentsReceived,
+      adjustmentsToQualifiedExpenses,
+      scholarshipsOrGrants,
+      adjustmentsToScholarships,
+      additionalQualifiedExpenses,
+      otherTaxFreeAssistance,
+      atLeastHalfTime,
+      graduateStudent,
+      aotcClaimedYears,
+      felonyDrugConviction
+    ]) => ({
+      student: { role: types.PersonRole.PRIMARY },
+      creditType,
+      institution,
+      paymentsReceived,
+      adjustmentsToQualifiedExpenses,
+      scholarshipsOrGrants,
+      adjustmentsToScholarships,
+      additionalQualifiedExpenses,
+      otherTaxFreeAssistance,
+      atLeastHalfTime,
+      graduateStudent,
+      aotcClaimedYears,
+      felonyDrugConviction
+    })
+  )
+
 const f3921: Arbitrary<types.F3921> = fc
   .tuple(maxWords(2), posCurrency(100), fc.integer({ min: 1, max: 500 }))
   .map(([name, exercisePricePerShare, numShares]) => {
@@ -1004,6 +1053,7 @@ export class Arbitraries {
         fc.array(royaltyIncome),
         fc.array(estTax),
         fc.array(f1098e),
+        fc.array(f1098t, { maxLength: 0 }),
         fc.array(f3921),
         fc.array(f3922),
         fc.array(scheduleCInput),
@@ -1030,6 +1080,7 @@ export class Arbitraries {
           royaltyIncomes,
           estimatedTaxes,
           f1098es,
+          f1098ts,
           f3921s,
           f3922s,
           scheduleCInputs,
@@ -1054,6 +1105,7 @@ export class Arbitraries {
           royaltyIncomes,
           estimatedTaxes,
           f1098es,
+          f1098ts,
           f3921s,
           f3922s,
           scheduleCInputs,

@@ -73,6 +73,7 @@ const testInformationState: Information = {
   },
   questions: {},
   f1098es: [],
+  f1098ts: [],
   stateResidencies: [{ state: 'AL' }],
   healthSavingsAccounts: []
 }

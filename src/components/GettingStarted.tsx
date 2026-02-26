@@ -83,6 +83,7 @@ export default function GettingStarted(): ReactElement {
       <ul>
         <li>Credit for Children and Other Dependents</li>
         <li>Earned Income Tax Credit</li>
+        <li>Education Credits (AOTC and LLC)</li>
       </ul>
       <h2>State Income Tax</h2>
       Note the following states have no income tax filing:

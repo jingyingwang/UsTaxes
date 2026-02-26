@@ -33,6 +33,7 @@ import GettingStarted from './GettingStarted'
 import F1098eInfo from './deductions/F1098eInfo'
 import ItemizedDeductions from './deductions/ItemizedDeductions'
 import CasualtyTheftLosses from './deductions/CasualtyTheftLosses'
+import F1098tInfo from './credits/F1098tInfo'
 import Questions from './Questions'
 import HelpAndFeedback from './HelpAndFeedback'
 import UserSettings from './UserSettings'
@@ -213,6 +214,14 @@ const yearSpecificPages: Partial<{ [k in TaxYear]: Section[] }> = {
           Urls.Y2021.credits,
           <AdvanceChildTaxCredit />
         )
+      ]
+    }
+  ],
+  Y2024: [
+    {
+      title: 'Credits',
+      items: [
+        item('Education Credits (1098-T)', Urls.credits.education, <F1098tInfo />)
       ]
     }
   ]

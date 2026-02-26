@@ -198,6 +198,10 @@ export default class F1040 extends F1040Base {
       this.f1040x = new F1040X(this)
     }
 
+    if (this.info.f1098ts.length > 0) {
+      this.f8863 = new F8863(this)
+    }
+
     if (this.totalQbi() > 0) {
       const formAMinAmount = getF8995PhaseOutIncome(
         this.info.taxPayer.filingStatus
@@ -267,6 +271,7 @@ export default class F1040 extends F1040Base {
       this.f8889,
       this.f8889Spouse,
       this.f8910,
+      this.f8863,
       this.f8936,
       this.f8949,
       this.f8959,

@@ -471,6 +471,33 @@ export interface F1098e {
   interest: number
 }
 
+export enum EducationCreditType {
+  AOTC = 'AOTC',
+  LLC = 'LLC'
+}
+
+export interface EducationStudent {
+  role: PersonRole
+  dependentIndex?: number
+}
+
+export interface F1098t {
+  student: EducationStudent
+  creditType: EducationCreditType
+  institution: string
+  institutionEin?: string
+  paymentsReceived: number
+  adjustmentsToQualifiedExpenses: number
+  scholarshipsOrGrants: number
+  adjustmentsToScholarships: number
+  additionalQualifiedExpenses: number
+  otherTaxFreeAssistance: number
+  atLeastHalfTime: boolean
+  graduateStudent: boolean
+  aotcClaimedYears: number
+  felonyDrugConviction: boolean
+}
+
 export interface F3921 {
   name: string
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
@@ -887,6 +914,7 @@ export interface Information<D = Date> {
   royaltyIncomes: RoyaltyIncome[]
   estimatedTaxes: EstimatedTaxPayments[]
   f1098es: F1098e[]
+  f1098ts: F1098t[]
   f3921s: F3921[]
   f3922s: F3922[]
   scheduleCInputs: ScheduleCInput[]
@@ -984,6 +1012,7 @@ export type Edit1099Action = ArrayItemEditAction<Supported1099>
 export type EditPropertyAction = ArrayItemEditAction<Property>
 export type EditCasualtyTheftLossAction = ArrayItemEditAction<CasualtyTheftLoss>
 export type Edit1098eAction = ArrayItemEditAction<F1098e>
+export type Edit1098tAction = ArrayItemEditAction<F1098t>
 export type EditHSAAction = ArrayItemEditAction<HealthSavingsAccountDateString>
 export type EditIraAction = ArrayItemEditAction<Ira>
 export type EditAssetAction = ArrayItemEditAction<Asset<Date>>

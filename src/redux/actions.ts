@@ -8,6 +8,7 @@ import {
   ContactInfo,
   Supported1099,
   F1098e,
+  F1098t,
   SpouseDateString,
   Property,
   StateResidency,
@@ -48,6 +49,7 @@ import {
   EditW2Action,
   EditEstimatedTaxesAction,
   Edit1098eAction,
+  Edit1098tAction,
   EditHSAAction,
   EditCasualtyTheftLossAction,
   EditIraAction,
@@ -94,6 +96,9 @@ export enum ActionName {
   ADD_1098e = 'ADD_1098e',
   EDIT_1098e = 'EDIT_1098e',
   REMOVE_1098e = 'REMOVE_1098e',
+  ADD_1098t = 'ADD_1098t',
+  EDIT_1098t = 'EDIT_1098t',
+  REMOVE_1098t = 'REMOVE_1098t',
   SET_ITEMIZED_DEDUCTIONS = 'SET_ITEMIZED_DEDUCTIONS',
   ADD_CASUALTY_THEFT_LOSS = 'ADD_CASUALTY_THEFT_LOSS',
   EDIT_CASUALTY_THEFT_LOSS = 'EDIT_CASUALTY_THEFT_LOSS',
@@ -204,6 +209,9 @@ type AnswerQuestion = Save<typeof ActionName.ANSWER_QUESTION, Responses>
 type Add1098e = Save<typeof ActionName.ADD_1098e, F1098e>
 type Edit1098e = Save<typeof ActionName.EDIT_1098e, Edit1098eAction>
 type Remove1098e = Save<typeof ActionName.REMOVE_1098e, number>
+type Add1098t = Save<typeof ActionName.ADD_1098t, F1098t>
+type Edit1098t = Save<typeof ActionName.EDIT_1098t, Edit1098tAction>
+type Remove1098t = Save<typeof ActionName.REMOVE_1098t, number>
 type SetItemizedDeductions = Save<
   typeof ActionName.SET_ITEMIZED_DEDUCTIONS,
   ItemizedDeductions
@@ -355,6 +363,9 @@ export type Actions =
   | Add1098e
   | Edit1098e
   | Remove1098e
+  | Add1098t
+  | Edit1098t
+  | Remove1098t
   | SetItemizedDeductions
   | AddCasualtyTheftLoss
   | EditCasualtyTheftLoss
@@ -612,6 +623,20 @@ export const edit1098e: ActionCreator<Edit1098eAction> = makeActionCreator(
 
 export const remove1098e: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_1098e,
+  indexValidator
+)
+
+export const add1098t: ActionCreator<F1098t> = makeActionCreator(
+  ActionName.ADD_1098t,
+  validators.f1098t
+)
+
+export const edit1098t: ActionCreator<Edit1098tAction> = makeActionCreator(
+  ActionName.EDIT_1098t
+)
+
+export const remove1098t: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_1098t,
   indexValidator
 )
 

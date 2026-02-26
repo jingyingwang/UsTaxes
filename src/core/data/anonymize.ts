@@ -7,6 +7,7 @@ import {
   Dependent,
   Employer,
   F1098e,
+  F1098t,
   Information,
   Person,
   PersonRole,
@@ -72,6 +73,12 @@ const anonymizeEmployer = (employer: Employer): Employer => ({
 const anonymizeF1098e = (f: F1098e): F1098e => ({
   ...f,
   lender: 'lender'
+})
+
+const anonymizeF1098t = (f: F1098t): F1098t => ({
+  ...f,
+  institution: 'institution',
+  institutionEin: f.institutionEin === undefined ? undefined : '123456789'
 })
 
 const anonymizeF1099 = (f: Supported1099, idx: number): Supported1099 => ({
@@ -152,6 +159,7 @@ const anonymizeK1Form1041 = (
 export const anonymizeInformation = (info: Information): Information => ({
   ...info,
   f1098es: info.f1098es.map(anonymizeF1098e),
+  f1098ts: info.f1098ts.map(anonymizeF1098t),
   f1099s: info.f1099s.map(anonymizeF1099),
   f3921s: info.f3921s.map(anonymizeF3921),
   f3922s: info.f3922s.map(anonymizeF3922),
