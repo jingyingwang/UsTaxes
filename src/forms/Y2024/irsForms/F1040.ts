@@ -61,6 +61,7 @@ import F8853 from './F8853'
 import F8582 from './F8582'
 import F8606 from './F8606'
 import F2210 from './F2210'
+import F8880 from './F8880'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
@@ -105,6 +106,7 @@ export default class F1040 extends F1040Base {
   f8606Spouse?: F8606
   f8853?: F8853
   f8863?: F8863
+  f8880?: F8880
   f8888?: F8888
   f8889: F8889
   f8889Spouse?: F8889
@@ -169,6 +171,7 @@ export default class F1040 extends F1040Base {
     }
 
     this.f2210 = new F2210(this)
+    this.f8880 = new F8880(this)
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
 
@@ -246,6 +249,7 @@ export default class F1040 extends F1040Base {
       this.f8606,
       this.f8606Spouse,
       this.f8814,
+      this.f8880,
       this.f8888,
       this.f8889,
       this.f8889Spouse,
