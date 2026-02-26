@@ -45,6 +45,12 @@ interface IraUserInput {
   requiredMinimumDistributions?: string // 5498 box 12b
   lateContributions?: string // 5498 box 13a
   repayments?: string // 5498 box 14a
+  // Form 8606 basis tracking
+  nondeductibleContributions?: string
+  priorYearBasis?: string
+  totalIraValue?: string
+  rothDistributions?: string
+  rothBasis?: string
 }
 
 const blankUserInput: IraUserInput = {
@@ -63,7 +69,13 @@ const blankUserInput: IraUserInput = {
   recharacterizedContributions: '',
   requiredMinimumDistributions: '',
   lateContributions: '',
-  repayments: ''
+  repayments: '',
+  // Form 8606 basis tracking
+  nondeductibleContributions: '',
+  priorYearBasis: '',
+  totalIraValue: '',
+  rothDistributions: '',
+  rothBasis: ''
 }
 
 const toIra = (formData: IraUserInput): Ira => ({
@@ -86,7 +98,13 @@ const toIra = (formData: IraUserInput): Ira => ({
   recharacterizedContributions: Number(formData.recharacterizedContributions),
   requiredMinimumDistributions: Number(formData.requiredMinimumDistributions),
   lateContributions: Number(formData.lateContributions),
-  repayments: Number(formData.repayments)
+  repayments: Number(formData.repayments),
+  // Form 8606 basis tracking
+  nondeductibleContributions: Number(formData.nondeductibleContributions),
+  priorYearBasis: Number(formData.priorYearBasis),
+  totalIraValue: Number(formData.totalIraValue),
+  rothDistributions: Number(formData.rothDistributions),
+  rothBasis: Number(formData.rothBasis)
 })
 
 const toIraUserInput = (data: Ira): IraUserInput => ({
@@ -103,7 +121,13 @@ const toIraUserInput = (data: Ira): IraUserInput => ({
   recharacterizedContributions: data.recharacterizedContributions.toString(),
   requiredMinimumDistributions: data.requiredMinimumDistributions.toString(),
   lateContributions: data.lateContributions.toString(),
-  repayments: data.repayments.toString()
+  repayments: data.repayments.toString(),
+  // Form 8606 basis tracking
+  nondeductibleContributions: data.nondeductibleContributions.toString(),
+  priorYearBasis: data.priorYearBasis.toString(),
+  totalIraValue: data.totalIraValue.toString(),
+  rothDistributions: data.rothDistributions.toString(),
+  rothBasis: data.rothBasis.toString()
 })
 
 export default function IRA(): ReactElement {
@@ -278,6 +302,49 @@ export default function IRA(): ReactElement {
         <LabeledCheckbox
           name="totalDistribution"
           label="This distribution closed out your account"
+        />
+      </Grid>
+      <h3>Form 8606 - Nondeductible IRA / Roth Conversion Tracking</h3>
+      <p>
+        Complete this section if you made nondeductible contributions to a
+        traditional IRA, converted to a Roth IRA, or took distributions from a
+        Roth IRA.
+      </p>
+      <Grid container spacing={2}>
+        <LabeledInput
+          name="nondeductibleContributions"
+          label="Nondeductible contributions this year"
+          patternConfig={Patterns.currency}
+          required={false}
+          sizes={{ xs: 12, lg: 6 }}
+        />
+        <LabeledInput
+          name="priorYearBasis"
+          label="Total basis from prior years"
+          patternConfig={Patterns.currency}
+          required={false}
+          sizes={{ xs: 12, lg: 6 }}
+        />
+        <LabeledInput
+          name="totalIraValue"
+          label="Year-end value of all traditional/SEP/SIMPLE IRAs"
+          patternConfig={Patterns.currency}
+          required={false}
+          sizes={{ xs: 12, lg: 6 }}
+        />
+        <LabeledInput
+          name="rothDistributions"
+          label="Roth IRA distributions (nonqualified)"
+          patternConfig={Patterns.currency}
+          required={false}
+          sizes={{ xs: 12, lg: 6 }}
+        />
+        <LabeledInput
+          name="rothBasis"
+          label="Roth IRA contribution basis"
+          patternConfig={Patterns.currency}
+          required={false}
+          sizes={{ xs: 12, lg: 6 }}
         />
       </Grid>
     </FormListContainer>

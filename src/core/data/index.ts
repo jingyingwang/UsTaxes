@@ -304,6 +304,13 @@ export interface Ira {
   requiredMinimumDistributions: number // 5498 box 12b
   lateContributions: number // 5498 box 13a
   repayments: number // 5498 box 14a
+  // Form 8606 basis tracking fields
+  nondeductibleContributions: number // current year nondeductible contributions (8606 line 1)
+  priorYearBasis: number // total basis from prior years (8606 line 2)
+  totalIraValue: number // year-end value of all traditional IRAs (8606 line 6)
+  // Roth distribution tracking (Part III)
+  rothDistributions: number // total Roth IRA distributions
+  rothBasis: number // Roth IRA contribution basis
 }
 
 export enum FilingStatus {

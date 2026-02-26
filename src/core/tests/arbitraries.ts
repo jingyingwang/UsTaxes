@@ -680,7 +680,12 @@ export class Arbitraries {
         fc.nat({ max: 100000 }), // recharacterized contributions
         fc.nat({ max: 100000 }), // required minimum distributions
         fc.nat({ max: 100000 }), // late contributions
-        fc.nat({ max: 100000 })
+        fc.nat({ max: 100000 }), // repayments
+        fc.nat({ max: 100000 }), // nondeductible contributions
+        fc.nat({ max: 100000 }), // prior year basis
+        fc.nat({ max: 1000000 }), // total IRA value
+        fc.nat({ max: 100000 }), // roth distributions
+        fc.nat({ max: 100000 }) // roth basis
       )
       .map(
         ([
@@ -698,7 +703,12 @@ export class Arbitraries {
           recharacterizedContributions,
           requiredMinimumDistributions,
           lateContributions,
-          repayments
+          repayments,
+          nondeductibleContributions,
+          priorYearBasis,
+          totalIraValue,
+          rothDistributions,
+          rothBasis
         ]) => ({
           payer,
           personRole,
@@ -714,7 +724,12 @@ export class Arbitraries {
           recharacterizedContributions,
           requiredMinimumDistributions,
           lateContributions,
-          repayments
+          repayments,
+          nondeductibleContributions,
+          priorYearBasis,
+          totalIraValue,
+          rothDistributions,
+          rothBasis
         })
       )
 
