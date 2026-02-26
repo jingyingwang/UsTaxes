@@ -694,6 +694,7 @@ export interface Information<D = Date> {
   form6781: Form6781Input[]
   itemizedDeductions: ItemizedDeductions | undefined
   casualtyTheftLosses?: CasualtyTheftLoss[]
+  priorYearTax?: number
   refund?: Refund
   taxPayer: TaxPayer<D>
   questions: Responses

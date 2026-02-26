@@ -11,7 +11,8 @@ import { Work } from '@material-ui/icons'
 import {
   addEstimatedPayment,
   editEstimatedPayment,
-  removeEstimatedPayment
+  removeEstimatedPayment,
+  setPriorYearTax
 } from 'ustaxes/redux/actions'
 import { useDispatch } from 'ustaxes/redux'
 import { useSelector } from 'react-redux'
@@ -57,9 +58,24 @@ export default function EstimatedTaxes(): ReactElement {
     (state) => state.information.estimatedTaxes
   )
 
+  const priorYearTax = useYearSelector(
+    (state) => state.information.priorYearTax
+  )
+
   const dispatch = useDispatch()
 
   const methods = useForm<EstimatedTaxesUserInput>({ defaultValues })
+
+  const priorYearTaxMethods = useForm<{ priorYearTax: string }>({
+    defaultValues: { priorYearTax: priorYearTax?.toString() ?? '' }
+  })
+
+  const onSavePriorYearTax = (formData: { priorYearTax: string }): void => {
+    const value = parseInt(formData.priorYearTax)
+    if (!isNaN(value) && value >= 0) {
+      dispatch(setPriorYearTax(value))
+    }
+  }
 
   const { navButtons, onAdvance } = usePager()
 
@@ -107,7 +123,42 @@ export default function EstimatedTaxes(): ReactElement {
     </FormListContainer>
   )
 
-  const form: ReactElement = <>{w2sBlock}</>
+  const priorYearTaxBlock = (
+    <FormProvider {...priorYearTaxMethods}>
+      <Grid container spacing={2}>
+        <LabeledInput
+          name="priorYearTax"
+          label="Prior year total tax (Form 1040, line 24)"
+          patternConfig={Patterns.currency}
+          sizes={{ xs: 12, lg: 6 }}
+        />
+      </Grid>
+      <Grid container spacing={2}>
+        <Grid item xs={12}>
+          <button
+            type="button"
+            onClick={() => {
+              void priorYearTaxMethods.handleSubmit(onSavePriorYearTax)()
+            }}
+          >
+            Save Prior Year Tax
+          </button>
+        </Grid>
+      </Grid>
+    </FormProvider>
+  )
+
+  const form: ReactElement = (
+    <>
+      {w2sBlock}
+      <h3>Prior Year Tax (for Form 2210 penalty calculation)</h3>
+      <p>
+        Enter your prior year total tax to enable the safe harbor calculation.
+        If your prior year tax was zero, no estimated tax penalty applies.
+      </p>
+      {priorYearTaxBlock}
+    </>
+  )
 
   return (
     <form tabIndex={-1} onSubmit={onAdvance}>

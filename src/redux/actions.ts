@@ -116,7 +116,8 @@ export enum ActionName {
   ADD_CREDIT = 'CREDIT/ADD',
   EDIT_CREDIT = 'CREDIT/EDIT',
   REMOVE_CREDIT = 'CREDIT/REMOVE',
-  SET_CAPITAL_LOSS_CARRYFORWARD = 'SET_CAPITAL_LOSS_CARRYFORWARD'
+  SET_CAPITAL_LOSS_CARRYFORWARD = 'SET_CAPITAL_LOSS_CARRYFORWARD',
+  SET_PRIOR_YEAR_TAX = 'SET_PRIOR_YEAR_TAX'
 }
 
 interface Save<T, R> {
@@ -229,6 +230,7 @@ type SetCapitalLossCarryforward = Save<
   typeof ActionName.SET_CAPITAL_LOSS_CARRYFORWARD,
   CapitalLossCarryforward
 >
+type SetPriorYearTax = Save<typeof ActionName.SET_PRIOR_YEAR_TAX, number>
 
 export type Actions =
   | SaveRefundInfo
@@ -293,6 +295,7 @@ export type Actions =
   | EditCredit
   | RemoveCredit
   | SetCapitalLossCarryforward
+  | SetPriorYearTax
 
 export type SignalAction = (year: TaxYear) => Actions
 export type ActionCreator<A> = (formData: A) => SignalAction
@@ -641,3 +644,7 @@ export const setCapitalLossCarryforward: ActionCreator<CapitalLossCarryforward> 
     ActionName.SET_CAPITAL_LOSS_CARRYFORWARD,
     validators.capitalLossCarryforward
   )
+
+export const setPriorYearTax: ActionCreator<number> = makeActionCreator(
+  ActionName.SET_PRIOR_YEAR_TAX
+)

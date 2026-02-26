@@ -59,6 +59,7 @@ import F8919 from './F8919'
 import F8853 from './F8853'
 import F8582 from './F8582'
 import F8606 from './F8606'
+import F2210 from './F2210'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
@@ -113,6 +114,7 @@ export default class F1040 extends F1040Base {
   f8959: F8959
   f8960: F8960
   f8962?: F8962
+  f2210: F2210
   f8995?: F8995 | F8995A
   qualifiedAndCapGainsWorksheet?: SDQualifiedAndCapGains
   studentLoanInterestWorksheet?: StudentLoanInterestWorksheet
@@ -161,6 +163,7 @@ export default class F1040 extends F1040Base {
       this.f5329Spouse = new F5329(this, PersonRole.SPOUSE)
     }
 
+    this.f2210 = new F2210(this)
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
 
@@ -239,6 +242,7 @@ export default class F1040 extends F1040Base {
       this.f8936,
       this.f8949,
       this.f8959,
+      this.f2210,
       this.f8960,
       this.f8995,
       this.schedule1,
@@ -526,8 +530,8 @@ export default class F1040 extends F1040Base {
 
   l37 = (): number => Math.max(0, this.l24() - this.l33())
 
-  // TODO - estimated tax penalty
-  l38 = (): number | undefined => undefined
+  // Estimated tax penalty (Form 2210)
+  l38 = (): number | undefined => this.f2210.toF1040Line38()
 
   _depField = (idx: number): string | boolean => {
     const deps: Dependent[] = this.info.taxPayer.dependents

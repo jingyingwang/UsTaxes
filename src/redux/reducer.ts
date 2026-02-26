@@ -513,6 +513,12 @@ const formReducer = (
         capitalLossCarryforward: action.formData
       }
     }
+    case ActionName.SET_PRIOR_YEAR_TAX: {
+      return {
+        ...newState,
+        priorYearTax: action.formData
+      }
+    }
 
     default: {
       return newState

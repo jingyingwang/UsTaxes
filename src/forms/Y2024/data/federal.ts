@@ -236,6 +236,17 @@ export const healthSavingsAccounts = {
     family: 8300
   }
 }
+
+// IRS underpayment penalty rate for 2024 (Rev. Rul. 2024-01, 2024-07, 2024-14, 2024-22)
+// Rate was 8% for all quarters of 2024
+export const underpaymentPenalty = {
+  rate: 0.08,
+  // Safe harbor: no penalty if underpayment < this amount
+  minimumUnderpayment: 1000,
+  // AGI threshold above which 110% of prior year tax applies (vs 100%)
+  highIncomeThreshold: (filingStatus: FilingStatus): number =>
+    filingStatus === FilingStatus.MFS ? 75000 : 150000
+}
 // https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2024
 // https://www.irs.gov/instructions/i6251
 export const amt = {
