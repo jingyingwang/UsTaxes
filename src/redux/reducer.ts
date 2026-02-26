@@ -30,6 +30,7 @@ export const blankState: Information = {
   credits: [],
   individualRetirementArrangements: [],
   netOperatingLossCarryforwards: []
+  amendedReturns: []
 }
 
 const formReducer = (
@@ -596,6 +597,29 @@ const formReducer = (
       return {
         ...newState,
         f8801Input: action.formData
+      }
+    }
+
+    case ActionName.ADD_AMENDED_RETURN: {
+      return {
+        ...newState,
+        amendedReturns: [...newState.amendedReturns, action.formData]
+      }
+    }
+    case ActionName.EDIT_AMENDED_RETURN: {
+      const newAmendedReturns = [...newState.amendedReturns]
+      newAmendedReturns.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        amendedReturns: newAmendedReturns
+      }
+    }
+    case ActionName.REMOVE_AMENDED_RETURN: {
+      const newAmendedReturns = [...newState.amendedReturns]
+      newAmendedReturns.splice(action.formData, 1)
+      return {
+        ...newState,
+        amendedReturns: newAmendedReturns
       }
     }
 

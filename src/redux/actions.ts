@@ -35,6 +35,8 @@ import {
   NOLCarryforward,
   EditNOLCarryforwardAction
   F8801Input
+  AmendedReturnData,
+  EditAmendedReturnAction
 } from 'ustaxes/core/data'
 
 import {
@@ -138,6 +140,9 @@ export enum ActionName {
   EDIT_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/EDIT',
   REMOVE_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/REMOVE'
   SET_F8801_INPUT = 'SET_F8801_INPUT'
+  ADD_AMENDED_RETURN = 'AMENDED_RETURN/ADD',
+  EDIT_AMENDED_RETURN = 'AMENDED_RETURN/EDIT',
+  REMOVE_AMENDED_RETURN = 'AMENDED_RETURN/REMOVE'
 }
 
 interface Save<T, R> {
@@ -280,6 +285,15 @@ type RemoveNOLCarryforward = Save<
   number
 >
 type SetF8801Input = Save<typeof ActionName.SET_F8801_INPUT, F8801Input>
+type AddAmendedReturn = Save<
+  typeof ActionName.ADD_AMENDED_RETURN,
+  AmendedReturnData
+>
+type EditAmendedReturn = Save<
+  typeof ActionName.EDIT_AMENDED_RETURN,
+  EditAmendedReturnAction
+>
+type RemoveAmendedReturn = Save<typeof ActionName.REMOVE_AMENDED_RETURN, number>
 
 export type Actions =
   | SaveRefundInfo
@@ -356,6 +370,9 @@ export type Actions =
   | EditNOLCarryforward
   | RemoveNOLCarryforward
   | SetF8801Input
+  | AddAmendedReturn
+  | EditAmendedReturn
+  | RemoveAmendedReturn
 
 export type SignalAction = (year: TaxYear) => Actions
 export type ActionCreator<A> = (formData: A) => SignalAction
@@ -745,4 +762,13 @@ export const removeNOLCarryforward: ActionCreator<number> = makeActionCreator(
   indexValidator
 export const setF8801Input: ActionCreator<F8801Input> = makeActionCreator(
   ActionName.SET_F8801_INPUT
+export const addAmendedReturn: ActionCreator<AmendedReturnData> =
+  makeActionCreator(ActionName.ADD_AMENDED_RETURN)
+
+export const editAmendedReturn: ActionCreator<EditAmendedReturnAction> =
+  makeActionCreator(ActionName.EDIT_AMENDED_RETURN)
+
+export const removeAmendedReturn: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_AMENDED_RETURN,
+  indexValidator
 )

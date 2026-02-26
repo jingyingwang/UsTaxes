@@ -677,6 +677,26 @@ export interface Form2441Input {
   // Total employer-provided dependent care benefits (W-2 box 10)
   dependentCareBenefits: number
 }
+// Form 1040X - Amended Return data
+// Each entry represents one line being amended with three-column layout:
+//   Column A: Original amount from the originally filed return
+//   Column B: Net change (positive = increase, negative = decrease)
+//   Column C: Corrected amount (computed as A + B)
+export interface AmendedReturnLine {
+  lineDescription: string // Which 1040 line is being amended (e.g., "1 - Wages")
+  columnA: number // Original amount
+  columnB: number // Net change
+  explanation: string // Part III explanation for why this line changed
+}
+
+export interface AmendedReturnData {
+  taxYearAmended: string // e.g., "2023"
+  filingStatus: FilingStatus
+  lines: AmendedReturnLine[]
+  partIIIExplanation: string // Overall explanation of changes
+}
+
+export type EditAmendedReturnAction = ArrayItemEditAction<AmendedReturnData>
 
 export interface ItemizedDeductions {
   medicalAndDental: string | number
@@ -853,6 +873,7 @@ export interface Information<D = Date> {
   capitalLossCarryforward?: CapitalLossCarryforward
   netOperatingLossCarryforwards: NOLCarryforward[]
   f8801Input?: F8801Input
+  amendedReturns: AmendedReturnData[]
 }
 
 export type InformationDateString = Information<string>

@@ -45,6 +45,7 @@ import OtherInvestments from './income/OtherInvestments'
 import { StockOptions } from './income/StockOptions'
 import { ESPPOptions } from './income/ESPPOptions'
 import { PartnershipIncome } from './income/PartnershipIncome'
+import AmendedReturn from './amended/AmendedReturn'
 import { TaxYear } from 'ustaxes/core/data'
 import { AdvanceChildTaxCredit } from './Y2021/AdvanceChildTaxCredit'
 import { YearsTaxesState } from 'ustaxes/redux'
@@ -179,6 +180,10 @@ export const drawerSections: Section[] = [
         <IRA />
       )
     ]
+  },
+  {
+    title: 'Amended Return',
+    items: [item('Form 1040-X', Urls.amendedReturn, <AmendedReturn />)]
   },
   {
     title: 'Results',

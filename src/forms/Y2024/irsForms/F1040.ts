@@ -63,6 +63,7 @@ import F8582 from './F8582'
 import F8606 from './F8606'
 import F2210 from './F2210'
 import F8880 from './F8880'
+import F1040X from './F1040X'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
@@ -121,6 +122,7 @@ export default class F1040 extends F1040Base {
   f8960: F8960
   f8962?: F8962
   f2210: F2210
+  f1040x?: F1040X
   f8995?: F8995 | F8995A
   qualifiedAndCapGainsWorksheet?: SDQualifiedAndCapGains
   studentLoanInterestWorksheet?: StudentLoanInterestWorksheet
@@ -190,6 +192,10 @@ export default class F1040 extends F1040Base {
         this,
         this.info.f1098es
       )
+    }
+
+    if ((this.info.amendedReturns ?? []).length > 0) {
+      this.f1040x = new F1040X(this)
     }
 
     if (this.totalQbi() > 0) {
@@ -269,7 +275,8 @@ export default class F1040 extends F1040Base {
       this.f8995,
       this.schedule1,
       this.schedule2,
-      this.schedule3
+      this.schedule3,
+      this.f1040x
     ]
     const res = _.compact(res1)
       .filter((f) => f.isNeeded())

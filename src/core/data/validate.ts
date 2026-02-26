@@ -116,3 +116,7 @@ export const royaltyIncome =
   fns.RoyaltyIncome as ValidateFunction<types.RoyaltyIncome>
 export const editRoyaltyIncomeAction =
   fns.EditRoyaltyIncomeAction as ValidateFunction<types.EditRoyaltyIncomeAction>
+export const amendedReturnData =
+  fns.AmendedReturnData as ValidateFunction<types.AmendedReturnData>
+export const editAmendedReturnAction =
+  fns.EditAmendedReturnAction as ValidateFunction<types.EditAmendedReturnAction>

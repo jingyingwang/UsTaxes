@@ -35,6 +35,7 @@ const Urls = {
     main: '/credits',
     eic: '/credits/eic'
   },
+  amendedReturn: '/amended/f1040x',
   createPdf: '/createpdf',
   settings: '/settings',
   help: '/help',
