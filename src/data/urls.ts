@@ -26,6 +26,7 @@ const Urls = {
   },
   deductions: {
     f1098es: '/deductions/studentloaninterest',
+    casualty: '/deductions/casualty',
     itemized: '/deductions/itemized'
   },
   credits: {

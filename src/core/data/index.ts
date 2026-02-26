@@ -524,6 +524,19 @@ export interface ItemizedDeductions {
   charityOther: string | number
 }
 
+export type CasualtyLossUse = 'Personal' | 'Business' | 'Income'
+
+export interface CasualtyTheftLoss {
+  description: string
+  date: string
+  use: CasualtyLossUse
+  isFederallyDeclaredDisaster: boolean
+  costOrBasis: number
+  fmvBefore: number
+  fmvAfter: number
+  reimbursement: number
+}
+
 export type State =
   | 'AL'
   | 'AK'
@@ -632,6 +645,7 @@ export interface Information<D = Date> {
   scheduleCInputs: ScheduleCInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
   itemizedDeductions: ItemizedDeductions | undefined
+  casualtyTheftLosses?: CasualtyTheftLoss[]
   refund?: Refund
   taxPayer: TaxPayer<D>
   questions: Responses
@@ -698,6 +712,7 @@ export type EditW2Action = ArrayItemEditAction<IncomeW2>
 export type EditEstimatedTaxesAction = ArrayItemEditAction<EstimatedTaxPayments>
 export type Edit1099Action = ArrayItemEditAction<Supported1099>
 export type EditPropertyAction = ArrayItemEditAction<Property>
+export type EditCasualtyTheftLossAction = ArrayItemEditAction<CasualtyTheftLoss>
 export type Edit1098eAction = ArrayItemEditAction<F1098e>
 export type EditHSAAction = ArrayItemEditAction<HealthSavingsAccountDateString>
 export type EditIraAction = ArrayItemEditAction<Ira>

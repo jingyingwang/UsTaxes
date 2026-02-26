@@ -46,6 +46,7 @@ import F4563 from './F4563'
 import F8863 from './F8863'
 import F8962 from './F8962'
 import F4136 from './F4136'
+import F4684 from './F4684'
 import F2439 from './F2439'
 import F2441 from './F2441'
 import ScheduleC from './ScheduleC'
@@ -83,6 +84,7 @@ export default class F1040 extends F1040Base {
   f4136?: F4136
   f4137?: F4137
   f4563?: F4563
+  f4684: F4684
   f4797?: F4797
   f4952?: F4952
   f4972?: F4972
@@ -115,6 +117,7 @@ export default class F1040 extends F1040Base {
     this.assets = assets
     this.qualifyingDependents = new QualifyingDependents(this)
 
+    this.f4684 = new F4684(this)
     this.scheduleA = new ScheduleA(this)
     this.scheduleB = new ScheduleB(this)
     this.scheduleD = new ScheduleD(this)
@@ -191,6 +194,7 @@ export default class F1040 extends F1040Base {
       this.scheduleD,
       this.scheduleE,
       this.scheduleSE,
+      this.f4684,
       this.scheduleR,
       this.scheduleEIC,
       this.schedule8812,
