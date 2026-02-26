@@ -19,6 +19,7 @@ import {
   ItemizedDeductions,
   F3921,
   F3922,
+  CasualtyTheftLoss,
   ScheduleK1Form1065,
   ScheduleCInput,
   Form6781Input,
@@ -38,6 +39,7 @@ import {
   EditEstimatedTaxesAction,
   Edit1098eAction,
   EditHSAAction,
+  EditCasualtyTheftLossAction,
   EditIraAction,
   EditAssetAction,
   EditF3921Action,
@@ -79,6 +81,9 @@ export enum ActionName {
   EDIT_1098e = 'EDIT_1098e',
   REMOVE_1098e = 'REMOVE_1098e',
   SET_ITEMIZED_DEDUCTIONS = 'SET_ITEMIZED_DEDUCTIONS',
+  ADD_CASUALTY_THEFT_LOSS = 'ADD_CASUALTY_THEFT_LOSS',
+  EDIT_CASUALTY_THEFT_LOSS = 'EDIT_CASUALTY_THEFT_LOSS',
+  REMOVE_CASUALTY_THEFT_LOSS = 'REMOVE_CASUALTY_THEFT_LOSS',
   ADD_HSA = 'ADD_HSA',
   EDIT_HSA = 'EDIT_HSA',
   REMOVE_HSA = 'REMOVE_HSA',
@@ -168,6 +173,18 @@ type SetItemizedDeductions = Save<
   typeof ActionName.SET_ITEMIZED_DEDUCTIONS,
   ItemizedDeductions
 >
+type AddCasualtyTheftLoss = Save<
+  typeof ActionName.ADD_CASUALTY_THEFT_LOSS,
+  CasualtyTheftLoss
+>
+type EditCasualtyTheftLoss = Save<
+  typeof ActionName.EDIT_CASUALTY_THEFT_LOSS,
+  EditCasualtyTheftLossAction
+>
+type RemoveCasualtyTheftLoss = Save<
+  typeof ActionName.REMOVE_CASUALTY_THEFT_LOSS,
+  number
+>
 type SetInfo = Save<typeof ActionName.SET_INFO, InformationDateString>
 type SetActiveYear = Save<typeof ActionName.SET_ACTIVE_YEAR, TaxYear>
 type AddIRA = Save<typeof ActionName.ADD_IRA, Ira>
@@ -241,6 +258,9 @@ export type Actions =
   | Edit1098e
   | Remove1098e
   | SetItemizedDeductions
+  | AddCasualtyTheftLoss
+  | EditCasualtyTheftLoss
+  | RemoveCasualtyTheftLoss
   | AddHSA
   | EditHSA
   | RemoveHSA
@@ -481,6 +501,17 @@ export const setItemizedDeductions: ActionCreator<ItemizedDeductions> =
     ActionName.SET_ITEMIZED_DEDUCTIONS,
     validators.itemizedDeductions
   )
+
+export const addCasualtyTheftLoss: ActionCreator<CasualtyTheftLoss> =
+  makeActionCreator(ActionName.ADD_CASUALTY_THEFT_LOSS)
+
+export const editCasualtyTheftLoss: ActionCreator<EditCasualtyTheftLossAction> =
+  makeActionCreator(ActionName.EDIT_CASUALTY_THEFT_LOSS)
+
+export const removeCasualtyTheftLoss: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_CASUALTY_THEFT_LOSS,
+  indexValidator
+)
 
 // debugging purposes only, leaving unchecked.
 export const setInfo = makePreprocessActionCreator<

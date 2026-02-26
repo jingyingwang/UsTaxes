@@ -21,6 +21,7 @@ export const blankState: Information = {
   scheduleK1Form1065s: [],
   form6781: [],
   itemizedDeductions: undefined,
+  casualtyTheftLosses: [],
   stateResidencies: [],
   healthSavingsAccounts: [],
   credits: [],
@@ -371,6 +372,31 @@ const formReducer = (
       return {
         ...newState,
         itemizedDeductions: action.formData
+      }
+    }
+    case ActionName.ADD_CASUALTY_THEFT_LOSS: {
+      return {
+        ...newState,
+        casualtyTheftLosses: [
+          ...(newState.casualtyTheftLosses ?? []),
+          action.formData
+        ]
+      }
+    }
+    case ActionName.EDIT_CASUALTY_THEFT_LOSS: {
+      const newLosses = [...(newState.casualtyTheftLosses ?? [])]
+      newLosses.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        casualtyTheftLosses: newLosses
+      }
+    }
+    case ActionName.REMOVE_CASUALTY_THEFT_LOSS: {
+      const newLosses = [...(newState.casualtyTheftLosses ?? [])]
+      newLosses.splice(action.formData, 1)
+      return {
+        ...newState,
+        casualtyTheftLosses: newLosses
       }
     }
     case ActionName.SET_INFO: {
