@@ -488,6 +488,9 @@ export interface ScheduleCInput {
   // Part II: Expenses (lines 8-27)
   expenses: Partial<{ [K in ScheduleCExpenseTypeName]: number }>
   otherExpenseType?: string
+
+  // Form 7206: Self-Employed Health Insurance Deduction
+  selfEmployedHealthInsurancePremiums?: number
 }
 
 // See https://www.irs.gov/instructions/i1065sk1

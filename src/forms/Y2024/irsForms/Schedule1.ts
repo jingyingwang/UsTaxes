@@ -20,7 +20,8 @@ export default class Schedule1 extends F1040Attachment {
       this.f1040.studentLoanInterestWorksheet.notMFS() &&
       this.f1040.studentLoanInterestWorksheet.isNotDependent()) ||
     this.f1040.f8889.isNeeded() ||
-    (this.f1040.f8889Spouse?.isNeeded() ?? false)
+    (this.f1040.f8889Spouse?.isNeeded() ?? false) ||
+    (this.f1040.f7206?.isNeeded() ?? false)
 
   l1 = (): number | undefined => undefined
   l2a = (): number | undefined => undefined
@@ -115,7 +116,7 @@ export default class Schedule1 extends F1040Attachment {
   l14 = (): number | undefined => undefined
   l15 = (): number | undefined => this.f1040.scheduleSE.l13()
   l16 = (): number | undefined => undefined
-  l17 = (): number | undefined => undefined
+  l17 = (): number | undefined => this.f1040.f7206?.deduction()
   l18 = (): number | undefined => undefined
   l19a = (): number | undefined => undefined
   l19b = (): string | undefined => undefined

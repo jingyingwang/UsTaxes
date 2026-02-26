@@ -49,6 +49,7 @@ import F4136 from './F4136'
 import F2439 from './F2439'
 import F2441 from './F2441'
 import ScheduleC from './ScheduleC'
+import F7206 from './F7206'
 import F8949 from './F8949'
 import F6251 from './F6251'
 import F4137 from './F4137'
@@ -71,6 +72,7 @@ export default class F1040 extends F1040Base {
   scheduleA: ScheduleA
   scheduleB: ScheduleB
   scheduleC?: ScheduleC
+  f7206?: F7206
   scheduleD: ScheduleD
   scheduleE: ScheduleE
   scheduleSE: ScheduleSE
@@ -121,6 +123,11 @@ export default class F1040 extends F1040Base {
     this.scheduleE = new ScheduleE(this)
     this.scheduleEIC = new ScheduleEIC(this)
     this.scheduleSE = new ScheduleSE(this)
+
+    if (this.info.scheduleCInputs.length > 0) {
+      this.scheduleC = new ScheduleC(this)
+      this.f7206 = new F7206(this)
+    }
 
     this.schedule1 = new Schedule1(this)
     this.schedule2 = new Schedule2(this)
@@ -188,9 +195,11 @@ export default class F1040 extends F1040Base {
     const res1: (F1040Attachment | undefined)[] = [
       this.scheduleA,
       this.scheduleB,
+      this.scheduleC,
       this.scheduleD,
       this.scheduleE,
       this.scheduleSE,
+      this.f7206,
       this.scheduleR,
       this.scheduleEIC,
       this.schedule8812,

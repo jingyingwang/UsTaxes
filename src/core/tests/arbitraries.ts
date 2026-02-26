@@ -290,7 +290,8 @@ const scheduleCInput: Arbitrary<types.ScheduleCInput> = fc
     posCurrency(100000),
     posCurrency(100000),
     posCurrency(100000),
-    scheduleCExpenses
+    scheduleCExpenses,
+    fc.oneof(fc.constant(undefined), posCurrency(50000))
   )
   .map(
     ([
@@ -307,7 +308,8 @@ const scheduleCInput: Arbitrary<types.ScheduleCInput> = fc
       materialsAndSupplies,
       otherCosts,
       endingInventory,
-      expenses
+      expenses,
+      selfEmployedHealthInsurancePremiums
     ]) => ({
       personRole: types.PersonRole.PRIMARY,
       businessName,
@@ -323,7 +325,8 @@ const scheduleCInput: Arbitrary<types.ScheduleCInput> = fc
       materialsAndSupplies,
       otherCosts,
       endingInventory,
-      expenses
+      expenses,
+      selfEmployedHealthInsurancePremiums
     })
   )
 
