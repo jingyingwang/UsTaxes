@@ -33,3 +33,9 @@ yarn-error.log*
 
 /logs/
 /src/core/data/validate-fns.js
+
+# Gas Town (added by gt)
+.runtime/
+.claude/commands/
+.logs/
+.beads/
