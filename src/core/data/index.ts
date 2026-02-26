@@ -622,6 +622,27 @@ export interface Credit {
   type: CreditType
 }
 
+export interface ForeignEarnedIncomeExclusion {
+  // Required to qualify for either test
+  taxHomeInForeignCountry: boolean
+  // Bona fide residence test
+  bonaFideResidence: boolean
+  // Physical presence test (330+ full days)
+  physicalPresenceDays: number
+  // Days in the tax year within the qualifying period (optional; defaults to physicalPresenceDays)
+  qualifyingDays?: number
+  // Foreign earned income
+  foreignEarnedIncome: number
+  // Qualified housing expenses
+  housingExpenses: number
+  // Optional high-cost housing limit override (annual, before proration)
+  housingLimit?: number
+  // Self-employed taxpayers take a housing deduction instead of exclusion
+  isSelfEmployed: boolean
+  // Deductions/exclusions disallowed because allocable to excluded income
+  disallowedDeductions?: number
+}
+
 export interface Information<D = Date> {
   f1099s: Supported1099[]
   w2s: IncomeW2[]
@@ -639,6 +660,7 @@ export interface Information<D = Date> {
   stateResidencies: StateResidency[]
   healthSavingsAccounts: HealthSavingsAccount<D>[]
   individualRetirementArrangements: Ira[]
+  foreignEarnedIncomeExclusion?: ForeignEarnedIncomeExclusion
 }
 
 export type InformationDateString = Information<string>

@@ -139,6 +139,10 @@ export default class F1040 extends F1040Base {
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
 
+    if (this.info.foreignEarnedIncomeExclusion !== undefined) {
+      this.f2555 = new F2555(this)
+    }
+
     if (this.f1099ssas().length > 0) {
       const ssws = new SocialSecurityBenefitsWorksheet(this)
       this.socialSecurityBenefitsWorksheet = ssws
@@ -206,6 +210,7 @@ export default class F1040 extends F1040Base {
       this.f8910,
       this.f8936,
       this.f8949,
+      this.f2555,
       this.f8959,
       this.f8960,
       this.f8995,
@@ -395,6 +400,9 @@ export default class F1040 extends F1040Base {
   otherFormName = (): string | undefined => undefined
 
   computeTax = (): number | undefined => {
+    if (this.f2555?.isNeeded()) {
+      return this.f2555.taxWorksheetLine6()
+    }
     if (
       this.scheduleD.computeTaxOnQDWorksheet() ||
       this.totalQualifiedDividends() > 0

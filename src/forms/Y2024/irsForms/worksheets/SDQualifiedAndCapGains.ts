@@ -16,10 +16,20 @@ const cutoffAmounts: Cutoffs = {
 }
 
 export default class QualDivAndCGWorksheet extends Worksheet {
+  taxableIncomeOverride?: number
+
+  constructor(f1040: Worksheet['f1040'], taxableIncomeOverride?: number) {
+    super(f1040)
+    this.taxableIncomeOverride = taxableIncomeOverride
+  }
+
   // 1. Enter the amount from Form 1040 or 1040-SR, line 15.
   // However, if you are filing Form 2555(relating to foreign earned income),
   // enter the amount from line 3 of the Foreign Earned Income Tax Worksheet
   l1 = (): number => {
+    if (this.taxableIncomeOverride !== undefined) {
+      return this.taxableIncomeOverride
+    }
     if (this.f1040.f2555 !== undefined) {
       return this.f1040.f2555.l3() ?? 0
     }

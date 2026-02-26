@@ -236,6 +236,17 @@ export const healthSavingsAccounts = {
     family: 8300
   }
 }
+
+// Foreign earned income exclusion (Form 2555)
+// https://www.irs.gov/instructions/i2555
+export const foreignEarnedIncomeExclusion = {
+  // TY2025 limit
+  exclusionLimit: 130000,
+  // Base housing amount is 16% of the exclusion limit
+  housingBaseRate: 0.16,
+  // Default maximum housing expense is 30% of the exclusion limit
+  housingMaxRate: 0.3
+}
 // https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2024
 // https://www.irs.gov/instructions/i6251
 export const amt = {
