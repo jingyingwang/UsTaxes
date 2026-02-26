@@ -631,6 +631,7 @@ export interface Information<D = Date> {
   f3921s: F3921[]
   scheduleCInputs: ScheduleCInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
+  installmentSales?: InstallmentSale[]
   itemizedDeductions: ItemizedDeductions | undefined
   refund?: Refund
   taxPayer: TaxPayer<D>
@@ -678,6 +679,15 @@ export interface Asset<D = Date> {
 export type SoldAsset<D> = Asset<D> & {
   closePrice: number
   closeDate: D
+}
+
+export type InstallmentSaleType = 'capital' | 'business'
+export interface InstallmentSale {
+  description: string
+  contractPrice: number
+  grossProfit: number
+  paymentsReceived: number
+  type: InstallmentSaleType
 }
 
 export const isSold = <D>(p: Asset<D>): p is SoldAsset<D> => {
