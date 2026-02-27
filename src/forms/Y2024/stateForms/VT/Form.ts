@@ -1,1 +1,3 @@
-export default class VTForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('VT')

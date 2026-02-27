@@ -1,1 +1,3 @@
-export default class ORForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('OR')

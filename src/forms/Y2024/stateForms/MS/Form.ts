@@ -1,1 +1,3 @@
-export default class MSForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('MS')

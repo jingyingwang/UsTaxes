@@ -1,1 +1,3 @@
-export default class WIForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('WI')

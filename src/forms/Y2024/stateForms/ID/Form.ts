@@ -1,1 +1,3 @@
-export default class IDForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('ID')

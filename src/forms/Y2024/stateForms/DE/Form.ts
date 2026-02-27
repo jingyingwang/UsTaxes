@@ -1,1 +1,3 @@
-export default class DEForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('DE')

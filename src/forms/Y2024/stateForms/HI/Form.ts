@@ -1,1 +1,3 @@
-export default class HIForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('HI')

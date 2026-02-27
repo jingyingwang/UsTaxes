@@ -1,1 +1,3 @@
-export default class ARForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('AR')

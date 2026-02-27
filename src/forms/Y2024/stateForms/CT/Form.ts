@@ -1,1 +1,3 @@
-export default class CTForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('CT')

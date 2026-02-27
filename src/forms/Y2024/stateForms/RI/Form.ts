@@ -1,1 +1,3 @@
-export default class RIForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('RI')

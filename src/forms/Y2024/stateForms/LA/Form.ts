@@ -1,1 +1,3 @@
-export default class LAForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('LA')

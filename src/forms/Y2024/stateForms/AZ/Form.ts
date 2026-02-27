@@ -1,1 +1,3 @@
-export default class AZForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('AZ')

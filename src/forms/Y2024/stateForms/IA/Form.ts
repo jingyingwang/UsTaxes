@@ -1,1 +1,3 @@
-export default class IAForm {}
+import { createProgressiveStateForm } from '../ProgressiveStateForm'
+
+export default createProgressiveStateForm('IA')
