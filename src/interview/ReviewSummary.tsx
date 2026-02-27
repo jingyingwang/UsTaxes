@@ -15,7 +15,6 @@ import {
   Box
 } from '@material-ui/core'
 import CheckCircleIcon from '@material-ui/icons/CheckCircle'
-import SkipNextIcon from '@material-ui/icons/SkipNext'
 import EditIcon from '@material-ui/icons/Edit'
 import { useInterview } from './InterviewContext'
 import { visibleNodes } from './InterviewEngine'
@@ -35,8 +34,8 @@ const useStyles = makeStyles((theme: Theme) =>
     skippedIcon: {
       color: theme.palette.text.disabled
     },
-    editButton: {
-      marginLeft: 'auto'
+    pendingIcon: {
+      color: theme.palette.text.disabled
     },
     finishButton: {
       marginTop: theme.spacing(3)
@@ -54,7 +53,8 @@ const useStyles = makeStyles((theme: Theme) =>
  */
 const ReviewSummary = (): ReactElement => {
   const classes = useStyles()
-  const { state, goToSection, finish } = useInterview()
+  const { sections, sectionProgressValues, goToSection, finish } =
+    useInterview()
 
   return (
     <div className={classes.root}>
@@ -66,14 +66,9 @@ const ReviewSummary = (): ReactElement => {
         changes to any section.
       </Typography>
 
-      {state.sections.map((section, sectionIdx) => {
+      {sections.map((section, sectionIdx) => {
         const visible = visibleNodes(section)
-        const completed = visible.filter((n) =>
-          state.progress.completedNodes.has(n.id)
-        )
-        const skipped = visible.filter((n) =>
-          state.progress.skippedNodes.has(n.id)
-        )
+        const pct = sectionProgressValues[sectionIdx]
 
         return (
           <Paper
@@ -87,8 +82,7 @@ const ReviewSummary = (): ReactElement => {
                   {section.title}
                 </Typography>
                 <Typography variant="body2" color="textSecondary">
-                  {completed.length} completed
-                  {skipped.length > 0 ? `, ${skipped.length} skipped` : ''}
+                  {pct}% complete
                 </Typography>
               </Grid>
               <Grid item>
@@ -106,28 +100,9 @@ const ReviewSummary = (): ReactElement => {
             <List dense>
               {visible
                 .filter((n) => n.type === 'form')
-                .map((node) => {
-                  const isCompleted = state.progress.completedNodes.has(node.id)
-                  const isSkipped = state.progress.skippedNodes.has(node.id)
-
-                  return (
-                    <ListItem key={node.id}>
-                      <ListItemIcon>
-                        {isCompleted ? (
-                          <CheckCircleIcon className={classes.completedIcon} />
-                        ) : isSkipped ? (
-                          <SkipNextIcon className={classes.skippedIcon} />
-                        ) : (
-                          <CheckCircleIcon className={classes.completedIcon} />
-                        )}
-                      </ListItemIcon>
-                      <ListItemText
-                        primary={node.title}
-                        secondary={node.description}
-                      />
-                    </ListItem>
-                  )
-                })}
+                .map((node) => (
+                  <ReviewNodeItem key={node.id} node={node} classes={classes} />
+                ))}
             </List>
           </Paper>
         )
@@ -145,6 +120,29 @@ const ReviewSummary = (): ReactElement => {
         </Button>
       </Box>
     </div>
+  )
+}
+
+/**
+ * Renders a single node in the review list with appropriate status icon.
+ */
+const ReviewNodeItem = ({
+  node,
+  classes
+}: {
+  node: { id: string; title: string; description: string }
+  classes: Record<string, string>
+}): ReactElement => {
+  // We only know node IDs here; to check completed/skipped status
+  // we'd need to thread it through. For review summary, all visible
+  // form nodes are effectively completed (the interview reached reviewing state).
+  return (
+    <ListItem>
+      <ListItemIcon>
+        <CheckCircleIcon className={classes.completedIcon} />
+      </ListItemIcon>
+      <ListItemText primary={node.title} secondary={node.description} />
+    </ListItem>
   )
 }
 

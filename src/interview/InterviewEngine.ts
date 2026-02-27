@@ -1,28 +1,21 @@
-import {
-  InterviewState,
-  InterviewSection,
-  InterviewNode,
-  InterviewProgress,
-  InterviewStatus
-} from './types'
-
-const initialProgress: InterviewProgress = {
-  currentSectionIndex: 0,
-  currentNodeIndex: 0,
-  completedNodes: new Set(),
-  skippedNodes: new Set(),
-  answers: {}
-}
+import { InterviewState, InterviewSection, InterviewNode } from './types'
 
 /**
  * Creates a fresh interview state from a list of sections.
+ * Each call produces independent Set instances to avoid shared mutable state.
  */
 export const createInterviewState = (
   sections: InterviewSection[]
 ): InterviewState => ({
   status: 'not_started',
   sections,
-  progress: { ...initialProgress }
+  progress: {
+    currentSectionIndex: 0,
+    currentNodeIndex: 0,
+    completedNodes: new Set(),
+    skippedNodes: new Set(),
+    answers: {}
+  }
 })
 
 /**
@@ -35,14 +28,19 @@ export const currentSection = (
 
 /**
  * Returns the current node within the current section,
- * or undefined if past the end.
+ * or undefined if past the end or hidden.
  */
 export const currentNode = (
   state: InterviewState
 ): InterviewNode | undefined => {
   const section = currentSection(state)
   if (!section) return undefined
-  return section.nodes[state.progress.currentNodeIndex]
+  const node: InterviewNode | undefined =
+    section.nodes[state.progress.currentNodeIndex]
+  if (!node) return undefined
+  // Verify the node is still visible
+  if (node.shouldShow && !node.shouldShow()) return undefined
+  return node
 }
 
 /**
@@ -156,29 +154,67 @@ export const goBackInterview = (state: InterviewState): InterviewState => {
 }
 
 /**
- * Record an answer for a gating question node.
- * If the answer is false, dependent form nodes in the same section
- * are skipped.
+ * Record an answer for a gating question node and mark it completed.
+ * When answer is false, marks hidden dependent nodes as skipped.
  */
 export const answerGatingQuestion = (
   state: InterviewState,
   nodeId: string,
   answer: boolean
 ): InterviewState => {
+  const completedNodes = new Set(state.progress.completedNodes)
+  completedNodes.add(nodeId)
+
+  const newAnswers = {
+    ...state.progress.answers,
+    [nodeId]: answer
+  }
+
+  // When answering "No", mark dependent form nodes as skipped
+  const skippedNodes = new Set(state.progress.skippedNodes)
+  if (!answer) {
+    const section = currentSection(state)
+    if (section) {
+      // Find the form node(s) immediately following this gating question
+      // that depend on this answer. They are the consecutive form nodes
+      // right after this question in the same section.
+      const qIdx = section.nodes.findIndex((n) => n.id === nodeId)
+      for (let i = qIdx + 1; i < section.nodes.length; i++) {
+        const n = section.nodes[i]
+        if (n.type === 'question') break // Hit the next gating question
+        skippedNodes.add(n.id)
+      }
+    }
+  }
+
   return {
     ...state,
     progress: {
       ...state.progress,
-      answers: {
-        ...state.progress.answers,
-        [nodeId]: answer
-      }
+      completedNodes,
+      skippedNodes,
+      answers: newAnswers
     }
   }
 }
 
 /**
+ * Answer a gating question and immediately advance to the next visible node.
+ * This is an atomic operation that avoids stale-closure issues.
+ */
+export const answerAndAdvance = (
+  state: InterviewState,
+  nodeId: string,
+  answer: boolean
+): InterviewState => {
+  const answered = answerGatingQuestion(state, nodeId, answer)
+  return advanceInterview(answered)
+}
+
+/**
  * Jump to a specific section (e.g., from the progress sidebar).
+ * If no visible nodes exist in the target section, finds the next
+ * section with visible nodes.
  */
 export const jumpToSection = (
   state: InterviewState,
@@ -186,20 +222,26 @@ export const jumpToSection = (
 ): InterviewState => {
   if (sectionIndex < 0 || sectionIndex >= state.sections.length) return state
 
-  const section = state.sections[sectionIndex]
-  const firstVisible = section.nodes.findIndex(
-    (n) => !n.shouldShow || n.shouldShow()
-  )
-
-  return {
-    ...state,
-    status: 'in_progress',
-    progress: {
-      ...state.progress,
-      currentSectionIndex: sectionIndex,
-      currentNodeIndex: firstVisible >= 0 ? firstVisible : 0
+  // Search forward from the target section for a visible node
+  for (let si = sectionIndex; si < state.sections.length; si++) {
+    const section = state.sections[si]
+    const firstVisible = section.nodes.findIndex(
+      (n) => !n.shouldShow || n.shouldShow()
+    )
+    if (firstVisible >= 0) {
+      return {
+        ...state,
+        status: 'in_progress',
+        progress: {
+          ...state.progress,
+          currentSectionIndex: si,
+          currentNodeIndex: firstVisible
+        }
+      }
     }
   }
+
+  return state
 }
 
 /**
@@ -248,7 +290,7 @@ export const sectionProgress = (
   state: InterviewState,
   sectionIndex: number
 ): number => {
-  const section = state.sections[sectionIndex]
+  const section: InterviewSection | undefined = state.sections[sectionIndex]
   if (!section) return 0
 
   const visible = visibleNodes(section)
@@ -277,18 +319,4 @@ export const overallProgress = (state: InterviewState): number => {
   ).length
 
   return Math.round((completed / allVisible.length) * 100)
-}
-
-/**
- * Get the new status based on progress.
- */
-export const deriveStatus = (state: InterviewState): InterviewStatus => {
-  if (state.progress.completedNodes.size === 0) return 'not_started'
-  const allVisible = state.sections.flatMap(visibleNodes)
-  const allDone = allVisible.every(
-    (n) =>
-      state.progress.completedNodes.has(n.id) ||
-      state.progress.skippedNodes.has(n.id)
-  )
-  return allDone ? 'reviewing' : 'in_progress'
 }

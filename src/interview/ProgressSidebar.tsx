@@ -67,9 +67,15 @@ const useStyles = makeStyles((theme: Theme) =>
 
 const ProgressSidebar = (): ReactElement => {
   const classes = useStyles()
-  const { state, progress, sectionProgressValues, goToSection } = useInterview()
+  const {
+    sections,
+    progress,
+    sectionProgressValues,
+    sectionIndex,
+    goToSection
+  } = useInterview()
 
-  const currentSectionIdx = state.progress.currentSectionIndex
+  const currentSectionIdx = sectionIndex
 
   const getSectionIcon = (sectionIndex: number): ReactElement => {
     const pct = sectionProgressValues[sectionIndex]
@@ -98,7 +104,7 @@ const ProgressSidebar = (): ReactElement => {
         />
       </div>
       <List>
-        {state.sections.map((section, idx) => (
+        {sections.map((section, idx) => (
           <ListItem
             key={section.id}
             className={`${classes.sectionItem} ${

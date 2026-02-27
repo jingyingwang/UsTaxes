@@ -1,7 +1,7 @@
 import {
   createContext,
   useContext,
-  useState,
+  useReducer,
   useCallback,
   PropsWithChildren,
   ReactElement,
@@ -9,18 +9,13 @@ import {
 } from 'react'
 import { useSelector } from 'ustaxes/redux'
 import { TaxesState } from 'ustaxes/redux'
+import { Information } from 'ustaxes/core/data'
+import { InterviewSection, InterviewNode, InterviewStatus } from './types'
 import {
-  InterviewState,
-  InterviewSection,
-  InterviewNode,
-  InterviewStatus
-} from './types'
-import {
-  createInterviewState,
   startInterview,
   advanceInterview,
   goBackInterview,
-  answerGatingQuestion,
+  answerAndAdvance,
   jumpToSection,
   completeInterview,
   currentSection as getCurrentSection,
@@ -30,13 +25,126 @@ import {
 } from './InterviewEngine'
 import { buildQuestionGraph } from './questionGraph'
 
+/**
+ * All state is unified in a single reducer to avoid stale-closure bugs.
+ * The answers dict lives alongside the interview progress so that
+ * answerAndAdvance can atomically record an answer and advance.
+ */
+interface UnifiedState {
+  answers: Record<string, boolean>
+  sectionIndex: number
+  nodeIndex: number
+  completedNodes: Set<string>
+  skippedNodes: Set<string>
+  status: InterviewStatus
+}
+
+type Action =
+  | { type: 'START'; sections: InterviewSection[] }
+  | { type: 'ADVANCE'; sections: InterviewSection[] }
+  | { type: 'GO_BACK'; sections: InterviewSection[] }
+  | {
+      type: 'ANSWER_AND_ADVANCE'
+      nodeId: string
+      answer: boolean
+      info: Information
+    }
+  | {
+      type: 'JUMP_TO_SECTION'
+      sectionIndex: number
+      sections: InterviewSection[]
+    }
+  | { type: 'FINISH'; sections: InterviewSection[] }
+
+/**
+ * Build an InterviewState from unified state + current sections.
+ * This is the bridge between our unified reducer and the engine functions.
+ */
+const toInterviewState = (us: UnifiedState, sections: InterviewSection[]) => ({
+  status: us.status,
+  sections,
+  progress: {
+    currentSectionIndex: us.sectionIndex,
+    currentNodeIndex: us.nodeIndex,
+    completedNodes: us.completedNodes,
+    skippedNodes: us.skippedNodes,
+    answers: us.answers
+  }
+})
+
+const fromInterviewState = (
+  is: ReturnType<typeof toInterviewState>,
+  answers: Record<string, boolean>
+): UnifiedState => ({
+  answers,
+  sectionIndex: is.progress.currentSectionIndex,
+  nodeIndex: is.progress.currentNodeIndex,
+  completedNodes: is.progress.completedNodes,
+  skippedNodes: is.progress.skippedNodes,
+  status: is.status
+})
+
+const initialUnifiedState: UnifiedState = {
+  answers: {},
+  sectionIndex: 0,
+  nodeIndex: 0,
+  completedNodes: new Set(),
+  skippedNodes: new Set(),
+  status: 'not_started'
+}
+
+function reducer(state: UnifiedState, action: Action): UnifiedState {
+  switch (action.type) {
+    case 'START': {
+      const is = toInterviewState(state, action.sections)
+      const result = startInterview(is)
+      return fromInterviewState(result, state.answers)
+    }
+    case 'ADVANCE': {
+      const is = toInterviewState(state, action.sections)
+      const result = advanceInterview(is)
+      return fromInterviewState(result, state.answers)
+    }
+    case 'GO_BACK': {
+      const is = toInterviewState(state, action.sections)
+      const result = goBackInterview(is)
+      return fromInterviewState(result, state.answers)
+    }
+    case 'ANSWER_AND_ADVANCE': {
+      // Atomic: record answer, rebuild sections with fresh closures, advance
+      const newAnswers = { ...state.answers, [action.nodeId]: action.answer }
+      // Rebuild sections so shouldShow closures capture the NEW answers
+      const freshSections = buildQuestionGraph(action.info, newAnswers)
+      const freshIs = toInterviewState(
+        { ...state, answers: newAnswers },
+        freshSections
+      )
+      const result = answerAndAdvance(freshIs, action.nodeId, action.answer)
+      return fromInterviewState(result, newAnswers)
+    }
+    case 'JUMP_TO_SECTION': {
+      const is = toInterviewState(state, action.sections)
+      const result = jumpToSection(is, action.sectionIndex)
+      return fromInterviewState(result, state.answers)
+    }
+    case 'FINISH': {
+      const is = toInterviewState(state, action.sections)
+      const result = completeInterview(is)
+      return fromInterviewState(result, state.answers)
+    }
+    default:
+      return state
+  }
+}
+
 interface InterviewContextValue {
-  state: InterviewState
+  sections: InterviewSection[]
   status: InterviewStatus
   currentSection: InterviewSection | undefined
   currentNode: InterviewNode | undefined
   progress: number
   sectionProgressValues: number[]
+  sectionIndex: number
 
   start: () => void
   advance: () => void
@@ -52,71 +160,63 @@ export const InterviewProvider = ({
   children
 }: PropsWithChildren<Record<string, unknown>>): ReactElement => {
   const info = useSelector((s: TaxesState) => s.information)
+  const [state, dispatch] = useReducer(reducer, initialUnifiedState)
 
-  // Gating answers are stored locally (not in Redux) since they're
-  // interview-navigation state, not tax data
-  const [answers, setAnswers] = useState<Record<string, boolean>>({})
-
+  // Build sections from current answers so shouldShow closures are up-to-date
   const sections = useMemo(
-    () => buildQuestionGraph(info, answers),
-    [info, answers]
+    () => buildQuestionGraph(info, state.answers),
+    [info, state.answers]
   )
 
-  const [interviewState, setInterviewState] = useState<InterviewState>(() =>
-    createInterviewState(sections)
-  )
-
-  // Keep sections in sync when answers change
-  const state: InterviewState = useMemo(
-    () => ({ ...interviewState, sections }),
-    [interviewState, sections]
+  const interviewState = useMemo(
+    () => toInterviewState(state, sections),
+    [state, sections]
   )
 
   const start = useCallback(() => {
-    setInterviewState((s) => startInterview({ ...s, sections }))
+    dispatch({ type: 'START', sections })
   }, [sections])
 
   const advance = useCallback(() => {
-    setInterviewState((s) => advanceInterview({ ...s, sections }))
+    dispatch({ type: 'ADVANCE', sections })
   }, [sections])
 
   const goBack = useCallback(() => {
-    setInterviewState((s) => goBackInterview({ ...s, sections }))
+    dispatch({ type: 'GO_BACK', sections })
   }, [sections])
 
   const answerQ = useCallback(
     (nodeId: string, answer: boolean) => {
-      setAnswers((prev) => ({ ...prev, [nodeId]: answer }))
-      setInterviewState((s) =>
-        answerGatingQuestion({ ...s, sections }, nodeId, answer)
-      )
+      // Pass info so reducer can rebuild sections with fresh answers
+      dispatch({ type: 'ANSWER_AND_ADVANCE', nodeId, answer, info })
     },
-    [sections]
+    [info]
   )
 
   const goToSection = useCallback(
     (sectionIndex: number) => {
-      setInterviewState((s) => jumpToSection({ ...s, sections }, sectionIndex))
+      dispatch({ type: 'JUMP_TO_SECTION', sectionIndex, sections })
     },
     [sections]
   )
 
   const finish = useCallback(() => {
-    setInterviewState((s) => completeInterview({ ...s, sections }))
+    dispatch({ type: 'FINISH', sections })
   }, [sections])
 
-  const progressValue = overallProgress(state)
-  const sectionProgressValues = state.sections.map((_, i) =>
-    sectionProgress(state, i)
+  const progressValue = overallProgress(interviewState)
+  const sectionProgressValues = sections.map((_, i) =>
+    sectionProgress(interviewState, i)
   )
 
   const value: InterviewContextValue = {
-    state,
+    sections,
     status: state.status,
-    currentSection: getCurrentSection(state),
-    currentNode: getCurrentNode(state),
+    currentSection: getCurrentSection(interviewState),
+    currentNode: getCurrentNode(interviewState),
     progress: progressValue,
     sectionProgressValues,
+    sectionIndex: state.sectionIndex,
     start,
     advance,
     goBack,
