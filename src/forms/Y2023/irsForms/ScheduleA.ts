@@ -16,7 +16,8 @@ const blankItemizedDeductions = {
   interest8d: 0,
   investmentInterest: 0,
   charityCashCheck: 0,
-  charityOther: 0
+  charityOther: 0,
+  casualtyAndTheftLosses: 0
 }
 
 export default class ScheduleA extends F1040Attachment {
@@ -105,7 +106,7 @@ export default class ScheduleA extends F1040Attachment {
   l13 = (): number => 0
   l14 = (): number => this.l11() + this.l12() + this.l13()
 
-  l15 = (): number => 0
+  l15 = (): number => Number(this.itemizedDeductions.casualtyAndTheftLosses)
 
   // TODO
   l16Other1 = (): string | undefined => undefined
