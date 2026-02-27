@@ -1,7 +1,6 @@
 import { Information, TaxYear, TaxYears } from 'ustaxes/core/data'
 import { YearsTaxesState } from 'ustaxes/redux'
 import { stringToState } from 'ustaxes/redux/fs'
-import { blankState } from 'ustaxes/redux/reducer'
 import { enumKeys } from 'ustaxes/core/util'
 
 /**
