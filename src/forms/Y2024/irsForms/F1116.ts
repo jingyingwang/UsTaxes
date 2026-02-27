@@ -1,6 +1,5 @@
 import { Income1099Div, Income1099Int } from 'ustaxes/core/data'
 import { FormTag } from 'ustaxes/core/irsForms/Form'
-import { sumFields } from 'ustaxes/core/irsForms/util'
 import F1040Attachment from './F1040Attachment'
 import { Field } from 'ustaxes/core/pdfFiller'
 

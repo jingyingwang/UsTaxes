@@ -152,18 +152,36 @@ const w2: Arbitrary<types.IncomeW2> = wages.chain((income) =>
 )
 
 export const f1099IntData: Arbitrary<types.F1099IntData> = fc
-  .nat()
-  .map((income) => ({ income }))
+  .tuple(fc.nat(), fc.option(posCurrency(500)), fc.option(word))
+  .map(([income, foreignTaxPaid, foreignCountry]) => ({
+    income,
+    ...(foreignTaxPaid !== null ? { foreignTaxPaid } : {}),
+    ...(foreignCountry !== null ? { foreignCountry } : {})
+  }))
 
 export const f1099DivData: Arbitrary<types.F1099DivData> = interest.chain(
   (dividends) =>
     fc
-      .tuple(fc.nat({ max: Math.round(dividends * 100) }), posCurrency(100000))
-      .map(([qdiv, totalCapitalGainsDistributions]) => ({
-        dividends,
-        qualifiedDividends: qdiv / 100,
-        totalCapitalGainsDistributions
-      }))
+      .tuple(
+        fc.nat({ max: Math.round(dividends * 100) }),
+        posCurrency(100000),
+        fc.option(posCurrency(500)),
+        fc.option(word)
+      )
+      .map(
+        ([
+          qdiv,
+          totalCapitalGainsDistributions,
+          foreignTaxPaid,
+          foreignCountry
+        ]) => ({
+          dividends,
+          qualifiedDividends: qdiv / 100,
+          totalCapitalGainsDistributions,
+          ...(foreignTaxPaid !== null ? { foreignTaxPaid } : {}),
+          ...(foreignCountry !== null ? { foreignCountry } : {})
+        })
+      )
 )
 
 export const f1099BData: Arbitrary<types.F1099BData> = fc
@@ -725,6 +743,14 @@ export class Arbitraries {
       type: types.CreditType.AdvanceChildTaxCredit
     }))
 
+  nolCarryforward = (): Arbitrary<types.NOLCarryforward> =>
+    fc
+      .tuple(
+        fc.integer({ min: 2018, max: this.currentYear - 1 }),
+        fc.nat({ max: 100000 })
+      )
+      .map(([year, amount]) => ({ year, amount }))
+
   information = (): Arbitrary<ValidatedInformation> =>
     fc
       .tuple(
@@ -743,7 +769,8 @@ export class Arbitraries {
         state,
         fc.array(this.healthSavingsAccount()),
         fc.array(this.credit(), { maxLength: 2 }),
-        fc.array(this.ira())
+        fc.array(this.ira()),
+        fc.array(this.nolCarryforward(), { maxLength: 3 })
       )
       .map(
         ([
@@ -762,7 +789,8 @@ export class Arbitraries {
           state,
           healthSavingsAccounts,
           credits,
-          individualRetirementArrangements
+          individualRetirementArrangements,
+          netOperatingLossCarryforwards
         ]) => ({
           f1099s,
           w2s,
@@ -779,7 +807,8 @@ export class Arbitraries {
           stateResidencies: [{ state }],
           healthSavingsAccounts,
           credits,
-          individualRetirementArrangements
+          individualRetirementArrangements,
+          netOperatingLossCarryforwards
         })
       )
 }

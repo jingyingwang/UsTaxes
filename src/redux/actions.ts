@@ -24,7 +24,9 @@ import {
   HealthSavingsAccountDateString,
   InformationDateString,
   Credit,
-  EditCreditAction
+  EditCreditAction,
+  NOLCarryforward,
+  EditNOLCarryforwardAction
 } from 'ustaxes/core/data'
 
 import {
@@ -99,7 +101,10 @@ export enum ActionName {
   REMOVE_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/REMOVE',
   ADD_CREDIT = 'CREDIT/ADD',
   EDIT_CREDIT = 'CREDIT/EDIT',
-  REMOVE_CREDIT = 'CREDIT/REMOVE'
+  REMOVE_CREDIT = 'CREDIT/REMOVE',
+  ADD_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/ADD',
+  EDIT_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/EDIT',
+  REMOVE_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/REMOVE'
 }
 
 interface Save<T, R> {
@@ -190,6 +195,18 @@ type RemoveScheduleK1Form1065 = Save<
 type AddCredit = Save<typeof ActionName.ADD_CREDIT, Credit>
 type EditCredit = Save<typeof ActionName.EDIT_CREDIT, EditCreditAction>
 type RemoveCredit = Save<typeof ActionName.REMOVE_CREDIT, number>
+type AddNOLCarryforward = Save<
+  typeof ActionName.ADD_NOL_CARRYFORWARD,
+  NOLCarryforward
+>
+type EditNOLCarryforward = Save<
+  typeof ActionName.EDIT_NOL_CARRYFORWARD,
+  EditNOLCarryforwardAction
+>
+type RemoveNOLCarryforward = Save<
+  typeof ActionName.REMOVE_NOL_CARRYFORWARD,
+  number
+>
 
 export type Actions =
   | SaveRefundInfo
@@ -244,6 +261,9 @@ export type Actions =
   | AddCredit
   | EditCredit
   | RemoveCredit
+  | AddNOLCarryforward
+  | EditNOLCarryforward
+  | RemoveNOLCarryforward
 
 export type SignalAction = (year: TaxYear) => Actions
 export type ActionCreator<A> = (formData: A) => SignalAction
@@ -548,5 +568,16 @@ export const editCredit: ActionCreator<EditCreditAction> = makeActionCreator(
 
 export const removeCredit: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_CREDIT,
+  indexValidator
+)
+
+export const addNOLCarryforward: ActionCreator<NOLCarryforward> =
+  makeActionCreator(ActionName.ADD_NOL_CARRYFORWARD)
+
+export const editNOLCarryforward: ActionCreator<EditNOLCarryforwardAction> =
+  makeActionCreator(ActionName.EDIT_NOL_CARRYFORWARD)
+
+export const removeNOLCarryforward: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_NOL_CARRYFORWARD,
   indexValidator
 )
