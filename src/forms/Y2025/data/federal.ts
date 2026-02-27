@@ -387,6 +387,15 @@ export const EIC: EICDef = {
   }
 }
 
+export const underpaymentPenalty = {
+  rate: 0.08,
+  // Safe harbor: no penalty if underpayment < this amount
+  minimumUnderpayment: 1000,
+  // AGI threshold above which 110% of prior year tax applies (vs 100%)
+  highIncomeThreshold: (filingStatus: FilingStatus): number =>
+    filingStatus === FilingStatus.MFS ? 75000 : 150000
+}
+
 export default federalBrackets
 
 // Constants used in the social security benefits worksheet
