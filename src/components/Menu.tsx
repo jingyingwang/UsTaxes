@@ -49,6 +49,7 @@ import { PartnershipIncome } from './income/PartnershipIncome'
 import AmendedReturn from './amended/AmendedReturn'
 import { SCorpIncome } from './income/SCorpIncome'
 import { EstateAndTrustIncome } from './income/EstateAndTrustIncome'
+import { BusinessIncome } from './income/BusinessIncome'
 import { TaxYear } from 'ustaxes/core/data'
 import { AdvanceChildTaxCredit } from './Y2021/AdvanceChildTaxCredit'
 import { YearsTaxesState } from 'ustaxes/redux'
@@ -140,6 +141,11 @@ export const drawerSections: Section[] = [
       ),
       item('Stock options', Urls.income.stockOptions, <StockOptions />),
       item('ESPP transfers', Urls.income.esppOptions, <ESPPOptions />),
+      item(
+        'Business Income (Schedule C)',
+        Urls.income.businessIncome,
+        <BusinessIncome />
+      ),
       item(
         'Partnership Income',
         Urls.income.partnershipIncome,
