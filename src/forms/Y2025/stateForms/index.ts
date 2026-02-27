@@ -13,6 +13,10 @@ import makeMIForm from './MI/Form'
 import makeNCForm from './NC/Form'
 import makePAForm from './PA/Form'
 import makeUTForm from './UT/Form'
+import makeGAForm from './GA/Form'
+import makeNJForm from './NJ/Form'
+import makeVAForm from './VA/Form'
+import makeOHForm from './OH/Form'
 
 export const noFilingRequirementStates: State[] = [
   'AK',
@@ -36,7 +40,11 @@ export const stateForms: {
   MI: makeMIForm,
   NC: makeNCForm,
   PA: makePAForm,
-  UT: makeUTForm
+  UT: makeUTForm,
+  GA: makeGAForm,
+  NJ: makeNJForm,
+  VA: makeVAForm,
+  OH: makeOHForm
 }
 
 export const createStateReturn = (
