@@ -93,17 +93,34 @@ describe('fica', () => {
         // Should never give SS refund with 1 or fewer W2s
         expect(hasSSRefund(f1040)).toEqual(false)
       } else {
-        const ssWithheld = f1040
+        // SS refund is calculated per-person: each person's total SS withholding
+        // across all their W2s is compared to the max independently.
+        const primarySS = f1040
           .validW2s()
+          .filter((w2) => w2.personRole == PersonRole.PRIMARY)
           .map((w2) => w2.ssWithholding)
           .reduce((l, r) => l + r, 0)
+        const spouseSS = f1040
+          .validW2s()
+          .filter((w2) => w2.personRole == PersonRole.SPOUSE)
+          .map((w2) => w2.ssWithholding)
+          .reduce((l, r) => l + r, 0)
+
+        const anyW2OverMax = f1040
+          .validW2s()
+          .some((w2) => w2.ssWithholding > fica.maxSSTax)
+
+        const hasPersonExcess =
+          !anyW2OverMax &&
+          (primarySS > fica.maxSSTax || spouseSS > fica.maxSSTax)
+
         if (
           f1040.wages() <= fica.maxIncomeSSTaxApplies ||
-          f1040.validW2s().some((w2) => w2.ssWithholding > fica.maxSSTax) ||
-          ssWithheld < fica.maxSSTax
+          anyW2OverMax ||
+          !hasPersonExcess
         ) {
           // Should never give SS refund if W2 income below max threshold, some W2 has
-          // withheld over the max, or there is no SS withholding to refund.
+          // withheld over the max, or no person has excess SS withholding.
           expect(hasSSRefund(f1040)).toEqual(false)
         } else {
           // Otherwise, should always give SS refund, and attach schedule 3
@@ -123,19 +140,23 @@ describe('fica', () => {
         expect(displayRound(ssRefund)).not.toBeUndefined()
         expect(ssRefund).toBeGreaterThan(0)
 
-        const ssWithheld =
-          f1040
-            .validW2s()
-            .filter((w2) => w2.personRole == PersonRole.PRIMARY)
-            .map((w2) => w2.ssWithholding)
-            .reduce((l, r) => l + r, 0) +
-          f1040
-            .validW2s()
-            .filter((w2) => w2.personRole == PersonRole.SPOUSE)
-            .map((w2) => w2.ssWithholding)
-            .reduce((l, r) => l + r, 0)
+        // Expected refund is computed per-person, matching the implementation
+        const primarySS = f1040
+          .validW2s()
+          .filter((w2) => w2.personRole == PersonRole.PRIMARY)
+          .map((w2) => w2.ssWithholding)
+          .reduce((l, r) => l + r, 0)
+        const spouseSS = f1040
+          .validW2s()
+          .filter((w2) => w2.personRole == PersonRole.SPOUSE)
+          .map((w2) => w2.ssWithholding)
+          .reduce((l, r) => l + r, 0)
 
-        expect(ssRefund).toEqual(ssWithheld - fica.maxSSTax)
+        const expectedRefund =
+          Math.max(0, primarySS - fica.maxSSTax) +
+          Math.max(0, spouseSS - fica.maxSSTax)
+
+        expect(ssRefund).toEqual(expectedRefund)
       } else {
         fc.pre(false)
       }
