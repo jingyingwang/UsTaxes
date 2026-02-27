@@ -20,6 +20,13 @@ export default class Schedule1 extends F1040Attachment {
     }
   }
 
+  necIncomeWithoutScheduleC = (): number => {
+    if (this.f1040.scheduleC?.isNeeded()) return 0
+    return this.f1040
+      .f1099Necs()
+      .reduce((sum, nec) => sum + nec.form.nonemployeeCompensation, 0)
+  }
+
   isNeeded = (): boolean =>
     (this.f1040.scheduleC?.isNeeded() ?? false) ||
     this.f1040.scheduleE.isNeeded() ||
@@ -31,7 +38,8 @@ export default class Schedule1 extends F1040Attachment {
     this.f1040.f8889.isNeeded() ||
     (this.f1040.f8889Spouse?.isNeeded() ?? false) ||
     this.f1040.totalEarlyWithdrawalPenalty() > 0 ||
-    this.nolWorksheet !== undefined
+    this.nolWorksheet !== undefined ||
+    this.necIncomeWithoutScheduleC() > 0
 
   l1 = (): number | undefined => undefined
   l2a = (): number | undefined => undefined
@@ -80,7 +88,16 @@ export default class Schedule1 extends F1040Attachment {
       this.otherIncomeStrings.add('HSA')
     }
 
-    return sumFields([this.f1040.f8889.l20(), this.f1040.f8889Spouse?.l20()])
+    // 1099-NEC income goes here when no Schedule C (not self-employed)
+    const necIncome = this.necIncomeWithoutScheduleC()
+    if (necIncome > 0) {
+      this.otherIncomeStrings.add('1099-NEC')
+    }
+
+    return (
+      sumFields([this.f1040.f8889.l20(), this.f1040.f8889Spouse?.l20()]) +
+      necIncome
+    )
   }
 
   l9 = (): number =>

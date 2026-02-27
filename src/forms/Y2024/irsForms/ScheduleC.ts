@@ -36,8 +36,19 @@ export default class ScheduleC extends F1040Attachment {
 
   // ---------- Part I: Income ----------
 
-  // Line 1: Gross receipts or sales
-  l1 = (): number | undefined => this.input()?.grossReceipts
+  // Line 1: Gross receipts or sales (includes 1099-NEC income)
+  l1 = (): number | undefined => {
+    const input = this.input()
+    if (input === undefined) return undefined
+    // Add 1099-NEC nonemployee compensation to first Schedule C only
+    if (this.index === 0) {
+      const necIncome = this.f1040
+        .f1099Necs()
+        .reduce((sum, nec) => sum + nec.form.nonemployeeCompensation, 0)
+      return input.grossReceipts + necIncome
+    }
+    return input.grossReceipts
+  }
 
   // Line 2: Returns and allowances
   l2 = (): number | undefined => this.input()?.returns
