@@ -68,6 +68,8 @@ const moduleCode = standaloneCode(ajv, {
   Edit1098tAction: '#/definitions/Edit1098tAction',
   ScheduleCInput: '#/definitions/ScheduleCInput',
   EditScheduleCAction: '#/definitions/EditScheduleCAction',
+  ScheduleHInput: '#/definitions/ScheduleHInput',
+  EditScheduleHAction: '#/definitions/EditScheduleHAction',
   CapitalLossCarryforward: '#/definitions/CapitalLossCarryforward',
   CostBasisMethod: '#/definitions/CostBasisMethod',
   Form6781Input: '#/definitions/Form6781Input',
