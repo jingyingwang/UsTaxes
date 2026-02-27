@@ -19,6 +19,7 @@ import { Section, SectionItem } from './ResponsiveDrawer'
 import Urls from 'ustaxes/data/urls'
 import DataPropagator from './DataPropagator'
 import YearStatusBar from './YearStatusBar'
+import RefundEstimator from './RefundEstimator'
 import { useSelector } from 'react-redux'
 import { TaxYear } from 'ustaxes/core/data'
 import { YearsTaxesState } from 'ustaxes/redux'
@@ -84,6 +85,7 @@ export default function Main(): ReactElement {
             <Grid item className={classes.content}>
               {' '}
               <YearStatusBar />
+              <RefundEstimator />
             </Grid>
           ) : undefined}
           <Grid item className={classes.content}>
