@@ -22,6 +22,7 @@ import YearStatusBar from './YearStatusBar'
 import { useSelector } from 'react-redux'
 import { TaxYear } from 'ustaxes/core/data'
 import { YearsTaxesState } from 'ustaxes/redux'
+import { InterviewLayout } from 'ustaxes/interview'
 
 type Props = {
   isMobile: boolean
@@ -105,6 +106,15 @@ export default function Main(): ReactElement {
         <PagerProvider pages={steps}>
           <Routes>
             <Route path="/" element={<Navigate to={Urls.default} />} />
+            <Route
+              path={Urls.interview}
+              element={
+                <Layout showMenu={false}>
+                  <DataPropagator />
+                  <InterviewLayout />
+                </Layout>
+              }
+            />
             {allItems.map((item) => (
               <Route
                 key={item.title}

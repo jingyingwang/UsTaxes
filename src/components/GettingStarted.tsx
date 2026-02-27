@@ -1,8 +1,16 @@
 import { ReactElement } from 'react'
 import { Helmet } from 'react-helmet'
-import { Link, useMediaQuery } from '@material-ui/core'
+import {
+  Link,
+  useMediaQuery,
+  Button,
+  Grid,
+  Typography
+} from '@material-ui/core'
+import { Link as RouterLink } from 'react-router-dom'
 import { StartButtons, SingleButtons } from './pager'
 import { isWeb } from 'ustaxes/core/util'
+import Urls from 'ustaxes/data/urls'
 
 const urls = {
   repo: 'https://github.com/ustaxes/UsTaxes',
@@ -104,6 +112,32 @@ export default function GettingStarted(): ReactElement {
         paper file your return!
       </p>
       <h2>Get Started</h2>
+      <Typography variant="body2" color="textSecondary" paragraph>
+        Choose how you&apos;d like to fill out your return:
+      </Typography>
+      <Grid container spacing={2} style={{ marginBottom: '1em' }}>
+        <Grid item xs={12} sm={6}>
+          <Button
+            component={RouterLink}
+            to={Urls.interview}
+            variant="contained"
+            color="primary"
+            fullWidth
+          >
+            Guided Interview
+          </Button>
+        </Grid>
+        <Grid item xs={12} sm={6}>
+          <Button
+            component={RouterLink}
+            to={urls.startPage}
+            variant="outlined"
+            fullWidth
+          >
+            Jump to Forms
+          </Button>
+        </Grid>
+      </Grid>
       {isWeb() ? doubleButtons : singleButtons}
       <h2>Get Involved!</h2>
       <p>
