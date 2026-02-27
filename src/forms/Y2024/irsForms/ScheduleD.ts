@@ -47,7 +47,9 @@ export default class ScheduleD extends F1040Attachment {
   }
 
   isNeeded = (): boolean =>
-    this.f1040.f1099Bs().length > 0 || this.f1040.f8949.isNeeded()
+    this.f1040.f1099Bs().length > 0 ||
+    this.f1040.f8949.isNeeded() ||
+    this.f1040.f6252s.length > 0
 
   l21Min = (): number => {
     if (this.f1040.info.taxPayer.filingStatus === FilingStatus.MFS) {
@@ -102,7 +104,13 @@ export default class ScheduleD extends F1040Attachment {
   l3h = (): number =>
     sumFields(this.l3f8949s().map((f) => f.shortTermTotalGain()))
 
-  l4 = (): number | undefined => undefined
+  // Short-term gain from installment sales (Form 6252)
+  l4 = (): number | undefined => {
+    const gains = this.f1040.f6252s
+      .filter((f) => !f.isLongTerm())
+      .reduce((sum, f) => sum + f.installmentSaleIncome(), 0)
+    return gains > 0 ? gains : undefined
+  }
 
   l5 = (): number | undefined => undefined
 
@@ -168,7 +176,13 @@ export default class ScheduleD extends F1040Attachment {
   l10h = (): number =>
     sumFields(this.l10f8949s().map((f) => f.longTermTotalGain()))
 
-  l11 = (): number | undefined => undefined
+  // Long-term gain from installment sales (Form 6252)
+  l11 = (): number | undefined => {
+    const gains = this.f1040.f6252s
+      .filter((f) => f.isLongTerm())
+      .reduce((sum, f) => sum + f.installmentSaleIncome(), 0)
+    return gains > 0 ? gains : undefined
+  }
 
   l12 = (): number | undefined => undefined
 

@@ -64,6 +64,8 @@ const moduleCode = standaloneCode(ajv, {
   EditIRAAction: '#/definitions/EditIraAction',
   Credit: '#/definitions/Credit',
   EditCreditAction: '#/definitions/EditCreditAction',
+  InstallmentSaleInput: '#/definitions/InstallmentSaleInput',
+  EditInstallmentSaleAction: '#/definitions/EditInstallmentSaleAction',
   ScheduleCInput: '#/definitions/ScheduleCInput',
   EditScheduleCAction: '#/definitions/EditScheduleCAction'
 })

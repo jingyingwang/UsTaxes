@@ -91,6 +91,10 @@ export const editHSAAction =
   fns.EditHSAAction as ValidateFunction<types.EditHSAAction>
 export const editCreditAction =
   fns.EditCreditAction as ValidateFunction<types.EditCreditAction>
+export const installmentSale =
+  fns.InstallmentSaleInput as ValidateFunction<types.InstallmentSaleInput>
+export const editInstallmentSaleAction =
+  fns.EditInstallmentSaleAction as ValidateFunction<types.EditInstallmentSaleAction>
 export const scheduleC =
   fns.ScheduleCInput as ValidateFunction<types.ScheduleCInput>
 export const editScheduleCAction =

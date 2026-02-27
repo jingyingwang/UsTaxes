@@ -16,6 +16,7 @@ export const blankState: Information = {
   questions: {},
   f1098es: [],
   f3921s: [],
+  installmentSales: [],
   scheduleCInputs: [],
   scheduleK1Form1065s: [],
   itemizedDeductions: undefined,
@@ -297,6 +298,28 @@ const formReducer = (
       return {
         ...newState,
         f3921s: newf3921s
+      }
+    }
+    case ActionName.ADD_INSTALLMENT_SALE: {
+      return {
+        ...newState,
+        installmentSales: [...newState.installmentSales, action.formData]
+      }
+    }
+    case ActionName.EDIT_INSTALLMENT_SALE: {
+      const newSales = [...newState.installmentSales]
+      newSales.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        installmentSales: newSales
+      }
+    }
+    case ActionName.REMOVE_INSTALLMENT_SALE: {
+      const newSales = [...newState.installmentSales]
+      newSales.splice(action.formData, 1)
+      return {
+        ...newState,
+        installmentSales: newSales
       }
     }
     case ActionName.ADD_SCHEDULE_C: {

@@ -462,6 +462,23 @@ export enum AccountingMethod {
   other = 'other'
 }
 
+// See https://www.irs.gov/forms-pubs/about-form-6252
+export interface InstallmentSaleInput {
+  personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
+  propertyDescription: string
+  dateAcquired: string
+  dateSold: string
+  wasRelatedPartySale: boolean
+  sellingPrice: number // Line 5
+  mortgagesAssumed: number // Line 6
+  costOrBasis: number // Line 8
+  depreciationAllowed: number // Line 9
+  commissions: number // Line 11
+  incomeRecapture: number // Line 12 (from Form 4797, Part III)
+  paymentsReceived: number // Part III, Line 24 - payments received this year
+  isLongTerm: boolean // Determines Schedule D Part I vs Part II
+}
+
 // See https://www.irs.gov/forms-pubs/about-schedule-c-form-1040
 export interface ScheduleCInput {
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
@@ -629,6 +646,7 @@ export interface Information<D = Date> {
   estimatedTaxes: EstimatedTaxPayments[]
   f1098es: F1098e[]
   f3921s: F3921[]
+  installmentSales: InstallmentSaleInput[]
   scheduleCInputs: ScheduleCInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
   itemizedDeductions: ItemizedDeductions | undefined
@@ -703,6 +721,8 @@ export type EditHSAAction = ArrayItemEditAction<HealthSavingsAccountDateString>
 export type EditIraAction = ArrayItemEditAction<Ira>
 export type EditAssetAction = ArrayItemEditAction<Asset<Date>>
 export type EditF3921Action = ArrayItemEditAction<F3921>
+export type EditInstallmentSaleAction =
+  ArrayItemEditAction<InstallmentSaleInput>
 export type EditScheduleCAction = ArrayItemEditAction<ScheduleCInput>
 export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>

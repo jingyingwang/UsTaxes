@@ -19,6 +19,7 @@ import {
   ItemizedDeductions,
   F3921,
   ScheduleK1Form1065,
+  InstallmentSaleInput,
   ScheduleCInput,
   TaxYear,
   HealthSavingsAccountDateString,
@@ -38,6 +39,7 @@ import {
   EditIraAction,
   EditAssetAction,
   EditF3921Action,
+  EditInstallmentSaleAction,
   EditScheduleCAction,
   EditScheduleK1Form1065Action
 } from 'ustaxes/core/data'
@@ -91,6 +93,9 @@ export enum ActionName {
   ADD_F3921 = 'F3921/ADD',
   EDIT_F3921 = 'F3921/EDIT',
   REMOVE_F3921 = 'F3921/REMOVE',
+  ADD_INSTALLMENT_SALE = 'INSTALLMENT_SALE/ADD',
+  EDIT_INSTALLMENT_SALE = 'INSTALLMENT_SALE/EDIT',
+  REMOVE_INSTALLMENT_SALE = 'INSTALLMENT_SALE/REMOVE',
   ADD_SCHEDULE_C = 'SCHEDULE_C/ADD',
   EDIT_SCHEDULE_C = 'SCHEDULE_C/EDIT',
   REMOVE_SCHEDULE_C = 'SCHEDULE_C/REMOVE',
@@ -169,6 +174,18 @@ type RemoveAssets = Save<typeof ActionName.REMOVE_ASSETS, number[]>
 type AddF3921 = Save<typeof ActionName.ADD_F3921, F3921>
 type EditF3921 = Save<typeof ActionName.EDIT_F3921, EditF3921Action>
 type RemoveF3921 = Save<typeof ActionName.REMOVE_F3921, number>
+type AddInstallmentSale = Save<
+  typeof ActionName.ADD_INSTALLMENT_SALE,
+  InstallmentSaleInput
+>
+type EditInstallmentSale = Save<
+  typeof ActionName.EDIT_INSTALLMENT_SALE,
+  EditInstallmentSaleAction
+>
+type RemoveInstallmentSale = Save<
+  typeof ActionName.REMOVE_INSTALLMENT_SALE,
+  number
+>
 type AddScheduleC = Save<typeof ActionName.ADD_SCHEDULE_C, ScheduleCInput>
 type EditScheduleC = Save<
   typeof ActionName.EDIT_SCHEDULE_C,
@@ -235,6 +252,9 @@ export type Actions =
   | AddF3921
   | EditF3921
   | RemoveF3921
+  | AddInstallmentSale
+  | EditInstallmentSale
+  | RemoveInstallmentSale
   | AddScheduleC
   | EditScheduleC
   | RemoveScheduleC
@@ -511,6 +531,17 @@ export const editF3921: ActionCreator<EditF3921Action> = makeActionCreator(
 
 export const removeF3921: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_F3921,
+  indexValidator
+)
+
+export const addInstallmentSale: ActionCreator<InstallmentSaleInput> =
+  makeActionCreator(ActionName.ADD_INSTALLMENT_SALE, validators.installmentSale)
+
+export const editInstallmentSale: ActionCreator<EditInstallmentSaleAction> =
+  makeActionCreator(ActionName.EDIT_INSTALLMENT_SALE)
+
+export const removeInstallmentSale: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_INSTALLMENT_SALE,
   indexValidator
 )
 

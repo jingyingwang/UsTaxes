@@ -255,6 +255,48 @@ const f3921: Arbitrary<types.F3921> = fc
     }
   })
 
+const installmentSaleInput: Arbitrary<types.InstallmentSaleInput> = fc
+  .tuple(
+    maxWords(3),
+    posCurrency(1000000),
+    posCurrency(100000),
+    posCurrency(500000),
+    posCurrency(100000),
+    posCurrency(50000),
+    posCurrency(50000),
+    posCurrency(500000),
+    fc.boolean(),
+    fc.boolean()
+  )
+  .map(
+    ([
+      propertyDescription,
+      sellingPrice,
+      mortgagesAssumed,
+      costOrBasis,
+      depreciationAllowed,
+      commissions,
+      incomeRecapture,
+      paymentsReceived,
+      wasRelatedPartySale,
+      isLongTerm
+    ]) => ({
+      personRole: types.PersonRole.PRIMARY,
+      propertyDescription,
+      dateAcquired: '01/01/2020',
+      dateSold: '06/15/2024',
+      wasRelatedPartySale,
+      sellingPrice,
+      mortgagesAssumed,
+      costOrBasis,
+      depreciationAllowed: Math.min(depreciationAllowed, costOrBasis),
+      commissions,
+      incomeRecapture,
+      paymentsReceived,
+      isLongTerm
+    })
+  )
+
 const scheduleCExpenseTypeName: Arbitrary<types.ScheduleCExpenseTypeName> =
   fc.constantFrom(...util.enumKeys(types.ScheduleCExpenseType))
 
@@ -734,6 +776,7 @@ export class Arbitraries {
         fc.array(estTax),
         fc.array(f1098e),
         fc.array(f3921),
+        fc.array(installmentSaleInput),
         fc.array(scheduleCInput),
         fc.array(scheduleK1Form1065),
         itemizedDeductions,
@@ -753,6 +796,7 @@ export class Arbitraries {
           estimatedTaxes,
           f1098es,
           f3921s,
+          installmentSales,
           scheduleCInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
@@ -770,6 +814,7 @@ export class Arbitraries {
           estimatedTaxes,
           f1098es,
           f3921s,
+          installmentSales,
           scheduleCInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
