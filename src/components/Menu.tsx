@@ -28,6 +28,7 @@ import SpouseAndDependent from './TaxPayer/SpouseAndDependent'
 import F1099Info from './income/F1099Info'
 import EstimatedTaxes from './payments/EstimatedTaxes'
 import RealEstate from './income/RealEstate'
+import RoyaltyIncomeForm from './income/RoyaltyIncome'
 import GettingStarted from './GettingStarted'
 import F1098eInfo from './deductions/F1098eInfo'
 import ItemizedDeductions from './deductions/ItemizedDeductions'
@@ -127,6 +128,7 @@ export const drawerSections: Section[] = [
       item('Wages (W2)', Urls.income.w2s, <W2JobInfo />),
       item('Income (1099)', Urls.income.f1099s, <F1099Info />),
       item('Rental income', Urls.income.realEstate, <RealEstate />),
+      item('Royalty income', Urls.income.royaltyIncome, <RoyaltyIncomeForm />),
       item(
         'Other investments',
         Urls.income.otherInvestments,

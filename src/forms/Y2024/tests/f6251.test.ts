@@ -44,6 +44,7 @@ const baseInformation: ValidatedInformation = {
   ],
   estimatedTaxes: [],
   realEstate: [],
+  royaltyIncomes: [],
   taxPayer: {
     primaryPerson: {
       address: {

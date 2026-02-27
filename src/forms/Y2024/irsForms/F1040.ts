@@ -141,6 +141,7 @@ export default class F1040 extends F1040Base {
     }
     this.scheduleD = new ScheduleD(this)
     this.scheduleE = new ScheduleE(this)
+    this.f8582 = new F8582(this)
     this.scheduleEIC = new ScheduleEIC(this)
     this.scheduleFs = this.info.scheduleFInputs.map(
       (input) => new ScheduleF(this, input)

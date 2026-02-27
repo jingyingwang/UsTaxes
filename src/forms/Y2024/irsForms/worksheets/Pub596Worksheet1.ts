@@ -40,7 +40,7 @@ export default class Pub596Worksheet1 {
 
   l9 = (): number | undefined =>
     sumFields([
-      this.f1040.scheduleE.royaltyExpenses(),
+      this.f1040.scheduleE.royaltyExpensesTotal(),
       this.f1040.schedule1.l24b()
     ])
 

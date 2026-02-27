@@ -12,6 +12,7 @@ export const blankState: Information = {
   w2s: [],
   estimatedTaxes: [],
   realEstate: [],
+  royaltyIncomes: [],
   taxPayer: { dependents: [] },
   questions: {},
   f1098es: [],
@@ -369,6 +370,26 @@ const formReducer = (
       return {
         ...newState,
         scheduleFInputs: newScheduleFs
+    case ActionName.ADD_ROYALTY_INCOME: {
+      return {
+        ...newState,
+        royaltyIncomes: [...newState.royaltyIncomes, action.formData]
+      }
+    }
+    case ActionName.EDIT_ROYALTY_INCOME: {
+      const newRoyalties = [...newState.royaltyIncomes]
+      newRoyalties.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        royaltyIncomes: newRoyalties
+      }
+    }
+    case ActionName.REMOVE_ROYALTY_INCOME: {
+      const newRoyalties = [...newState.royaltyIncomes]
+      newRoyalties.splice(action.formData, 1)
+      return {
+        ...newState,
+        royaltyIncomes: newRoyalties
       }
     }
     case ActionName.ADD_SCHEDULE_K1_F1065: {

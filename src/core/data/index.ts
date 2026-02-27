@@ -437,6 +437,35 @@ export interface Property {
   otherExpenseType?: string
 }
 
+// Schedule E Part I royalty income (lines 4, expenses)
+export enum RoyaltyExpenseType {
+  advertising,
+  auto,
+  cleaning,
+  commissions,
+  insurance,
+  legal,
+  management,
+  interestMortgage,
+  interestOther,
+  repairs,
+  supplies,
+  taxes,
+  utilities,
+  depreciation,
+  other
+}
+
+export type RoyaltyExpenseTypeName = keyof typeof RoyaltyExpenseType
+
+export interface RoyaltyIncome {
+  personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
+  payerName: string
+  royaltyReceived: number
+  expenses: Partial<{ [K in RoyaltyExpenseTypeName]: number }>
+  otherExpenseType?: string
+}
+
 export interface F1098e {
   lender: string
   interest: number
@@ -800,6 +829,7 @@ export interface Information<D = Date> {
   f1099s: Supported1099[]
   w2s: IncomeW2[]
   realEstate: Property[]
+  royaltyIncomes: RoyaltyIncome[]
   estimatedTaxes: EstimatedTaxPayments[]
   f1098es: F1098e[]
   f3921s: F3921[]
@@ -902,6 +932,7 @@ export type EditAssetAction = ArrayItemEditAction<Asset<Date>>
 export type EditF3921Action = ArrayItemEditAction<F3921>
 export type EditF3922Action = ArrayItemEditAction<F3922>
 export type EditScheduleCAction = ArrayItemEditAction<ScheduleCInput>
+export type EditRoyaltyIncomeAction = ArrayItemEditAction<RoyaltyIncome>
 export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>
 export type EditForm6781Action = ArrayItemEditAction<Form6781Input>

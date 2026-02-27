@@ -25,6 +25,7 @@ import {
   ScheduleCInput,
   Form6781Input,
   ScheduleFInput,
+  RoyaltyIncome,
   TaxYear,
   HealthSavingsAccountDateString,
   InformationDateString,
@@ -53,6 +54,8 @@ import {
   EditScheduleFAction,
   EditScheduleK1Form1065Action,
   EditForm6781Action
+  EditRoyaltyIncomeAction,
+  EditScheduleK1Form1065Action
 } from 'ustaxes/core/data'
 import * as validators from 'ustaxes/core/data/validate'
 import { index as indexValidator } from 'ustaxes/core/data/validate'
@@ -117,6 +120,9 @@ export enum ActionName {
   ADD_SCHEDULE_F = 'SCHEDULE_F/ADD',
   EDIT_SCHEDULE_F = 'SCHEDULE_F/EDIT',
   REMOVE_SCHEDULE_F = 'SCHEDULE_F/REMOVE',
+  ADD_ROYALTY_INCOME = 'ROYALTY_INCOME/ADD',
+  EDIT_ROYALTY_INCOME = 'ROYALTY_INCOME/EDIT',
+  REMOVE_ROYALTY_INCOME = 'ROYALTY_INCOME/REMOVE',
   ADD_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/ADD',
   EDIT_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/EDIT',
   REMOVE_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/REMOVE',
@@ -229,6 +235,15 @@ type EditScheduleF = Save<
   EditScheduleFAction
 >
 type RemoveScheduleF = Save<typeof ActionName.REMOVE_SCHEDULE_F, number>
+type AddRoyaltyIncome = Save<
+  typeof ActionName.ADD_ROYALTY_INCOME,
+  RoyaltyIncome
+>
+type EditRoyaltyIncome = Save<
+  typeof ActionName.EDIT_ROYALTY_INCOME,
+  EditRoyaltyIncomeAction
+>
+type RemoveRoyaltyIncome = Save<typeof ActionName.REMOVE_ROYALTY_INCOME, number>
 type AddScheduleK1Form1065 = Save<
   typeof ActionName.ADD_SCHEDULE_K1_F1065,
   ScheduleK1Form1065
@@ -323,6 +338,9 @@ export type Actions =
   | AddScheduleF
   | EditScheduleF
   | RemoveScheduleF
+  | AddRoyaltyIncome
+  | EditRoyaltyIncome
+  | RemoveRoyaltyIncome
   | AddScheduleK1Form1065
   | EditScheduleK1Form1065
   | RemoveScheduleK1Form1065
@@ -657,6 +675,16 @@ export const editScheduleF: ActionCreator<EditScheduleFAction> =
 
 export const removeScheduleF: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_SCHEDULE_F,
+export const addRoyaltyIncome: ActionCreator<RoyaltyIncome> = makeActionCreator(
+  ActionName.ADD_ROYALTY_INCOME,
+  validators.royaltyIncome
+)
+
+export const editRoyaltyIncome: ActionCreator<EditRoyaltyIncomeAction> =
+  makeActionCreator(ActionName.EDIT_ROYALTY_INCOME)
+
+export const removeRoyaltyIncome: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_ROYALTY_INCOME,
   indexValidator
 )
 

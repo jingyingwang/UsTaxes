@@ -2,7 +2,9 @@ import {
   Address,
   Property,
   PropertyType,
-  PropertyExpenseTypeName
+  PropertyExpenseTypeName,
+  RoyaltyIncome,
+  RoyaltyExpenseTypeName
 } from 'ustaxes/core/data'
 import { displayNegPos, sumFields } from 'ustaxes/core/irsForms/util'
 import _ from 'lodash'
@@ -42,6 +44,7 @@ export default class ScheduleE extends F1040Attachment {
 
   isNeeded = (): boolean =>
     this.f1040.info.realEstate.length > 0 ||
+    this.f1040.info.royaltyIncomes.length > 0 ||
     this.f1040.info.scheduleK1Form1065s.length > 0
 
   addressString = (address: Address): string =>
@@ -74,9 +77,13 @@ export default class ScheduleE extends F1040Attachment {
     return fill(properties.map((a) => a.rentReceived))
   }
 
-  // TODO: not implemented
+  /**
+   * Line 4: Royalties received
+   * Sum of all royalty income sources
+   */
   l4 = (): MatrixRow => {
-    return [undefined, undefined, undefined]
+    const royalties = this.f1040.info.royaltyIncomes
+    return fill(royalties.map((r) => r.royaltyReceived))
   }
 
   getExpensesRow = (expType: PropertyExpenseTypeName): MatrixRow =>
@@ -123,8 +130,26 @@ export default class ScheduleE extends F1040Attachment {
   l12 = (): MatrixRow => this.getExpensesRow('mortgage')
   l18 = (): MatrixRow => this.getExpensesRow('depreciation')
 
-  // TODO - required from pub 596 worksheet 1
-  royaltyExpenses = (): number | undefined => undefined
+  /**
+   * Total royalty expenses across all royalty income sources.
+   * Maps royalty expense types to their total values.
+   */
+  royaltyExpensesTotal = (): number => {
+    const royalties = this.f1040.info.royaltyIncomes
+    return royalties.reduce((total, r) => {
+      const expenseSum = Object.values(r.expenses).reduce(
+        (sum, v) => sum + (v ?? 0),
+        0
+      )
+      return total + expenseSum
+    }, 0)
+  }
+
+  /**
+   * Get expenses for a specific royalty expense type across all royalties
+   */
+  getRoyaltyExpensesRow = (expType: RoyaltyExpenseTypeName): MatrixRow =>
+    fill(this.f1040.info.royaltyIncomes.map((r) => r.expenses[expType] ?? 0))
 
   l20 = (): MatrixRow =>
     fill(_.unzip(this.allExpenses()).map((column) => sumFields(column)))
@@ -154,15 +179,39 @@ export default class ScheduleE extends F1040Attachment {
   rentalNet = (): MatrixRow =>
     _.zipWith(this.l3(), this.l20(), (x, y) => (x ?? 0) - (y ?? 0)) as MatrixRow
 
+  /**
+   * Royalty net income per source (royalty received minus royalty expenses)
+   */
+  royaltyNet = (): MatrixRow => {
+    const royalties = this.f1040.info.royaltyIncomes
+    return fill(
+      royalties.map((r) => {
+        const totalExpenses = Object.values(r.expenses).reduce(
+          (sum, v) => sum + (v ?? 0),
+          0
+        )
+        return r.royaltyReceived - totalExpenses
+      })
+    )
+  }
+
   l24 = (): number =>
     sumFields(this.l21().filter((x) => x !== undefined && x > 0))
 
-  // TODO: Royalty losses
-  l25 = (): number => sumFields(this.l22())
+  /**
+   * Line 25: Losses from line 22 (deductible losses after passive activity limitation)
+   * Plus royalty losses (royalties are not subject to passive activity rules)
+   */
+  l25 = (): number => {
+    const rentalLosses = sumFields(this.l22())
+    const royaltyLosses = sumFields(
+      this.royaltyNet().map((v) => (v !== undefined && v < 0 ? v : undefined))
+    )
+    return rentalLosses + royaltyLosses
+  }
 
   l26 = (): number => sumFields([this.l24(), this.l25()])
 
-  // TODO: required from Pub 596
   l29ah = (): number | undefined =>
     this.f1040.info.scheduleK1Form1065s.reduce(
       (t, k1) => t + Math.max(0, k1.isPassive ? k1.ordinaryBusinessIncome : 0),

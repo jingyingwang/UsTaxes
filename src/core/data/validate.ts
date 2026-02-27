@@ -112,3 +112,7 @@ export const nolCarryforward =
 export const editNOLCarryforwardAction =
   fns.EditNOLCarryforwardAction as ValidateFunction<types.EditNOLCarryforwardAction>
 export const f8801Input = fns.F8801Input as ValidateFunction<types.F8801Input>
+export const royaltyIncome =
+  fns.RoyaltyIncome as ValidateFunction<types.RoyaltyIncome>
+export const editRoyaltyIncomeAction =
+  fns.EditRoyaltyIncomeAction as ValidateFunction<types.EditRoyaltyIncomeAction>

@@ -273,6 +273,30 @@ const f3922: Arbitrary<types.F3922> = fc
       numShares
     }
   })
+const royaltyExpenseTypeName: Arbitrary<types.RoyaltyExpenseTypeName> =
+  fc.constantFrom(...util.enumKeys(types.RoyaltyExpenseType))
+
+const royaltyExpenses: Arbitrary<
+  Partial<{ [K in types.RoyaltyExpenseTypeName]: number }>
+> = fc.set(royaltyExpenseTypeName).chain((es) =>
+  fc
+    .array(expense, { minLength: es.length, maxLength: es.length })
+    .map((nums) =>
+      _.chain(es)
+        .zipWith(nums, (e, num) => [e, num])
+        .fromPairs()
+        .value()
+    )
+)
+
+const royaltyIncome: Arbitrary<types.RoyaltyIncome> = fc
+  .tuple(maxWords(3), posCurrency(100000), royaltyExpenses)
+  .map(([payerName, royaltyReceived, expenses]) => ({
+    personRole: types.PersonRole.PRIMARY,
+    payerName,
+    royaltyReceived,
+    expenses
+  }))
 
 const scheduleCExpenseTypeName: Arbitrary<types.ScheduleCExpenseTypeName> =
   fc.constantFrom(...util.enumKeys(types.ScheduleCExpenseType))
@@ -878,6 +902,7 @@ export class Arbitraries {
         fc.array(f1099),
         fc.array(w2),
         fc.array(this.property()),
+        fc.array(royaltyIncome),
         fc.array(estTax),
         fc.array(f1098e),
         fc.array(f3921),
@@ -901,6 +926,7 @@ export class Arbitraries {
           f1099s,
           w2s,
           realEstate,
+          royaltyIncomes,
           estimatedTaxes,
           f1098es,
           f3921s,
@@ -922,6 +948,7 @@ export class Arbitraries {
           f1099s,
           w2s,
           realEstate,
+          royaltyIncomes,
           estimatedTaxes,
           f1098es,
           f3921s,
