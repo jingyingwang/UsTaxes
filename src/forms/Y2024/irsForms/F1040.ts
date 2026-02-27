@@ -519,6 +519,10 @@ export default class F1040 extends F1040Base {
       (res, f1099) => res + f1099.form.federalIncomeTaxWithheld,
       0
     ) +
+    this.f1099Necs().reduce(
+      (res, f1099) => res + f1099.form.federalIncomeTaxWithheld,
+      0
+    ) +
     this.f1099ssas().reduce(
       (res, f1099) => res + f1099.form.federalIncomeTaxWithheld,
       0

@@ -116,6 +116,7 @@ export enum Income1099Type {
   B = 'B',
   INT = 'INT',
   DIV = 'DIV',
+  NEC = 'NEC',
   R = 'R',
   SSA = 'SSA'
 }
@@ -163,17 +164,20 @@ export const normalizeF1099BData = (
   shortTermBasisReportedCostBasis:
     form.shortTermBasisReportedCostBasis ?? form.shortTermCostBasis ?? 0,
   shortTermBasisReportedWashSale: form.shortTermBasisReportedWashSale ?? 0,
-  shortTermBasisNotReportedProceeds: form.shortTermBasisNotReportedProceeds ?? 0,
+  shortTermBasisNotReportedProceeds:
+    form.shortTermBasisNotReportedProceeds ?? 0,
   shortTermBasisNotReportedCostBasis:
     form.shortTermBasisNotReportedCostBasis ?? 0,
-  shortTermBasisNotReportedWashSale: form.shortTermBasisNotReportedWashSale ?? 0,
+  shortTermBasisNotReportedWashSale:
+    form.shortTermBasisNotReportedWashSale ?? 0,
   longTermBasisReportedProceeds:
     form.longTermBasisReportedProceeds ?? form.longTermProceeds ?? 0,
   longTermBasisReportedCostBasis:
     form.longTermBasisReportedCostBasis ?? form.longTermCostBasis ?? 0,
   longTermBasisReportedWashSale: form.longTermBasisReportedWashSale ?? 0,
   longTermBasisNotReportedProceeds: form.longTermBasisNotReportedProceeds ?? 0,
-  longTermBasisNotReportedCostBasis: form.longTermBasisNotReportedCostBasis ?? 0,
+  longTermBasisNotReportedCostBasis:
+    form.longTermBasisNotReportedCostBasis ?? 0,
   longTermBasisNotReportedWashSale: form.longTermBasisNotReportedWashSale ?? 0
 })
 
@@ -229,6 +233,12 @@ export interface F1099SSAData {
   // benefitsRepaid: number
   netBenefits: number
   federalIncomeTaxWithheld: number
+}
+
+// See https://www.irs.gov/forms-pubs/about-form-1099-nec
+export interface F1099NecData {
+  nonemployeeCompensation: number // Box 1
+  federalIncomeTaxWithheld: number // Box 4
 }
 
 export interface Income1099<T, D> {
@@ -422,6 +432,7 @@ export type TaxPayerDateString = TaxPayer<string>
 export type Income1099Int = Income1099<Income1099Type.INT, F1099IntData>
 export type Income1099B = Income1099<Income1099Type.B, F1099BData>
 export type Income1099Div = Income1099<Income1099Type.DIV, F1099DivData>
+export type Income1099Nec = Income1099<Income1099Type.NEC, F1099NecData>
 export type Income1099R = Income1099<Income1099Type.R, F1099RData>
 export type Income1099SSA = Income1099<Income1099Type.SSA, F1099SSAData>
 
@@ -429,6 +440,7 @@ export type Supported1099 =
   | Income1099Int
   | Income1099B
   | Income1099Div
+  | Income1099Nec
   | Income1099R
   | Income1099SSA
 

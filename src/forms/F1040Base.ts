@@ -3,6 +3,7 @@ import {
   Income1099B,
   Income1099Div,
   Income1099Int,
+  Income1099Nec,
   Income1099R,
   Income1099SSA,
   Income1099Type,
@@ -111,6 +112,9 @@ export default abstract class F1040Base extends Form {
 
   f1099rs = (): Income1099R[] =>
     this.f1099sByType(Income1099Type.R) as Income1099R[]
+
+  f1099Necs = (): Income1099Nec[] =>
+    this.f1099sByType(Income1099Type.NEC) as Income1099Nec[]
 
   f1099ssas = (): Income1099SSA[] =>
     this.f1099sByType(Income1099Type.SSA) as Income1099SSA[]

@@ -116,6 +116,21 @@ const showIncome = (a: Supported1099): ReactElement => {
         </span>
       )
     }
+    case Income1099Type.NEC: {
+      return (
+        <span>
+          Nonemployee Compensation:{' '}
+          <Currency value={a.form.nonemployeeCompensation} />
+          {a.form.federalIncomeTaxWithheld > 0 && (
+            <>
+              <br />
+              Federal Income Tax Withheld:{' '}
+              <Currency value={a.form.federalIncomeTaxWithheld} />
+            </>
+          )}
+        </span>
+      )
+    }
     case Income1099Type.SSA: {
       return (
         <span>
@@ -159,6 +174,8 @@ interface F1099UserInput {
   qualifiedDividends: string | number
   totalCapitalGainsDistributions: string | number
   foreignTaxPaid: string | number
+  // NEC fields
+  nonemployeeCompensation: string | number
   personRole?: PersonRole.PRIMARY | PersonRole.SPOUSE
   // R fields
   grossDistribution: string | number
@@ -196,6 +213,8 @@ const blankUserInput: F1099UserInput = {
   qualifiedDividends: '',
   totalCapitalGainsDistributions: '',
   foreignTaxPaid: '',
+  // NEC fields
+  nonemployeeCompensation: '',
   // R fields
   grossDistribution: '',
   taxableAmount: '',
@@ -231,6 +250,9 @@ const toUserInput = (f: Supported1099): F1099UserInput => ({
           ...f.form,
           foreignTaxPaid: f.form.foreignTaxPaid ?? ''
         }
+      }
+      case Income1099Type.NEC: {
+        return f.form
       }
       case Income1099Type.R: {
         return f.form
@@ -320,6 +342,17 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
             input.totalCapitalGainsDistributions
           ),
           ...(foreignTax > 0 ? { foreignTaxPaid: foreignTax } : {})
+        }
+      }
+    }
+    case Income1099Type.NEC: {
+      return {
+        payer: input.payer,
+        personRole: input.personRole ?? PersonRole.PRIMARY,
+        type: input.formType,
+        form: {
+          nonemployeeCompensation: Number(input.nonemployeeCompensation),
+          federalIncomeTaxWithheld: Number(input.federalIncomeTaxWithheld)
         }
       }
     }
@@ -611,10 +644,27 @@ export default function F1099Info(): ReactElement {
     </Grid>
   )
 
+  const necFields = (
+    <Grid container spacing={2}>
+      <LabeledInput
+        label={boxLabel('1', 'Nonemployee Compensation')}
+        patternConfig={Patterns.currency}
+        name="nonemployeeCompensation"
+      />
+      <LabeledInput
+        label={boxLabel('4', 'Federal Income Tax Withheld')}
+        patternConfig={Patterns.currency}
+        name="federalIncomeTaxWithheld"
+        required={false}
+      />
+    </Grid>
+  )
+
   const specificFields = {
     [Income1099Type.INT]: intFields,
     [Income1099Type.B]: bFields,
     [Income1099Type.DIV]: divFields,
+    [Income1099Type.NEC]: necFields,
     [Income1099Type.R]: rFields,
     [Income1099Type.SSA]: ssaFields
   }
@@ -623,6 +673,7 @@ export default function F1099Info(): ReactElement {
     [Income1099Type.INT]: '1099-INT',
     [Income1099Type.B]: '1099-B',
     [Income1099Type.DIV]: '1099-DIV',
+    [Income1099Type.NEC]: '1099-NEC',
     [Income1099Type.R]: '1099-R',
     [Income1099Type.SSA]: 'SSA-1099'
   }
