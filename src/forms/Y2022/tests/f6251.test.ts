@@ -68,7 +68,8 @@ const baseInformation: ValidatedInformation = {
   f1098es: [],
   stateResidencies: [{ state: 'AL' }],
   healthSavingsAccounts: [],
-  individualRetirementArrangements: []
+  individualRetirementArrangements: [],
+  netOperatingLossCarryforwards: []
 }
 
 describe('AMT', () => {

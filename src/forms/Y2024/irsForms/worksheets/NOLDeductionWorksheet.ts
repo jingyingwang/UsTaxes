@@ -33,9 +33,9 @@ export default class NOLDeductionWorksheet {
 
   constructor(f1040: F1040) {
     this.f1040 = f1040
-    this.nolCarryforwards = [
-      ...(f1040.info.netOperatingLossCarryforwards ?? [])
-    ].sort((a, b) => a.year - b.year)
+    this.nolCarryforwards = [...f1040.info.netOperatingLossCarryforwards].sort(
+      (a, b) => a.year - b.year
+    )
   }
 
   /** Whether this worksheet is needed (has NOL carryforwards to apply) */
