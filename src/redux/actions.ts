@@ -24,7 +24,8 @@ import {
   HealthSavingsAccountDateString,
   InformationDateString,
   Credit,
-  EditCreditAction
+  EditCreditAction,
+  CapitalLossCarryforward
 } from 'ustaxes/core/data'
 
 import {
@@ -99,7 +100,8 @@ export enum ActionName {
   REMOVE_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/REMOVE',
   ADD_CREDIT = 'CREDIT/ADD',
   EDIT_CREDIT = 'CREDIT/EDIT',
-  REMOVE_CREDIT = 'CREDIT/REMOVE'
+  REMOVE_CREDIT = 'CREDIT/REMOVE',
+  SET_CAPITAL_LOSS_CARRYFORWARD = 'SET_CAPITAL_LOSS_CARRYFORWARD'
 }
 
 interface Save<T, R> {
@@ -190,6 +192,10 @@ type RemoveScheduleK1Form1065 = Save<
 type AddCredit = Save<typeof ActionName.ADD_CREDIT, Credit>
 type EditCredit = Save<typeof ActionName.EDIT_CREDIT, EditCreditAction>
 type RemoveCredit = Save<typeof ActionName.REMOVE_CREDIT, number>
+type SetCapitalLossCarryforward = Save<
+  typeof ActionName.SET_CAPITAL_LOSS_CARRYFORWARD,
+  CapitalLossCarryforward
+>
 
 export type Actions =
   | SaveRefundInfo
@@ -244,6 +250,7 @@ export type Actions =
   | AddCredit
   | EditCredit
   | RemoveCredit
+  | SetCapitalLossCarryforward
 
 export type SignalAction = (year: TaxYear) => Actions
 export type ActionCreator<A> = (formData: A) => SignalAction
@@ -550,3 +557,9 @@ export const removeCredit: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_CREDIT,
   indexValidator
 )
+
+export const setCapitalLossCarryforward: ActionCreator<CapitalLossCarryforward> =
+  makeActionCreator(
+    ActionName.SET_CAPITAL_LOSS_CARRYFORWARD,
+    validators.capitalLossCarryforward
+  )

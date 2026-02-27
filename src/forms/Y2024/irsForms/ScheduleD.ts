@@ -1,4 +1,8 @@
-import { F1099BData, FilingStatus } from 'ustaxes/core/data'
+import {
+  CapitalLossCarryforward,
+  F1099BData,
+  FilingStatus
+} from 'ustaxes/core/data'
 import { FormTag } from 'ustaxes/core/irsForms/Form'
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import SDRateGainWorksheet from './worksheets/SDRateGainWorksheet'
@@ -46,8 +50,15 @@ export default class ScheduleD extends F1040Attachment {
     return this._aggregated
   }
 
+  get carryforward(): CapitalLossCarryforward | undefined {
+    return this.f1040.info.capitalLossCarryforward
+  }
+
   isNeeded = (): boolean =>
-    this.f1040.f1099Bs().length > 0 || this.f1040.f8949.isNeeded()
+    this.f1040.f1099Bs().length > 0 ||
+    this.f1040.f8949.isNeeded() ||
+    (this.carryforward !== undefined &&
+      (this.carryforward.shortTerm > 0 || this.carryforward.longTerm > 0))
 
   l21Min = (): number => {
     if (this.f1040.info.taxPayer.filingStatus === FilingStatus.MFS) {
@@ -106,7 +117,14 @@ export default class ScheduleD extends F1040Attachment {
 
   l5 = (): number | undefined => undefined
 
-  l6 = (): number | undefined => undefined
+  // Short-term capital loss carryover from prior year
+  l6 = (): number | undefined => {
+    const st = this.carryforward?.shortTerm
+    if (st !== undefined && st > 0) {
+      return -st
+    }
+    return undefined
+  }
 
   l7 = (): number =>
     sumFields([
@@ -177,7 +195,14 @@ export default class ScheduleD extends F1040Attachment {
       .f1099Divs()
       .reduce((s, f) => s + f.form.totalCapitalGainsDistributions, 0)
 
-  l14 = (): number | undefined => undefined
+  // Long-term capital loss carryover from prior year
+  l14 = (): number | undefined => {
+    const lt = this.carryforward?.longTerm
+    if (lt !== undefined && lt > 0) {
+      return -lt
+    }
+    return undefined
+  }
 
   l15 = (): number =>
     sumFields([
@@ -247,6 +272,69 @@ export default class ScheduleD extends F1040Attachment {
       return -amount
     }
     return 0
+  }
+
+  /**
+   * Split the capital loss carryforward into short-term and long-term
+   * components per the IRS Capital Loss Carryover Worksheet.
+   *
+   * The worksheet logic:
+   * 1. Short-term losses first offset the $3,000 deduction allowance
+   * 2. Any remaining allowance is offset by long-term losses
+   * 3. Unused short-term losses carry forward as short-term
+   * 4. Unused long-term losses carry forward as long-term
+   */
+  lossCarryForwardByType = (): CapitalLossCarryforward => {
+    const totalLoss = this.l16()
+    if (totalLoss >= 0) {
+      return { shortTerm: 0, longTerm: 0 }
+    }
+
+    const deductionLimit = this.l21Min()
+    const stNet = this.l7()
+    const ltNet = this.l15()
+
+    // If short-term is a loss
+    if (stNet < 0) {
+      // Short-term loss used against deduction limit
+      const stUsed = Math.min(-stNet, deductionLimit)
+      // Remaining deduction limit available for long-term
+      const remainingLimit = deductionLimit - stUsed
+
+      if (ltNet < 0) {
+        // Both are losses
+        const ltUsed = Math.min(-ltNet, remainingLimit)
+        return {
+          shortTerm: Math.max(0, -stNet - stUsed),
+          longTerm: Math.max(0, -ltNet - ltUsed)
+        }
+      } else {
+        // Short-term loss, long-term gain. Net ST loss against LT gain first.
+        const stAfterOffset = -stNet - ltNet
+        if (stAfterOffset <= 0) {
+          return { shortTerm: 0, longTerm: 0 }
+        }
+        const stUsedFinal = Math.min(stAfterOffset, deductionLimit)
+        return {
+          shortTerm: Math.max(0, stAfterOffset - stUsedFinal),
+          longTerm: 0
+        }
+      }
+    } else {
+      // Short-term is gain or zero, long-term must be loss
+      if (ltNet < 0) {
+        const ltAfterOffset = -ltNet - stNet
+        if (ltAfterOffset <= 0) {
+          return { shortTerm: 0, longTerm: 0 }
+        }
+        const ltUsed = Math.min(ltAfterOffset, deductionLimit)
+        return {
+          shortTerm: 0,
+          longTerm: Math.max(0, ltAfterOffset - ltUsed)
+        }
+      }
+      return { shortTerm: 0, longTerm: 0 }
+    }
   }
 
   to1040 = (): number => this.l21() ?? this.l16()

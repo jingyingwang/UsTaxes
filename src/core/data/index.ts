@@ -127,6 +127,17 @@ export interface F1099BData {
   longTermCostBasis: number
 }
 
+export enum CostBasisMethod {
+  FIFO = 'FIFO',
+  SpecificId = 'SpecificId',
+  AverageCost = 'AverageCost'
+}
+
+export interface CapitalLossCarryforward {
+  shortTerm: number
+  longTerm: number
+}
+
 export interface F1099IntData {
   income: number
 }
@@ -639,6 +650,7 @@ export interface Information<D = Date> {
   stateResidencies: StateResidency[]
   healthSavingsAccounts: HealthSavingsAccount<D>[]
   individualRetirementArrangements: Ira[]
+  capitalLossCarryforward?: CapitalLossCarryforward
 }
 
 export type InformationDateString = Information<string>
@@ -673,6 +685,9 @@ export interface Asset<D = Date> {
   closeFee?: number
   quantity: number
   state?: State
+  costBasisMethod?: CostBasisMethod
+  washSaleAdjustment?: number
+  basisReportedToIRS?: boolean
 }
 
 export type SoldAsset<D> = Asset<D> & {

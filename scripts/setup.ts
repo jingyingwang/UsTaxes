@@ -65,7 +65,9 @@ const moduleCode = standaloneCode(ajv, {
   Credit: '#/definitions/Credit',
   EditCreditAction: '#/definitions/EditCreditAction',
   ScheduleCInput: '#/definitions/ScheduleCInput',
-  EditScheduleCAction: '#/definitions/EditScheduleCAction'
+  EditScheduleCAction: '#/definitions/EditScheduleCAction',
+  CapitalLossCarryforward: '#/definitions/CapitalLossCarryforward',
+  CostBasisMethod: '#/definitions/CostBasisMethod'
 })
 
 fs.writeFileSync(outputPath, moduleCode)
