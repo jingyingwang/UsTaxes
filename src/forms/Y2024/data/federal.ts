@@ -249,29 +249,39 @@ export const underpaymentPenalty = {
 }
 // https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2024
 // https://www.irs.gov/instructions/i6251
+// AMT exemption amounts and phase-out thresholds for 2024
+// See IRS Instructions for Form 6251 and Rev. Proc. 2023-34
+const amtExemptionAmounts: { [k in FilingStatus]: number } = {
+  [FilingStatus.S]: 85700,
+  [FilingStatus.HOH]: 85700,
+  [FilingStatus.MFJ]: 133300,
+  [FilingStatus.W]: 133300,
+  [FilingStatus.MFS]: 66650
+}
+
+// Phase-out begins when AMTI exceeds these thresholds
+const amtPhaseOutThresholds: { [k in FilingStatus]: number } = {
+  [FilingStatus.S]: 609350,
+  [FilingStatus.HOH]: 609350,
+  [FilingStatus.MFJ]: 1218700,
+  [FilingStatus.W]: 1218700,
+  [FilingStatus.MFS]: 609350
+}
+
 export const amt = {
-  excemption: (
-    filingStatus: FilingStatus,
-    income: number
-  ): number | undefined => {
-    switch (filingStatus) {
-      case FilingStatus.S:
-        if (income <= 609350) {
-          return 85700
-        }
-        break
-      case FilingStatus.MFJ:
-        if (income <= 1218700) {
-          return 133300
-        }
-        break
-      case FilingStatus.MFS:
-        if (income <= 66650) {
-          return 63250
-        }
+  // Computes the AMT exemption with phase-out (Exemption Worksheet).
+  // The exemption is reduced by 25 cents for every dollar AMTI exceeds
+  // the phase-out threshold. Exemption cannot go below zero.
+  excemption: (filingStatus: FilingStatus, income: number): number => {
+    const baseExemption = amtExemptionAmounts[filingStatus]
+    const threshold = amtPhaseOutThresholds[filingStatus]
+
+    if (income <= threshold) {
+      return baseExemption
     }
-    // TODO: Handle "Exemption Worksheet"
-    return undefined
+
+    const reduction = (income - threshold) * 0.25
+    return Math.max(0, baseExemption - reduction)
   },
 
   // Used for calculating Line 7 on form 6251. See instructions

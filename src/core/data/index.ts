@@ -142,6 +142,8 @@ export interface F1099IntData {
   income: number
   taxExemptInterest?: number // Box 8
   earlyWithdrawalPenalty?: number // Box 2
+  // Box 9: Specified private activity bond interest (subject to AMT)
+  privateActivityBondInterest?: number
 }
 
 export interface F1099DivData {

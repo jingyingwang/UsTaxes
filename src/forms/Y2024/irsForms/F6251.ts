@@ -110,8 +110,17 @@ export default class F6251 extends F1040Attachment {
 
   // TODO: Alternative tax net operating loss deduction
   l2f = (): number | undefined => undefined
-  // TODO: Interest from specified private activity bonds exempt from the regular tax
-  l2g = (): number | undefined => undefined
+  // Interest from specified private activity bonds exempt from the regular tax
+  // (1099-INT Box 9). This income is tax-exempt for regular tax but included in AMTI.
+  l2g = (): number | undefined => {
+    const total = this.f1040
+      .f1099Ints()
+      .reduce(
+        (sum, f1099) => sum + (f1099.form.privateActivityBondInterest ?? 0),
+        0
+      )
+    return total > 0 ? total : undefined
+  }
   // TODO: Qualified small business stock, see instructions
   l2h = (): number | undefined => undefined
 
@@ -232,8 +241,16 @@ export default class F6251 extends F1040Attachment {
     )
   }
 
-  // TODO: Alternative minimum tax foreign tax credit
-  l8 = (): number | undefined => undefined
+  // Alternative minimum tax foreign tax credit.
+  // Simplified: uses the regular foreign tax credit (Schedule 3, line 1) as a proxy,
+  // limited to not exceed the tentative minimum tax (line 7).
+  // A full implementation would require Form 1116 recalculated with AMT income.
+  l8 = (): number | undefined => {
+    const regularFTC = this.f1040.schedule3.l1() ?? 0
+    if (regularFTC <= 0) return undefined
+    const tentativeMinTax = this.l7() ?? 0
+    return Math.min(regularFTC, tentativeMinTax)
+  }
 
   l9 = (additionalAmount = 0): number => {
     const l6 = this.l6(additionalAmount)

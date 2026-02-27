@@ -46,6 +46,13 @@ const showIncome = (a: Supported1099): ReactElement => {
               <Currency value={a.form.earlyWithdrawalPenalty ?? 0} />
             </>
           )}
+          {(a.form.privateActivityBondInterest ?? 0) > 0 && (
+            <>
+              <br />
+              PAB Interest:{' '}
+              <Currency value={a.form.privateActivityBondInterest ?? 0} />
+            </>
+          )}
         </span>
       )
     }
@@ -113,6 +120,7 @@ interface F1099UserInput {
   interest: string | number
   taxExemptInterest: string | number
   earlyWithdrawalPenalty: string | number
+  privateActivityBondInterest: string | number
   // B Fields
   shortTermProceeds: string | number
   shortTermCostBasis: string | number
@@ -141,6 +149,7 @@ const blankUserInput: F1099UserInput = {
   interest: '',
   taxExemptInterest: '',
   earlyWithdrawalPenalty: '',
+  privateActivityBondInterest: '',
   // B Fields
   shortTermProceeds: '',
   shortTermCostBasis: '',
@@ -174,7 +183,8 @@ const toUserInput = (f: Supported1099): F1099UserInput => ({
         return {
           interest: f.form.income,
           taxExemptInterest: f.form.taxExemptInterest ?? '',
-          earlyWithdrawalPenalty: f.form.earlyWithdrawalPenalty ?? ''
+          earlyWithdrawalPenalty: f.form.earlyWithdrawalPenalty ?? '',
+          privateActivityBondInterest: f.form.privateActivityBondInterest ?? ''
         }
       }
       case Income1099Type.B: {
@@ -201,6 +211,7 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
     case Income1099Type.INT: {
       const taxExempt = Number(input.taxExemptInterest)
       const earlyPenalty = Number(input.earlyWithdrawalPenalty)
+      const pabInterest = Number(input.privateActivityBondInterest)
       return {
         payer: input.payer,
         personRole: input.personRole ?? PersonRole.PRIMARY,
@@ -208,7 +219,10 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
         form: {
           income: Number(input.interest),
           ...(taxExempt > 0 ? { taxExemptInterest: taxExempt } : {}),
-          ...(earlyPenalty > 0 ? { earlyWithdrawalPenalty: earlyPenalty } : {})
+          ...(earlyPenalty > 0 ? { earlyWithdrawalPenalty: earlyPenalty } : {}),
+          ...(pabInterest > 0
+            ? { privateActivityBondInterest: pabInterest }
+            : {})
         }
       }
     }
@@ -323,6 +337,12 @@ export default function F1099Info(): ReactElement {
         label={boxLabel('8', 'Tax-Exempt Interest')}
         patternConfig={Patterns.currency}
         name="taxExemptInterest"
+        required={false}
+      />
+      <LabeledInput
+        label={boxLabel('9', 'Specified Private Activity Bond Interest')}
+        patternConfig={Patterns.currency}
+        name="privateActivityBondInterest"
         required={false}
       />
     </Grid>
