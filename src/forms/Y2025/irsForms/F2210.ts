@@ -130,8 +130,13 @@ export default class F2210 extends F1040Attachment {
     this.l7(),
     this.l8(),
     this.l9(),
-    // Part IV (Short Method)
-    this.l10(),
-    this.penalty()
+    // Waiver reason checkboxes (boxes A-G)
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined,
+    undefined
   ]
 }
