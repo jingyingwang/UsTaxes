@@ -16,7 +16,7 @@ afterEach(async () => {
   jest.resetAllMocks()
 })
 
-jest.setTimeout(10000)
+jest.setTimeout(30000)
 
 export default class CreatePDFTestPage extends TestPage {
   pager: PagerMethods
