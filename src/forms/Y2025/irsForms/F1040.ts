@@ -63,6 +63,8 @@ import ScheduleF from './ScheduleF'
 import ScheduleH from './ScheduleH'
 import F5329 from './F5329'
 import F2210 from './F2210'
+import F8801 from './F8801'
+import F1040X from './F1040X'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
@@ -121,6 +123,8 @@ export default class F1040 extends F1040Base {
   f5329: F5329
   f5329Spouse?: F5329
   f2210: F2210
+  f8801: F8801
+  f1040x?: F1040X
   f8995?: F8995 | F8995A
   qualifiedAndCapGainsWorksheet?: SDQualifiedAndCapGains
   studentLoanInterestWorksheet?: StudentLoanInterestWorksheet
@@ -177,6 +181,7 @@ export default class F1040 extends F1040Base {
     }
 
     this.f2210 = new F2210(this)
+    this.f8801 = new F8801(this)
     this.f8880 = new F8880(this)
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
@@ -202,6 +207,10 @@ export default class F1040 extends F1040Base {
       } else {
         this.f8995 = new F8995(this)
       }
+    }
+
+    if ((this.info.amendedReturns ?? []).length > 0) {
+      this.f1040x = new F1040X(this)
     }
   }
 
@@ -248,6 +257,7 @@ export default class F1040 extends F1040Base {
       this.f5329Spouse,
       this.f5695,
       this.f6251,
+      this.f8801,
       this.f8606,
       this.f8606Spouse,
       this.f8814,
@@ -262,6 +272,7 @@ export default class F1040 extends F1040Base {
       this.f2210,
       this.f8960,
       this.f8995,
+      this.f1040x,
       this.schedule1,
       this.schedule2,
       this.schedule3
