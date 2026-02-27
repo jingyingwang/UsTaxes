@@ -48,6 +48,7 @@ import { StockOptions } from './income/StockOptions'
 import { ESPPOptions } from './income/ESPPOptions'
 import { PartnershipIncome } from './income/PartnershipIncome'
 import AmendedReturn from './amended/AmendedReturn'
+import PriorYearImport from './import/PriorYearImport'
 import { SCorpIncome } from './income/SCorpIncome'
 import { EstateAndTrustIncome } from './income/EstateAndTrustIncome'
 import { BusinessIncome } from './income/BusinessIncome'
@@ -117,6 +118,10 @@ export const drawerSections: Section[] = [
   {
     title: 'UsTaxes.org',
     items: [item('Getting Started', Urls.usTaxes.start, <GettingStarted />)]
+  },
+  {
+    title: 'Import',
+    items: [item('Prior Year Data', Urls.import.priorYear, <PriorYearImport />)]
   },
   {
     title: 'Personal',

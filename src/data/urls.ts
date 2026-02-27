@@ -41,6 +41,9 @@ const Urls = {
     education: '/credits/education'
   },
   interview: '/interview',
+  import: {
+    priorYear: '/import/prioryear'
+  },
   amendedReturn: '/amended/f1040x',
   importPdf: '/import/pdf',
   createPdf: '/createpdf',
