@@ -18,6 +18,7 @@ import makeOHForm from './OH/Form'
 import makePAForm from './PA/Form'
 import makeUTForm from './UT/Form'
 import makeVAForm from './VA/Form'
+import makeNYIT201 from './NY/Form'
 
 export const noFilingRequirementStates: State[] = [
   'AK',
@@ -44,6 +45,7 @@ export const stateForms: {
   MI: makeMIForm,
   NC: makeNCForm,
   NJ: makeNJForm,
+  NY: makeNYIT201,
   OH: makeOHForm,
   PA: makePAForm,
   UT: makeUTForm,
