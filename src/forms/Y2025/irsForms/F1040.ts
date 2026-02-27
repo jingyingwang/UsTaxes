@@ -58,6 +58,11 @@ import F8853 from './F8853'
 import F8582 from './F8582'
 import F4562 from './F4562'
 import F8829 from './F8829'
+import F8880 from './F8880'
+import ScheduleF from './ScheduleF'
+import ScheduleH from './ScheduleH'
+import F5329 from './F5329'
+import F2210 from './F2210'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
@@ -76,6 +81,8 @@ export default class F1040 extends F1040Base {
   scheduleC?: ScheduleC
   scheduleD: ScheduleD
   scheduleE: ScheduleE
+  scheduleFs: ScheduleF[]
+  scheduleH?: ScheduleH
   scheduleSE: ScheduleSE
   scheduleEIC: ScheduleEIC
   scheduleR?: ScheduleR
@@ -110,6 +117,10 @@ export default class F1040 extends F1040Base {
   f8959: F8959
   f8960: F8960
   f8962?: F8962
+  f8880?: F8880
+  f5329: F5329
+  f5329Spouse?: F5329
+  f2210: F2210
   f8995?: F8995 | F8995A
   qualifiedAndCapGainsWorksheet?: SDQualifiedAndCapGains
   studentLoanInterestWorksheet?: StudentLoanInterestWorksheet
@@ -129,6 +140,9 @@ export default class F1040 extends F1040Base {
     }
     this.scheduleD = new ScheduleD(this)
     this.scheduleE = new ScheduleE(this)
+    this.scheduleFs = this.info.scheduleFInputs.map(
+      (input) => new ScheduleF(this, input)
+    )
     this.scheduleEIC = new ScheduleEIC(this)
     this.scheduleSE = new ScheduleSE(this)
 
@@ -148,11 +162,22 @@ export default class F1040 extends F1040Base {
       this.f8889Spouse = new F8889(this, this.info.taxPayer.spouse)
     }
 
+    if (this.info.scheduleHInputs.length > 0) {
+      this.scheduleH = new ScheduleH(this)
+    }
+
     this.f8606 = new F8606(this, PersonRole.PRIMARY)
     if (this.info.taxPayer.spouse) {
       this.f8606Spouse = new F8606(this, PersonRole.SPOUSE)
     }
 
+    this.f5329 = new F5329(this, PersonRole.PRIMARY)
+    if (this.info.taxPayer.spouse) {
+      this.f5329Spouse = new F5329(this, PersonRole.SPOUSE)
+    }
+
+    this.f2210 = new F2210(this)
+    this.f8880 = new F8880(this)
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
 
@@ -208,6 +233,8 @@ export default class F1040 extends F1040Base {
       this.scheduleC,
       this.scheduleD,
       this.scheduleE,
+      ...this.scheduleFs,
+      this.scheduleH,
       this.scheduleSE,
       this.scheduleR,
       this.scheduleEIC,
@@ -217,11 +244,14 @@ export default class F1040 extends F1040Base {
       this.f8829,
       this.f4952,
       this.f4972,
+      this.f5329,
+      this.f5329Spouse,
       this.f5695,
       this.f6251,
       this.f8606,
       this.f8606Spouse,
       this.f8814,
+      this.f8880,
       this.f8888,
       this.f8889,
       this.f8889Spouse,
@@ -229,6 +259,7 @@ export default class F1040 extends F1040Base {
       this.f8936,
       this.f8949,
       this.f8959,
+      this.f2210,
       this.f8960,
       this.f8995,
       this.schedule1,
