@@ -10,11 +10,8 @@ export default class F8960 extends F1040Attachment {
 
   isNeeded = (): boolean => {
     const filingStatus = this.f1040.info.taxPayer.filingStatus
-    const totalW2Income = this.f1040.info.w2s.reduce(
-      (sum, w2) => sum + w2.income,
-      0
-    )
-    return netInvestmentIncomeTax.taxThreshold(filingStatus) < totalW2Income
+    const magi = this.f1040.l11()
+    return netInvestmentIncomeTax.taxThreshold(filingStatus) < magi
   }
 
   //Taxable Interest

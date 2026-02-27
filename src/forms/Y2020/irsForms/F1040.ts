@@ -37,6 +37,7 @@ import ScheduleB from './ScheduleB'
 import ScheduleC from './ScheduleC'
 import ScheduleD from './ScheduleD'
 import ScheduleE from './ScheduleE'
+import ScheduleSE from './ScheduleSE'
 import ScheduleEIC from './ScheduleEIC'
 import ScheduleR from './ScheduleR'
 import Form, { FormTag } from 'ustaxes/core/irsForms/Form'
@@ -70,6 +71,7 @@ export default class F1040 extends F1040Base {
   scheduleC?: ScheduleC
   scheduleD: ScheduleD
   scheduleE: ScheduleE
+  scheduleSE?: ScheduleSE
   scheduleEIC: ScheduleEIC
   scheduleR?: ScheduleR
   schedule8812: Schedule8812

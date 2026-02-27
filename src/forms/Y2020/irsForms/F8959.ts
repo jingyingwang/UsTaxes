@@ -1,6 +1,5 @@
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import { FormTag } from 'ustaxes/core/irsForms/Form'
-import ScheduleSE from './ScheduleSE'
 import { fica } from '../data/federal'
 import F1040Attachment from './F1040Attachment'
 import { Field } from 'ustaxes/core/pdfFiller'
@@ -8,15 +7,14 @@ import { Field } from 'ustaxes/core/pdfFiller'
 export default class F8959 extends F1040Attachment {
   tag: FormTag = 'f8959'
   sequenceIndex = 71
-  scheduleSE?: ScheduleSE
 
   isNeeded = (): boolean => {
     const filingStatus = this.f1040.info.taxPayer.filingStatus
-    const totalW2Income = this.f1040.info.w2s.reduce(
-      (s, w2) => s + w2.medicareIncome,
-      0
+    const totalW2Income = this.f1040.medicareWages()
+    return (
+      fica.additionalMedicareTaxThreshold(filingStatus) <
+      totalW2Income + (this.f1040.scheduleSE?.l6() ?? 0)
     )
-    return fica.additionalMedicareTaxThreshold(filingStatus) < totalW2Income
   }
 
   thresholdFromFilingStatus = (): number =>
@@ -26,8 +24,7 @@ export default class F8959 extends F1040Attachment {
     fica.additionalMedicareTaxRate * compensation
 
   // Part I: Additional Medicare Tax on Medicare Wages
-  l1 = (): number =>
-    this.f1040.info.w2s.reduce((sum, w2) => sum + w2.medicareIncome, 0)
+  l1 = (): number => this.f1040.medicareWages()
 
   l2 = (): number | undefined => this.f1040.f4137?.l6()
   l3 = (): number | undefined => this.f1040.f8919?.l6()
@@ -39,7 +36,7 @@ export default class F8959 extends F1040Attachment {
   l7 = (): number | undefined => this.computeAdditionalMedicareTax(this.l6())
 
   // Part II: Additional Medicare Tax on Self-Employment Income
-  l8 = (): number | undefined => this.scheduleSE?.l6()
+  l8 = (): number | undefined => this.f1040.scheduleSE?.l6()
   l9 = (): number => this.thresholdFromFilingStatus()
   l10 = (): number => this.l4()
   l11 = (): number => Math.max(0, this.l9() - this.l10())
@@ -54,14 +51,16 @@ export default class F8959 extends F1040Attachment {
   l15 = (): number => this.thresholdFromFilingStatus()
   l16 = (): number => Math.max(0, (this.l14() ?? 0) - this.l15())
 
-  l17 = (): number => this.computeAdditionalMedicareTax(this.l12())
+  l17 = (): number => this.computeAdditionalMedicareTax(this.l16())
 
   // Part IV: Total Medicare Tax
-  l18 = (): number => sumFields([this.l7(), this.l3(), this.l17()])
+  l18 = (): number => sumFields([this.l7(), this.l13(), this.l17()])
 
   // Part V: Withholding Reconciliation
   l19 = (): number =>
-    this.f1040.info.w2s.reduce((sum, w2) => sum + w2.medicareWithholding, 0)
+    this.f1040
+      .validW2s()
+      .reduce((sum, w2) => sum + w2.medicareWithholding, 0)
 
   l20 = (): number => this.l1()
   l21 = (): number => fica.regularMedicareTaxRate * this.l20()
@@ -70,6 +69,9 @@ export default class F8959 extends F1040Attachment {
 
   l23 = (): number | undefined => 0 // TODO: RRTA
   l24 = (): number => sumFields([this.l22(), this.l23()])
+
+  toSchedule2l11 = (): number => this.l18()
+  to1040l25c = (): number => this.l24()
 
   fields = (): Field[] => [
     this.f1040.namesString(),
