@@ -327,6 +327,36 @@ const scheduleCInput: Arbitrary<types.ScheduleCInput> = fc
     })
   )
 
+const scheduleHInput: Arbitrary<types.ScheduleHInput> = fc
+  .tuple(
+    posCurrency(100000), // cashWages
+    posCurrency(10000), // federalIncomeTaxWithheld
+    fc.boolean(), // paidOver1000InQuarter
+    state, // state
+    posCurrency(5000), // stateUnemploymentContributions
+    fc.boolean(), // contributionsPaidByDueDate
+    fc.boolean() // creditReductionState
+  )
+  .map(
+    ([
+      cashWages,
+      federalIncomeTaxWithheld,
+      paidOver1000InQuarter,
+      state,
+      stateUnemploymentContributions,
+      contributionsPaidByDueDate,
+      creditReductionState
+    ]) => ({
+      cashWages,
+      federalIncomeTaxWithheld,
+      paidOver1000InQuarter,
+      state,
+      stateUnemploymentContributions,
+      contributionsPaidByDueDate,
+      creditReductionState
+    })
+  )
+
 const scheduleK1Form1065: Arbitrary<types.ScheduleK1Form1065> = fc
   .tuple(
     maxWords(2),
@@ -735,6 +765,7 @@ export class Arbitraries {
         fc.array(f1098e),
         fc.array(f3921),
         fc.array(scheduleCInput),
+        fc.array(scheduleHInput),
         fc.array(scheduleK1Form1065),
         itemizedDeductions,
         refund,
@@ -754,6 +785,7 @@ export class Arbitraries {
           f1098es,
           f3921s,
           scheduleCInputs,
+          scheduleHInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
           refund,
@@ -771,6 +803,7 @@ export class Arbitraries {
           f1098es,
           f3921s,
           scheduleCInputs,
+          scheduleHInputs,
           scheduleK1Form1065s,
           itemizedDeductions,
           refund,
