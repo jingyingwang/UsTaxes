@@ -931,6 +931,7 @@ export class Arbitraries {
           scheduleK1Form1065s,
           form6781,
           itemizedDeductions,
+          form2441Input: undefined,
           refund,
           taxPayer,
           questions,

@@ -23,6 +23,7 @@ export const blankState: Information = {
   form6781: [],
   itemizedDeductions: undefined,
   casualtyTheftLosses: [],
+  form2441Input: undefined,
   stateResidencies: [],
   healthSavingsAccounts: [],
   credits: [],
@@ -421,6 +422,10 @@ const formReducer = (
       return {
         ...newState,
         casualtyTheftLosses: newLosses
+    case ActionName.SET_FORM_2441: {
+      return {
+        ...newState,
+        form2441Input: action.formData
       }
     }
     case ActionName.SET_INFO: {

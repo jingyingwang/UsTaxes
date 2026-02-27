@@ -628,6 +628,27 @@ export interface ScheduleK1Form1065 {
   section199AQBI: number // Form 8995 or 8995-A
 }
 
+// Form 2441: Child and Dependent Care Credit
+export interface CareProvider {
+  name: string
+  address?: Address
+  identifyingNumber: string // SSN or EIN
+  amountPaid: number
+}
+
+export interface CareExpense {
+  dependentIndex: number // index into taxpayer.dependents[]
+  amount: number
+}
+
+// See https://www.irs.gov/forms-pubs/about-form-2441
+export interface Form2441Input {
+  careProviders: CareProvider[]
+  careExpenses: CareExpense[]
+  // Total employer-provided dependent care benefits (W-2 box 10)
+  dependentCareBenefits: number
+}
+
 export interface ItemizedDeductions {
   medicalAndDental: string | number
   stateAndLocalTaxes: string | number
@@ -791,6 +812,7 @@ export interface Information<D = Date> {
   itemizedDeductions: ItemizedDeductions | undefined
   casualtyTheftLosses?: CasualtyTheftLoss[]
   priorYearTax?: number
+  form2441Input: Form2441Input | undefined
   refund?: Refund
   taxPayer: TaxPayer<D>
   questions: Responses

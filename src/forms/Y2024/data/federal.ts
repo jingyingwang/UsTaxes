@@ -407,6 +407,24 @@ export const EIC: EICDef = {
   }
 }
 
+// Form 2441: Child and Dependent Care Credit
+// See https://www.irs.gov/instructions/i2441
+export const childDependentCareCredit = {
+  // Maximum qualifying expenses
+  maxExpensesOneQualifying: 3000,
+  maxExpensesTwoOrMoreQualifying: 6000,
+  // Credit percentage ranges from 35% (AGI <= $15,000) to 20% (AGI > $43,000)
+  // Decreases by 1% for each $2,000 (or fraction) above $15,000
+  maxCreditPercentage: 35,
+  minCreditPercentage: 20,
+  agiThresholdStart: 15000,
+  agiStepSize: 2000,
+  // Maximum age for qualifying child (under 13)
+  qualifyingChildMaxAge: 13,
+  // Sequence number on IRS form
+  sequenceIndex: 21
+}
+
 export default federalBrackets
 
 // Constants used in the social security benefits worksheet

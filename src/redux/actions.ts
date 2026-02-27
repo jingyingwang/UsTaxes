@@ -17,6 +17,7 @@ import {
   Ira,
   Asset,
   ItemizedDeductions,
+  Form2441Input,
   F3921,
   F3922,
   CasualtyTheftLoss,
@@ -89,6 +90,7 @@ export enum ActionName {
   ADD_CASUALTY_THEFT_LOSS = 'ADD_CASUALTY_THEFT_LOSS',
   EDIT_CASUALTY_THEFT_LOSS = 'EDIT_CASUALTY_THEFT_LOSS',
   REMOVE_CASUALTY_THEFT_LOSS = 'REMOVE_CASUALTY_THEFT_LOSS',
+  SET_FORM_2441 = 'SET_FORM_2441',
   ADD_HSA = 'ADD_HSA',
   EDIT_HSA = 'EDIT_HSA',
   REMOVE_HSA = 'REMOVE_HSA',
@@ -198,6 +200,7 @@ type RemoveCasualtyTheftLoss = Save<
   typeof ActionName.REMOVE_CASUALTY_THEFT_LOSS,
   number
 >
+type SetForm2441 = Save<typeof ActionName.SET_FORM_2441, Form2441Input>
 type SetInfo = Save<typeof ActionName.SET_INFO, InformationDateString>
 type SetActiveYear = Save<typeof ActionName.SET_ACTIVE_YEAR, TaxYear>
 type AddIRA = Save<typeof ActionName.ADD_IRA, Ira>
@@ -294,6 +297,7 @@ export type Actions =
   | AddCasualtyTheftLoss
   | EditCasualtyTheftLoss
   | RemoveCasualtyTheftLoss
+  | SetForm2441
   | AddHSA
   | EditHSA
   | RemoveHSA
@@ -552,6 +556,8 @@ export const editCasualtyTheftLoss: ActionCreator<EditCasualtyTheftLossAction> =
 export const removeCasualtyTheftLoss: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_CASUALTY_THEFT_LOSS,
   indexValidator
+export const setForm2441: ActionCreator<Form2441Input> = makeActionCreator(
+  ActionName.SET_FORM_2441
 )
 
 // debugging purposes only, leaving unchecked.

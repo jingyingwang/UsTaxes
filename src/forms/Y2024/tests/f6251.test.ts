@@ -25,6 +25,7 @@ const baseInformation: ValidatedInformation = {
   scheduleK1Form1065s: [],
   form6781: [],
   itemizedDeductions: undefined,
+  form2441Input: undefined,
   w2s: [
     {
       employer: { EIN: '111111111', employerName: 'w2s employer name' },
