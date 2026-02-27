@@ -39,9 +39,9 @@ export default class ScheduleEIC extends F1040Attachment {
   tag: FormTag = 'f1040sei'
   sequenceIndex = 43
   pub596Worksheet1: Pub596Worksheet1
-  qualifyingStudentCutoffYear = 1999
-  qualifyingCutoffYear = 2004
-  investmentIncomeLimit = 3650
+  qualifyingStudentCutoffYear = 2002
+  qualifyingCutoffYear = 2007
+  investmentIncomeLimit = 11950
 
   constructor(f1040: F1040) {
     super(f1040)
