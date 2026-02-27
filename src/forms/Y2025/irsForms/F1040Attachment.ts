@@ -1,14 +1,10 @@
 import Form from 'ustaxes/core/irsForms/Form'
-import { Information } from 'ustaxes/core/data'
-
-export interface F1040Like {
-  info: Information
-}
+import F1040 from './F1040'
 
 abstract class F1040Attachment extends Form {
-  f1040: F1040Like
+  f1040: F1040
 
-  constructor(f1040: F1040Like) {
+  constructor(f1040: F1040) {
     super()
     this.f1040 = f1040
   }
@@ -18,9 +14,9 @@ abstract class F1040Attachment extends Form {
 }
 
 export abstract class Worksheet {
-  f1040: F1040Like
+  f1040: F1040
 
-  constructor(f1040: F1040Like) {
+  constructor(f1040: F1040) {
     this.f1040 = f1040
   }
 }
