@@ -1,5 +1,10 @@
 import { FormTag } from 'ustaxes/core/irsForms/Form'
-import { Asset, isSold, normalizeF1099BData, SoldAsset } from 'ustaxes/core/data'
+import {
+  Asset,
+  isSold,
+  normalizeF1099BData,
+  SoldAsset
+} from 'ustaxes/core/data'
 import F1040Attachment from './F1040Attachment'
 import F1040 from './F1040'
 import { CURRENT_YEAR } from '../data/federal'
@@ -157,7 +162,8 @@ export default class F8949 extends F1040Attachment {
   part2BoxD = (): boolean =>
     this.effectiveCategory() === 'reported' && this.longTermSales().length > 0
   part2BoxE = (): boolean =>
-    this.effectiveCategory() === 'not_reported' && this.longTermSales().length > 0
+    this.effectiveCategory() === 'not_reported' &&
+    this.longTermSales().length > 0
   part2BoxF = (): boolean =>
     this.effectiveCategory() === 'unreported' && this.longTermSales().length > 0
 
@@ -178,6 +184,13 @@ export default class F8949 extends F1040Attachment {
     if (p.closeDate === undefined || p.closePrice === undefined) return false
     const milliInterval = p.closeDate.getTime() - p.openDate.getTime()
     return milliInterval / this.oneDay > 366
+  }
+
+  getBoxForAsset = (p: Asset<Date>): string => {
+    const longTerm = this.isLongTerm(p)
+    if (p.basisReportedToIRS === true) return longTerm ? 'D' : 'A'
+    if (p.basisReportedToIRS === false) return longTerm ? 'E' : 'B'
+    return longTerm ? 'F' : 'C'
   }
 
   shortTermSales = (): LineData[] =>
@@ -281,13 +294,14 @@ export default class F8949 extends F1040Attachment {
         this.longTermLineDataForCategory(category).length > 0
     )
 
-
   private hasAmounts = (
     proceeds: number,
     costBasis: number,
     adjustment: number
   ): boolean =>
-    Math.abs(proceeds) > 0 || Math.abs(costBasis) > 0 || Math.abs(adjustment) > 0
+    Math.abs(proceeds) > 0 ||
+    Math.abs(costBasis) > 0 ||
+    Math.abs(adjustment) > 0
 
   private buildSummaryLine = (
     label: string,
@@ -344,7 +358,9 @@ export default class F8949 extends F1040Attachment {
       dateAcquired: showDate(p.openDate),
       dateSold: showDate(p.closeDate),
       proceeds: p.closePrice * p.quantity - (p.closeFee ?? 0),
-      costBasis: p.openPrice * p.quantity + p.openFee
+      costBasis: p.openPrice * p.quantity + p.openFee,
+      code: p.washSaleAdjustment ? 'W' : undefined,
+      adjustment: p.washSaleAdjustment
     }))
 
   private reportedLongTermLines = (): LineData[] =>
@@ -382,7 +398,9 @@ export default class F8949 extends F1040Attachment {
       dateAcquired: showDate(p.openDate),
       dateSold: showDate(p.closeDate),
       proceeds: p.closePrice * p.quantity - (p.closeFee ?? 0),
-      costBasis: p.openPrice * p.quantity + p.openFee
+      costBasis: p.openPrice * p.quantity + p.openFee,
+      code: p.washSaleAdjustment ? 'W' : undefined,
+      adjustment: p.washSaleAdjustment
     }))
 
   private shortTermLineData = (): LineData[] => {
