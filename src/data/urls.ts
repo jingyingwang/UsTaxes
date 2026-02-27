@@ -19,7 +19,8 @@ const Urls = {
     esppOptions: '/income/esppoptions',
     partnershipIncome: '/income/partnershipincome',
     sCorpIncome: '/income/scorpincome',
-    estateAndTrustIncome: '/income/estatetrustincome'
+    estateAndTrustIncome: '/income/estatetrustincome',
+    businessIncome: '/income/businessincome'
   },
   payments: {
     estimatedTaxes: '/payments/estimatedtaxes'
