@@ -38,6 +38,9 @@ const Urls = {
     eic: '/credits/eic',
     education: '/credits/education'
   },
+  import: {
+    priorYear: '/import/prioryear'
+  },
   amendedReturn: '/amended/f1040x',
   createPdf: '/createpdf',
   settings: '/settings',

@@ -47,6 +47,7 @@ import { StockOptions } from './income/StockOptions'
 import { ESPPOptions } from './income/ESPPOptions'
 import { PartnershipIncome } from './income/PartnershipIncome'
 import AmendedReturn from './amended/AmendedReturn'
+import PriorYearImport from './import/PriorYearImport'
 import { SCorpIncome } from './income/SCorpIncome'
 import { EstateAndTrustIncome } from './income/EstateAndTrustIncome'
 import { TaxYear } from 'ustaxes/core/data'
@@ -114,6 +115,10 @@ export const drawerSections: Section[] = [
   {
     title: 'UsTaxes.org',
     items: [item('Getting Started', Urls.usTaxes.start, <GettingStarted />)]
+  },
+  {
+    title: 'Import',
+    items: [item('Prior Year Data', Urls.import.priorYear, <PriorYearImport />)]
   },
   {
     title: 'Personal',
@@ -221,7 +226,11 @@ const yearSpecificPages: Partial<{ [k in TaxYear]: Section[] }> = {
     {
       title: 'Credits',
       items: [
-        item('Education Credits (1098-T)', Urls.credits.education, <F1098tInfo />)
+        item(
+          'Education Credits (1098-T)',
+          Urls.credits.education,
+          <F1098tInfo />
+        )
       ]
     }
   ]
