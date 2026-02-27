@@ -73,10 +73,10 @@ const moduleCode = standaloneCode(ajv, {
   ScheduleFInput: '#/definitions/ScheduleFInput',
   EditScheduleFAction: '#/definitions/EditScheduleFAction',
   NOLCarryforward: '#/definitions/NOLCarryforward',
-  EditNOLCarryforwardAction: '#/definitions/EditNOLCarryforwardAction'
-  F8801Input: '#/definitions/F8801Input'
+  EditNOLCarryforwardAction: '#/definitions/EditNOLCarryforwardAction',
+  F8801Input: '#/definitions/F8801Input',
   RoyaltyIncome: '#/definitions/RoyaltyIncome',
-  EditRoyaltyIncomeAction: '#/definitions/EditRoyaltyIncomeAction'
+  EditRoyaltyIncomeAction: '#/definitions/EditRoyaltyIncomeAction',
   AmendedReturnData: '#/definitions/AmendedReturnData',
   EditAmendedReturnAction: '#/definitions/EditAmendedReturnAction'
 })

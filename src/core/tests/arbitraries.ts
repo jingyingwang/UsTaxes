@@ -966,7 +966,7 @@ export class Arbitraries {
           healthSavingsAccounts,
           credits,
           individualRetirementArrangements,
-          netOperatingLossCarryforwards
+          netOperatingLossCarryforwards,
           amendedReturns: []
         })
       )

@@ -29,7 +29,7 @@ export const blankState: Information = {
   healthSavingsAccounts: [],
   credits: [],
   individualRetirementArrangements: [],
-  netOperatingLossCarryforwards: []
+  netOperatingLossCarryforwards: [],
   amendedReturns: []
 }
 
@@ -593,6 +593,8 @@ const formReducer = (
       return {
         ...newState,
         netOperatingLossCarryforwards: newNols
+      }
+    }
     case ActionName.SET_F8801_INPUT: {
       return {
         ...newState,

@@ -33,8 +33,8 @@ import {
   EditCreditAction,
   CapitalLossCarryforward,
   NOLCarryforward,
-  EditNOLCarryforwardAction
-  F8801Input
+  EditNOLCarryforwardAction,
+  F8801Input,
   AmendedReturnData,
   EditAmendedReturnAction
 } from 'ustaxes/core/data'
@@ -138,8 +138,8 @@ export enum ActionName {
   SET_PRIOR_YEAR_TAX = 'SET_PRIOR_YEAR_TAX',
   ADD_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/ADD',
   EDIT_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/EDIT',
-  REMOVE_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/REMOVE'
-  SET_F8801_INPUT = 'SET_F8801_INPUT'
+  REMOVE_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/REMOVE',
+  SET_F8801_INPUT = 'SET_F8801_INPUT',
   ADD_AMENDED_RETURN = 'AMENDED_RETURN/ADD',
   EDIT_AMENDED_RETURN = 'AMENDED_RETURN/EDIT',
   REMOVE_AMENDED_RETURN = 'AMENDED_RETURN/REMOVE'
@@ -760,8 +760,12 @@ export const editNOLCarryforward: ActionCreator<EditNOLCarryforwardAction> =
 export const removeNOLCarryforward: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_NOL_CARRYFORWARD,
   indexValidator
+)
+
 export const setF8801Input: ActionCreator<F8801Input> = makeActionCreator(
   ActionName.SET_F8801_INPUT
+)
+
 export const addAmendedReturn: ActionCreator<AmendedReturnData> =
   makeActionCreator(ActionName.ADD_AMENDED_RETURN)
 
