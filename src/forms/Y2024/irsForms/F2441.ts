@@ -279,14 +279,15 @@ export default class F2441 extends F1040Attachment {
     // Part I: Care providers (up to 2)
     const providerFields = (idx: number): Field[] => {
       const p: CareProvider | undefined = providers[idx]
+      if (p === undefined) return ['', '', '', '', '', '', '']
       return [
-        p.name ?? '',
+        p.name,
         p.address?.address ?? '',
         p.address?.city ?? '',
         p.address?.state ?? '',
         p.address?.zip ?? '',
-        p.identifyingNumber ?? '',
-        p.amountPaid ?? ''
+        p.identifyingNumber,
+        p.amountPaid
       ]
     }
 
