@@ -102,14 +102,6 @@
     "**/*": "prettier --write --ignore-unknown",
     "*.{ts,js,tsx,jsx}": "eslint --cache --fix"
   },
-  "jest": {
-    "moduleNameMapper": {
-      "^ustaxes/(.*)": "<rootDir>/src/$1"
-    },
-    "transformIgnorePatterns": [
-      "/node_modules/(?!@tauri-apps)"
-    ]
-  },
   "engines": {
     "yarn": "please-use-npm"
   }
