@@ -38,7 +38,10 @@ export default class ScheduleSE extends F1040Attachment {
 
   l1a = (): number => {
     const schFL34 = this.f1040.netFarmProfit() ?? 0
-    const k1B14 = 0 // TODO: If a farm partnership
+    const k1B14 = this.f1040.info.scheduleK1Form1065s.reduce(
+      (c, k1) => c + k1.selfEmploymentEarningsB,
+      0
+    )
     return schFL34 + k1B14
   }
 
@@ -47,7 +50,7 @@ export default class ScheduleSE extends F1040Attachment {
   l2 = (): number => {
     const schCL31 = this.f1040.scheduleC?.totalL31() ?? 0
     const k1B14 = this.f1040.info.scheduleK1Form1065s.reduce(
-      (c, k1) => c + k1.selfEmploymentEarningsA,
+      (c, k1) => c + k1.selfEmploymentEarningsA + k1.selfEmploymentEarningsC,
       0
     )
     return schCL31 + k1B14
@@ -78,8 +81,7 @@ export default class ScheduleSE extends F1040Attachment {
       return l5a * 0.9235
     })
 
-  l6 = (): number | undefined =>
-    this.postL4Field((): number => sumFields([this.l4c(), this.l5b()]))
+  l6 = (): number | undefined => sumFields([this.l4c(), this.l5b()])
 
   l7 = (): number => fica.maxIncomeSSTaxApplies
 

@@ -2,21 +2,37 @@ import F1040Attachment from './F1040Attachment'
 import { FormTag } from 'ustaxes/core/irsForms/Form'
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import { Field } from 'ustaxes/core/pdfFiller'
+import { ScheduleCInput } from 'ustaxes/core/data'
 import { fica } from '../data/federal'
 
 export default class ScheduleSE extends F1040Attachment {
   tag: FormTag = 'f1040sse'
   sequenceIndex = 14
 
-  isNeeded = (): boolean =>
-    this.f1040.info.scheduleK1Form1065s
-      .map(
-        (k1) =>
-          k1.selfEmploymentEarningsA +
-          k1.selfEmploymentEarningsB +
-          k1.selfEmploymentEarningsC
-      )
-      .reduce((a, b) => a + b, 0) > 0
+  isNeeded = (): boolean => this.l4c() >= 400
+
+  scheduleCNetProfit = (input: ScheduleCInput): number => {
+    const grossReceipts = input.grossReceipts - input.returns
+    const costOfGoodsSold =
+      input.beginningInventory +
+      input.purchases +
+      input.costOfLabor +
+      input.materialsAndSupplies +
+      input.otherCosts -
+      input.endingInventory
+    const grossIncome = grossReceipts - costOfGoodsSold + input.otherIncome
+    const expenses = Object.values(input.expenses ?? {}).reduce(
+      (total, value) => total + (value ?? 0),
+      0
+    )
+    return grossIncome - expenses
+  }
+
+  totalScheduleCNetProfit = (): number =>
+    this.f1040.info.scheduleCInputs.reduce(
+      (total, input) => total + this.scheduleCNetProfit(input),
+      0
+    )
 
   postL4Field = (f: () => number | undefined): number | undefined => {
     if (this.l4c() < 400) {
@@ -36,16 +52,19 @@ export default class ScheduleSE extends F1040Attachment {
 
   l1a = (): number => {
     const schFL34 = 0 // TODO: Net farm profit or (loss) from Schedule F, line 34
-    const k1B14 = 0 // TODO: If a farm partnership
+    const k1B14 = this.f1040.info.scheduleK1Form1065s.reduce(
+      (c, k1) => c + k1.selfEmploymentEarningsB,
+      0
+    )
     return schFL34 + k1B14
   }
 
   l1b = (): number => 0
 
   l2 = (): number => {
-    const schCL31 = 0 // TODO: Net profit or (loss) from Schedule C, line 31
+    const schCL31 = this.totalScheduleCNetProfit()
     const k1B14 = this.f1040.info.scheduleK1Form1065s.reduce(
-      (c, k1) => c + k1.selfEmploymentEarningsA,
+      (c, k1) => c + k1.selfEmploymentEarningsA + k1.selfEmploymentEarningsC,
       0
     )
     return schCL31 + k1B14
@@ -76,8 +95,7 @@ export default class ScheduleSE extends F1040Attachment {
       return l5a * 0.9235
     })
 
-  l6 = (): number | undefined =>
-    this.postL4Field((): number => sumFields([this.l4c(), this.l5b()]))
+  l6 = (): number | undefined => sumFields([this.l4c(), this.l5b()])
 
   l7 = (): number => fica.maxIncomeSSTaxApplies
 
