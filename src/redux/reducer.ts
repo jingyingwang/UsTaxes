@@ -34,7 +34,8 @@ export const blankState: Information = {
   credits: [],
   individualRetirementArrangements: [],
   netOperatingLossCarryforwards: [],
-  amendedReturns: []
+  amendedReturns: [],
+  depreciableAssets: []
 }
 
 const formReducer = (
@@ -798,7 +799,8 @@ const rootReducer: Reducer<
   Y2022: guardByYear('Y2022'),
   Y2023: guardByYear('Y2023'),
   Y2024: guardByYear('Y2024'),
+  Y2025: guardByYear('Y2025'),
   activeYear
-}) as Reducer<CombinedState<YearsTaxesState>, Actions>
+}) as unknown as Reducer<CombinedState<YearsTaxesState>, Actions>
 
 export default rootReducer

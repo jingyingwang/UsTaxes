@@ -1,14 +1,10 @@
 import { buildQbiItems, totalQbi } from 'ustaxes/forms/qbi'
 import { blankState } from 'ustaxes/redux/reducer'
-import {
-  AccountingMethod,
-  PersonRole,
-  PropertyType
-} from 'ustaxes/core/data'
+import { AccountingMethod, Information, PersonRole } from 'ustaxes/core/data'
 
 describe('qbi helpers', () => {
   it('includes schedule C, rental, and K-1 QBI amounts', () => {
-    const info = {
+    const info: Information = {
       ...blankState,
       scheduleCInputs: [
         {
@@ -43,7 +39,7 @@ describe('qbi helpers', () => {
           rentalDays: 200,
           personalUseDays: 0,
           rentReceived: 1000,
-          propertyType: PropertyType.singleFamily,
+          propertyType: 'singleFamily',
           qualifiedJointVenture: false,
           expenses: {
             mortgage: 100
@@ -78,7 +74,7 @@ describe('qbi helpers', () => {
   })
 
   it('filters out non-positive QBI items', () => {
-    const info = {
+    const info: Information = {
       ...blankState,
       scheduleCInputs: [
         {

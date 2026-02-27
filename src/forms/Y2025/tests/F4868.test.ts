@@ -63,7 +63,19 @@ const buildInfo = (): ValidatedInformation => ({
   credits: [],
   stateResidencies: [],
   healthSavingsAccounts: [],
-  individualRetirementArrangements: []
+  individualRetirementArrangements: [],
+  royaltyIncomes: [],
+  f1098ts: [],
+  f3922s: [],
+  scheduleFInputs: [],
+  scheduleHInputs: [],
+  form6781: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
+  form2441Input: undefined,
+  netOperatingLossCarryforwards: [],
+  amendedReturns: [],
+  depreciableAssets: []
 })
 
 describe('F4868', () => {

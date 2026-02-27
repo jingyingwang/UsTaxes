@@ -74,7 +74,10 @@ const baseInformation: ValidatedInformation = {
   healthSavingsAccounts: [],
   individualRetirementArrangements: [],
   netOperatingLossCarryforwards: [],
-  amendedReturns: []
+  amendedReturns: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
+  depreciableAssets: []
 }
 
 describe('AMT', () => {

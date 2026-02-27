@@ -160,7 +160,8 @@ export const createStoreUnpersisted = (information: Information): InfoStore =>
   })
 
 export const createStore = (): PersistedStore =>
-  reduxCreateStore(persistedReducer, applyMiddleware(logger))
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
+  reduxCreateStore(persistedReducer, applyMiddleware(logger as any))
 
 export const store = createStore()
 

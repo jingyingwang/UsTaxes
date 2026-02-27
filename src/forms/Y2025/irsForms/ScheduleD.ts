@@ -35,11 +35,46 @@ export default class ScheduleD extends F1040Attachment {
     if (this._aggregated === undefined) {
       const bs: F1099BData[] = this.f1040.f1099Bs().map((f) => f.form)
 
+      const sum = (fn: (b: F1099BData) => number): number =>
+        bs.reduce((acc, b) => acc + fn(b), 0)
+
       this._aggregated = {
-        shortTermProceeds: bs.reduce((l, r) => l + r.shortTermProceeds, 0),
-        shortTermCostBasis: bs.reduce((l, r) => l + r.shortTermCostBasis, 0),
-        longTermProceeds: bs.reduce((l, r) => l + r.longTermProceeds, 0),
-        longTermCostBasis: bs.reduce((l, r) => l + r.longTermCostBasis, 0)
+        shortTermBasisReportedProceeds: sum(
+          (b) => b.shortTermBasisReportedProceeds
+        ),
+        shortTermBasisReportedCostBasis: sum(
+          (b) => b.shortTermBasisReportedCostBasis
+        ),
+        shortTermBasisReportedWashSale: sum(
+          (b) => b.shortTermBasisReportedWashSale
+        ),
+        longTermBasisReportedProceeds: sum(
+          (b) => b.longTermBasisReportedProceeds
+        ),
+        longTermBasisReportedCostBasis: sum(
+          (b) => b.longTermBasisReportedCostBasis
+        ),
+        longTermBasisReportedWashSale: sum(
+          (b) => b.longTermBasisReportedWashSale
+        ),
+        shortTermBasisNotReportedProceeds: sum(
+          (b) => b.shortTermBasisNotReportedProceeds
+        ),
+        shortTermBasisNotReportedCostBasis: sum(
+          (b) => b.shortTermBasisNotReportedCostBasis
+        ),
+        shortTermBasisNotReportedWashSale: sum(
+          (b) => b.shortTermBasisNotReportedWashSale
+        ),
+        longTermBasisNotReportedProceeds: sum(
+          (b) => b.longTermBasisNotReportedProceeds
+        ),
+        longTermBasisNotReportedCostBasis: sum(
+          (b) => b.longTermBasisNotReportedCostBasis
+        ),
+        longTermBasisNotReportedWashSale: sum(
+          (b) => b.longTermBasisNotReportedWashSale
+        )
       }
     }
 
@@ -56,8 +91,10 @@ export default class ScheduleD extends F1040Attachment {
     return this.l21MinDefault
   }
 
-  l1ad = (): number | undefined => this.aggregated.shortTermProceeds
-  l1ae = (): number | undefined => this.aggregated.shortTermCostBasis
+  l1ad = (): number | undefined =>
+    this.aggregated.shortTermBasisReportedProceeds
+  l1ae = (): number | undefined =>
+    this.aggregated.shortTermBasisReportedCostBasis
   // This field is greyed out, but fillable
   l1ag = (): number | undefined => undefined
   l1ah = (): number => sumFields([this.l1ad(), 0 - (this.l1ae() ?? 0)])
@@ -119,8 +156,9 @@ export default class ScheduleD extends F1040Attachment {
       this.l6()
     ])
 
-  l8ad = (): number | undefined => this.aggregated.longTermProceeds
-  l8ae = (): number | undefined => this.aggregated.longTermCostBasis
+  l8ad = (): number | undefined => this.aggregated.longTermBasisReportedProceeds
+  l8ae = (): number | undefined =>
+    this.aggregated.longTermBasisReportedCostBasis
   // This field is greyed out, but fillable
   l8ag = (): number | undefined => undefined
   l8ah = (): number | undefined =>

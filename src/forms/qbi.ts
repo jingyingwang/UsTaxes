@@ -12,7 +12,7 @@ export interface QbiItem {
 }
 
 const sumNumbers = (values: Array<number | undefined>): number =>
-  values.reduce((total, value) => total + (value ?? 0), 0)
+  values.reduce<number>((total, value) => total + (value ?? 0), 0)
 
 const addressString = (address: Address): string =>
   [
@@ -51,9 +51,7 @@ export const rentalPropertyNetIncome = (property: Property): number => {
 export const buildQbiItems = (info: Information): QbiItem[] => {
   const scheduleCItems: QbiItem[] = info.scheduleCInputs.map((input, index) => {
     const name =
-      input.businessName !== ''
-        ? input.businessName
-        : `Schedule C ${index + 1}`
+      input.businessName !== '' ? input.businessName : `Schedule C ${index + 1}`
     return {
       name,
       ein: input.ein,
