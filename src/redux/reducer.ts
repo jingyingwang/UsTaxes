@@ -20,6 +20,7 @@ export const blankState: Information = {
   f3921s: [],
   f3922s: [],
   scheduleCInputs: [],
+  homeOfficeInputs: [],
   scheduleFInputs: [],
   scheduleHInputs: [],
   scheduleK1Form1065s: [],
@@ -375,6 +376,28 @@ const formReducer = (
       return {
         ...newState,
         scheduleCInputs: newScheduleCs
+      }
+    }
+    case ActionName.ADD_HOME_OFFICE: {
+      return {
+        ...newState,
+        homeOfficeInputs: [...newState.homeOfficeInputs, action.formData]
+      }
+    }
+    case ActionName.EDIT_HOME_OFFICE: {
+      const newHomeOffices = [...newState.homeOfficeInputs]
+      newHomeOffices.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        homeOfficeInputs: newHomeOffices
+      }
+    }
+    case ActionName.REMOVE_HOME_OFFICE: {
+      const newHomeOffices = [...newState.homeOfficeInputs]
+      newHomeOffices.splice(action.formData, 1)
+      return {
+        ...newState,
+        homeOfficeInputs: newHomeOffices
       }
     }
     case ActionName.ADD_SCHEDULE_H: {

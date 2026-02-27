@@ -56,6 +56,7 @@ import F8919 from './F8919'
 import F8853 from './F8853'
 import F8582 from './F8582'
 import F4562 from './F4562'
+import F8829 from './F8829'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
@@ -87,6 +88,7 @@ export default class F1040 extends F1040Base {
   f4797?: F4797
   f4562?: F4562
   f4952?: F4952
+  f8829?: F8829
   f4972?: F4972
   f5695?: F5695
   f6251: F6251
@@ -130,6 +132,7 @@ export default class F1040 extends F1040Base {
     this.schedule8812 = new Schedule8812(this)
 
     this.f4562 = new F4562(this)
+    this.f8829 = new F8829(this)
     this.f6251 = new F6251(this)
     this.f8949 = new F8949(this)
     this.f8889 = new F8889(this, this.info.taxPayer.primaryPerson)
@@ -199,6 +202,7 @@ export default class F1040 extends F1040Base {
       this.schedule8812,
       this.f4562,
       this.f4797,
+      this.f8829,
       this.f4952,
       this.f4972,
       this.f5695,

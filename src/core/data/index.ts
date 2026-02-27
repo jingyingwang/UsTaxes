@@ -619,6 +619,39 @@ export interface ScheduleCInput {
   otherExpenseType?: string
 }
 
+// See https://www.irs.gov/forms-pubs/about-form-8829
+export type HomeOfficeMethod = 'regular' | 'simplified'
+
+export interface HomeOfficeInput {
+  // Which Schedule C business this home office belongs to
+  businessIndex: number
+  // Method choice
+  method: HomeOfficeMethod
+
+  // Part I: Area used for business
+  officeSquareFootage: number // Area used regularly and exclusively for business
+  totalHomeSquareFootage: number // Total area of home
+
+  // Part II: Actual expenses (Regular method only)
+  // Direct expenses are 100% deductible; indirect are prorated by business %
+  directMortgageInterest: number
+  directRealEstateTaxes: number
+  indirectMortgageInterest: number
+  indirectRealEstateTaxes: number
+  indirectInsurance: number
+  indirectRent: number
+  indirectRepairs: number
+  indirectUtilities: number
+  indirectOtherExpenses: number
+
+  // Part III: Depreciation (Regular method only)
+  homeCostOrBasis: number // Cost or adjusted basis of home (excluding land)
+  homeValueOfLand: number // Value of land
+
+  // Carryover from prior year (Regular method only)
+  carryoverFromPriorYear: number
+}
+
 // See https://www.irs.gov/forms-pubs/about-form-6781
 // Section 1256 contracts: regulated futures, foreign currency, non-equity options
 // Subject to 60% long-term / 40% short-term split and mark-to-market treatment
@@ -977,6 +1010,7 @@ export interface Information<D = Date> {
   f3921s: F3921[]
   f3922s: F3922[]
   scheduleCInputs: ScheduleCInput[]
+  homeOfficeInputs: HomeOfficeInput[]
   scheduleFInputs: ScheduleFInput[]
   scheduleHInputs: ScheduleHInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
@@ -1079,6 +1113,7 @@ export type EditAssetAction = ArrayItemEditAction<Asset<Date>>
 export type EditF3921Action = ArrayItemEditAction<F3921>
 export type EditF3922Action = ArrayItemEditAction<F3922>
 export type EditScheduleCAction = ArrayItemEditAction<ScheduleCInput>
+export type EditHomeOfficeAction = ArrayItemEditAction<HomeOfficeInput>
 export type EditScheduleHAction = ArrayItemEditAction<ScheduleHInput>
 export type EditRoyaltyIncomeAction = ArrayItemEditAction<RoyaltyIncome>
 export type EditScheduleK1Form1065Action =

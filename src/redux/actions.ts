@@ -26,6 +26,7 @@ import {
   ScheduleK1Form1120S,
   ScheduleK1Form1041,
   ScheduleCInput,
+  HomeOfficeInput,
   ScheduleHInput,
   Form6781Input,
   ScheduleFInput,
@@ -58,6 +59,7 @@ import {
   EditF3921Action,
   EditF3922Action,
   EditScheduleCAction,
+  EditHomeOfficeAction,
   EditScheduleHAction,
   EditScheduleFAction,
   EditScheduleK1Form1065Action,
@@ -129,6 +131,9 @@ export enum ActionName {
   ADD_SCHEDULE_C = 'SCHEDULE_C/ADD',
   EDIT_SCHEDULE_C = 'SCHEDULE_C/EDIT',
   REMOVE_SCHEDULE_C = 'SCHEDULE_C/REMOVE',
+  ADD_HOME_OFFICE = 'HOME_OFFICE/ADD',
+  EDIT_HOME_OFFICE = 'HOME_OFFICE/EDIT',
+  REMOVE_HOME_OFFICE = 'HOME_OFFICE/REMOVE',
   ADD_SCHEDULE_H = 'SCHEDULE_H/ADD',
   EDIT_SCHEDULE_H = 'SCHEDULE_H/EDIT',
   REMOVE_SCHEDULE_H = 'SCHEDULE_H/REMOVE',
@@ -256,6 +261,12 @@ type EditScheduleC = Save<
   EditScheduleCAction
 >
 type RemoveScheduleC = Save<typeof ActionName.REMOVE_SCHEDULE_C, number>
+type AddHomeOffice = Save<typeof ActionName.ADD_HOME_OFFICE, HomeOfficeInput>
+type EditHomeOffice = Save<
+  typeof ActionName.EDIT_HOME_OFFICE,
+  EditHomeOfficeAction
+>
+type RemoveHomeOffice = Save<typeof ActionName.REMOVE_HOME_OFFICE, number>
 type AddScheduleH = Save<typeof ActionName.ADD_SCHEDULE_H, ScheduleHInput>
 type EditScheduleH = Save<
   typeof ActionName.EDIT_SCHEDULE_H,
@@ -404,6 +415,9 @@ export type Actions =
   | AddScheduleC
   | EditScheduleC
   | RemoveScheduleC
+  | AddHomeOffice
+  | EditHomeOffice
+  | RemoveHomeOffice
   | AddScheduleH
   | EditScheduleH
   | RemoveScheduleH
@@ -759,6 +773,18 @@ export const editScheduleC: ActionCreator<EditScheduleCAction> =
 
 export const removeScheduleC: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_SCHEDULE_C,
+  indexValidator
+)
+
+export const addHomeOffice: ActionCreator<HomeOfficeInput> = makeActionCreator(
+  ActionName.ADD_HOME_OFFICE
+)
+
+export const editHomeOffice: ActionCreator<EditHomeOfficeAction> =
+  makeActionCreator(ActionName.EDIT_HOME_OFFICE)
+
+export const removeHomeOffice: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_HOME_OFFICE,
   indexValidator
 )
 
