@@ -1,5 +1,10 @@
 import { FormTag } from 'ustaxes/core/irsForms/Form'
-import { Asset, isSold, normalizeF1099BData, SoldAsset } from 'ustaxes/core/data'
+import {
+  Asset,
+  isSold,
+  normalizeF1099BData,
+  SoldAsset
+} from 'ustaxes/core/data'
 import F1040Attachment from './F1040Attachment'
 import F1040 from './F1040'
 import { CURRENT_YEAR } from '../data/federal'
@@ -105,6 +110,22 @@ export default class F8949 extends F1040Attachment {
     this.category = options?.category
   }
 
+  /**
+   * Determine the Form 8949 box letter for an individual asset.
+   * Short-term: A (reported), B (not reported), C (no 1099-B)
+   * Long-term:  D (reported), E (not reported), F (no 1099-B)
+   */
+  getBoxForAsset = (asset: Asset<Date>): string => {
+    const longTerm = this.isLongTerm(asset)
+    if (asset.basisReportedToIRS === true) {
+      return longTerm ? 'D' : 'A'
+    }
+    if (asset.basisReportedToIRS === false) {
+      return longTerm ? 'E' : 'B'
+    }
+    return longTerm ? 'F' : 'C'
+  }
+
   isNeeded = (): boolean => {
     if (this.category === undefined) {
       return this.categoriesWithData().length > 0
@@ -157,7 +178,8 @@ export default class F8949 extends F1040Attachment {
   part2BoxD = (): boolean =>
     this.effectiveCategory() === 'reported' && this.longTermSales().length > 0
   part2BoxE = (): boolean =>
-    this.effectiveCategory() === 'not_reported' && this.longTermSales().length > 0
+    this.effectiveCategory() === 'not_reported' &&
+    this.longTermSales().length > 0
   part2BoxF = (): boolean =>
     this.effectiveCategory() === 'unreported' && this.longTermSales().length > 0
 
@@ -281,13 +303,14 @@ export default class F8949 extends F1040Attachment {
         this.longTermLineDataForCategory(category).length > 0
     )
 
-
   private hasAmounts = (
     proceeds: number,
     costBasis: number,
     adjustment: number
   ): boolean =>
-    Math.abs(proceeds) > 0 || Math.abs(costBasis) > 0 || Math.abs(adjustment) > 0
+    Math.abs(proceeds) > 0 ||
+    Math.abs(costBasis) > 0 ||
+    Math.abs(adjustment) > 0
 
   private buildSummaryLine = (
     label: string,

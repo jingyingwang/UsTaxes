@@ -77,7 +77,18 @@ const baseInformation: ValidatedInformation = {
   f1098es: [],
   stateResidencies: [{ state: 'AL' }],
   healthSavingsAccounts: [],
-  individualRetirementArrangements: []
+  individualRetirementArrangements: [],
+  royaltyIncomes: [],
+  f1098ts: [],
+  f3922s: [],
+  scheduleFInputs: [],
+  scheduleHInputs: [],
+  form6781: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
+  netOperatingLossCarryforwards: [],
+  amendedReturns: [],
+  depreciableAssets: []
 }
 
 describe('Form 2441 - Child and Dependent Care Credit', () => {

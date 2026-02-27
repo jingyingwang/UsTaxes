@@ -55,7 +55,18 @@ const baseInformation: ValidatedInformation = {
   stateResidencies: [{ state: 'CA' }],
   healthSavingsAccounts: [],
   individualRetirementArrangements: [],
-  amendedReturns: []
+  amendedReturns: [],
+  royaltyIncomes: [],
+  f1098ts: [],
+  f3922s: [],
+  scheduleFInputs: [],
+  scheduleHInputs: [],
+  form6781: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
+  form2441Input: undefined,
+  netOperatingLossCarryforwards: [],
+  depreciableAssets: []
 }
 
 describe('Form 1040X', () => {

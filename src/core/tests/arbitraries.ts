@@ -1189,7 +1189,8 @@ export class Arbitraries {
           credits,
           individualRetirementArrangements,
           netOperatingLossCarryforwards,
-          amendedReturns: []
+          amendedReturns: [],
+          depreciableAssets: []
         })
       )
 }

@@ -78,9 +78,26 @@ const baseInformation: ValidatedInformation = {
       recharacterizedContributions: 0,
       requiredMinimumDistributions: 0,
       lateContributions: 0,
-      repayments: 0
+      repayments: 0,
+      nondeductibleContributions: 0,
+      priorYearBasis: 0,
+      totalIraValue: 0,
+      rothDistributions: 0,
+      rothBasis: 0
     }
-  ]
+  ],
+  royaltyIncomes: [],
+  f1098ts: [],
+  f3922s: [],
+  scheduleFInputs: [],
+  scheduleHInputs: [],
+  form6781: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
+  form2441Input: undefined,
+  netOperatingLossCarryforwards: [],
+  amendedReturns: [],
+  depreciableAssets: []
 }
 
 describe("Form 8880 - Saver's Credit", () => {
@@ -231,7 +248,12 @@ describe("Form 8880 - Saver's Credit", () => {
       recharacterizedContributions: 0,
       requiredMinimumDistributions: 0,
       lateContributions: 0,
-      repayments: 0
+      repayments: 0,
+      nondeductibleContributions: 0,
+      priorYearBasis: 0,
+      totalIraValue: 0,
+      rothDistributions: 0,
+      rothBasis: 0
     })
 
     const f1040 = new F1040(information, [])

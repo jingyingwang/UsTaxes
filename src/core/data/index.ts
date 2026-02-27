@@ -1,4 +1,9 @@
 import { enumKeys } from '../util'
+import type {
+  PropertyClass,
+  DepreciationMethod,
+  Convention
+} from '../depreciation'
 
 export enum TaxYears {
   Y2019 = 2019,
@@ -6,7 +11,8 @@ export enum TaxYears {
   Y2021 = 2021,
   Y2022 = 2022,
   Y2023 = 2023,
-  Y2024 = 2024
+  Y2024 = 2024,
+  Y2025 = 2025
 }
 
 export type TaxYear = keyof typeof TaxYears
@@ -163,17 +169,20 @@ export const normalizeF1099BData = (
   shortTermBasisReportedCostBasis:
     form.shortTermBasisReportedCostBasis ?? form.shortTermCostBasis ?? 0,
   shortTermBasisReportedWashSale: form.shortTermBasisReportedWashSale ?? 0,
-  shortTermBasisNotReportedProceeds: form.shortTermBasisNotReportedProceeds ?? 0,
+  shortTermBasisNotReportedProceeds:
+    form.shortTermBasisNotReportedProceeds ?? 0,
   shortTermBasisNotReportedCostBasis:
     form.shortTermBasisNotReportedCostBasis ?? 0,
-  shortTermBasisNotReportedWashSale: form.shortTermBasisNotReportedWashSale ?? 0,
+  shortTermBasisNotReportedWashSale:
+    form.shortTermBasisNotReportedWashSale ?? 0,
   longTermBasisReportedProceeds:
     form.longTermBasisReportedProceeds ?? form.longTermProceeds ?? 0,
   longTermBasisReportedCostBasis:
     form.longTermBasisReportedCostBasis ?? form.longTermCostBasis ?? 0,
   longTermBasisReportedWashSale: form.longTermBasisReportedWashSale ?? 0,
   longTermBasisNotReportedProceeds: form.longTermBasisNotReportedProceeds ?? 0,
-  longTermBasisNotReportedCostBasis: form.longTermBasisNotReportedCostBasis ?? 0,
+  longTermBasisNotReportedCostBasis:
+    form.longTermBasisNotReportedCostBasis ?? 0,
   longTermBasisNotReportedWashSale: form.longTermBasisNotReportedWashSale ?? 0
 })
 
@@ -966,6 +975,23 @@ export interface NOLCarryforward {
   amount: number
 }
 
+/**
+ * User-input form of a depreciable asset for Form 4562.
+ * Generic over date type D so it can serialize to/from JSON.
+ */
+export interface DepreciableAssetInput<D = Date> {
+  description: string
+  datePlacedInService: D
+  cost: number
+  propertyClass: PropertyClass
+  method: DepreciationMethod
+  convention: Convention
+  section179Election: number
+  bonusDepreciationEligible: boolean
+  businessIndex: number
+  quarterPlaced?: 1 | 2 | 3 | 4
+}
+
 export interface Information<D = Date> {
   f1099s: Supported1099[]
   w2s: IncomeW2[]
@@ -999,6 +1025,7 @@ export interface Information<D = Date> {
   netOperatingLossCarryforwards: NOLCarryforward[]
   f8801Input?: F8801Input
   amendedReturns: AmendedReturnData[]
+  depreciableAssets: DepreciableAssetInput<D>[]
 }
 
 export type InformationDateString = Information<string>

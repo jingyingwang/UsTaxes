@@ -1,6 +1,12 @@
 import Form, { FormMethods } from 'ustaxes/core/stateForms/Form'
 import { Field } from 'ustaxes/core/pdfFiller'
-import { FilingStatus, Person, State } from 'ustaxes/core/data'
+import {
+  FilingStatus,
+  Person,
+  PrimaryPerson,
+  Spouse,
+  State
+} from 'ustaxes/core/data'
 import { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import F1040 from '../../irsForms/F1040'
@@ -41,12 +47,12 @@ export default class MAForm extends Form {
 
   seniorCount = (): number =>
     [this.info.taxPayer.primaryPerson, this.info.taxPayer.spouse]
-      .filter((p): p is Person => p !== undefined)
+      .filter((p): p is PrimaryPerson | Spouse => p !== undefined)
       .filter(isSeniorForYear).length
 
   blindCount = (): number =>
     [this.info.taxPayer.primaryPerson, this.info.taxPayer.spouse]
-      .filter((p): p is Person => p !== undefined)
+      .filter((p): p is PrimaryPerson | Spouse => p !== undefined)
       .filter((p) => p.isBlind).length
 
   personalExemptions = (): number =>
@@ -64,8 +70,7 @@ export default class MAForm extends Form {
   taxableIncome = (): number =>
     Math.max(0, this.adjustedGrossIncome() - this.totalDeductions())
 
-  shortTermCapitalGains = (): number =>
-    Math.max(0, this.f1040.scheduleD.l7())
+  shortTermCapitalGains = (): number => Math.max(0, this.f1040.scheduleD.l7())
 
   shortTermTaxableIncome = (): number =>
     Math.max(0, Math.min(this.shortTermCapitalGains(), this.taxableIncome()))
@@ -73,13 +78,13 @@ export default class MAForm extends Form {
   regularTaxableIncome = (): number =>
     Math.max(0, this.taxableIncome() - this.shortTermTaxableIncome())
 
-  regularTax = (): number =>
-    this.regularTaxableIncome() * parameters.taxRate
+  regularTax = (): number => this.regularTaxableIncome() * parameters.taxRate
 
   shortTermCapitalGainsTax = (): number =>
     this.shortTermTaxableIncome() * parameters.shortTermCapitalGainsRate
 
-  baseTax = (): number => sumFields([this.regularTax(), this.shortTermCapitalGainsTax()])
+  baseTax = (): number =>
+    sumFields([this.regularTax(), this.shortTermCapitalGainsTax()])
 
   surtax = (): number =>
     Math.max(0, this.taxableIncome() - parameters.surtaxThreshold) *
@@ -98,11 +103,9 @@ export default class MAForm extends Form {
   totalPayments = (): number =>
     sumFields([this.withholding(), this.earnedIncomeCredit()])
 
-  amountDue = (): number =>
-    Math.max(0, this.totalTax() - this.totalPayments())
+  amountDue = (): number => Math.max(0, this.totalTax() - this.totalPayments())
 
-  refund = (): number =>
-    Math.max(0, this.totalPayments() - this.totalTax())
+  refund = (): number => Math.max(0, this.totalPayments() - this.totalTax())
 
   fields = (): Field[] => [
     this.adjustedGrossIncome(),

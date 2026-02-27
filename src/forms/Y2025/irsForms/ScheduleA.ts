@@ -16,7 +16,8 @@ const blankItemizedDeductions = {
   interest8d: 0,
   investmentInterest: 0,
   charityCashCheck: 0,
-  charityOther: 0
+  charityOther: 0,
+  casualtyAndTheftLosses: 0
 }
 
 export default class ScheduleA extends F1040Attachment {

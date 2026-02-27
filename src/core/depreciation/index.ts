@@ -16,7 +16,8 @@ import {
   Convention
 } from './macrs'
 
-export { getMACRSRate, RecoveryPeriod, DepreciationMethod, Convention }
+export { getMACRSRate }
+export type { RecoveryPeriod, DepreciationMethod, Convention }
 
 export type PropertyClass =
   | '3-year'
