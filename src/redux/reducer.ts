@@ -21,6 +21,7 @@ export const blankState: Information = {
   f3922s: [],
   scheduleCInputs: [],
   scheduleFInputs: [],
+  scheduleHInputs: [],
   scheduleK1Form1065s: [],
   form6781: [],
   scheduleK1Form1120Ss: [],
@@ -376,6 +377,28 @@ const formReducer = (
         scheduleCInputs: newScheduleCs
       }
     }
+    case ActionName.ADD_SCHEDULE_H: {
+      return {
+        ...newState,
+        scheduleHInputs: [...newState.scheduleHInputs, action.formData]
+      }
+    }
+    case ActionName.EDIT_SCHEDULE_H: {
+      const newScheduleHs = [...newState.scheduleHInputs]
+      newScheduleHs.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        scheduleHInputs: newScheduleHs
+      }
+    }
+    case ActionName.REMOVE_SCHEDULE_H: {
+      const newScheduleHs = [...newState.scheduleHInputs]
+      newScheduleHs.splice(action.formData, 1)
+      return {
+        ...newState,
+        scheduleHInputs: newScheduleHs
+      }
+    }
     case ActionName.ADD_SCHEDULE_F: {
       return {
         ...newState,
@@ -396,6 +419,8 @@ const formReducer = (
       return {
         ...newState,
         scheduleFInputs: newScheduleFs
+      }
+    }
     case ActionName.ADD_ROYALTY_INCOME: {
       return {
         ...newState,
@@ -516,6 +541,8 @@ const formReducer = (
       return {
         ...newState,
         casualtyTheftLosses: newLosses
+      }
+    }
     case ActionName.SET_FORM_2441: {
       return {
         ...newState,

@@ -517,6 +517,36 @@ const scheduleFInput: Arbitrary<types.ScheduleFInput> = fc
     })
   )
 
+const scheduleHInput: Arbitrary<types.ScheduleHInput> = fc
+  .tuple(
+    posCurrency(100000), // cashWages
+    posCurrency(10000), // federalIncomeTaxWithheld
+    fc.boolean(), // paidOver1000InQuarter
+    state, // state
+    posCurrency(5000), // stateUnemploymentContributions
+    fc.boolean(), // contributionsPaidByDueDate
+    fc.boolean() // creditReductionState
+  )
+  .map(
+    ([
+      cashWages,
+      federalIncomeTaxWithheld,
+      paidOver1000InQuarter,
+      state,
+      stateUnemploymentContributions,
+      contributionsPaidByDueDate,
+      creditReductionState
+    ]) => ({
+      cashWages,
+      federalIncomeTaxWithheld,
+      paidOver1000InQuarter,
+      state,
+      stateUnemploymentContributions,
+      contributionsPaidByDueDate,
+      creditReductionState
+    })
+  )
+
 const scheduleK1Form1065: Arbitrary<types.ScheduleK1Form1065> = fc
   .tuple(
     maxWords(2),
@@ -1058,6 +1088,7 @@ export class Arbitraries {
         fc.array(f3922),
         fc.array(scheduleCInput),
         fc.constant([] as types.ScheduleFInput[]),
+        fc.array(scheduleHInput),
         fc.array(scheduleK1Form1065),
         fc.array(form6781Input, { maxLength: 2 }),
         fc.array(scheduleK1Form1120S),
@@ -1085,6 +1116,7 @@ export class Arbitraries {
           f3922s,
           scheduleCInputs,
           scheduleFInputs,
+          scheduleHInputs,
           scheduleK1Form1065s,
           form6781,
           scheduleK1Form1120Ss,
@@ -1110,6 +1142,7 @@ export class Arbitraries {
           f3922s,
           scheduleCInputs,
           scheduleFInputs,
+          scheduleHInputs,
           scheduleK1Form1065s,
           form6781,
           scheduleK1Form1120Ss,

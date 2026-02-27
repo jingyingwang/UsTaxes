@@ -21,6 +21,7 @@ const baseInformation: ValidatedInformation = {
   f3922s: [],
   scheduleCInputs: [],
   scheduleFInputs: [],
+  scheduleHInputs: [],
   scheduleK1Form1065s: [],
   form6781: [],
   itemizedDeductions: undefined,
@@ -71,7 +72,7 @@ const baseInformation: ValidatedInformation = {
   stateResidencies: [{ state: 'AL' }],
   healthSavingsAccounts: [],
   individualRetirementArrangements: [],
-  netOperatingLossCarryforwards: []
+  netOperatingLossCarryforwards: [],
   amendedReturns: []
 }
 

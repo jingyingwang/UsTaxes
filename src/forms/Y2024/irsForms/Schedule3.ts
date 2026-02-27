@@ -51,8 +51,10 @@ export default class Schedule3 extends F1040Attachment {
     this.claimableExcessSSTaxWithholding() > 0 ||
     (this.l1() ?? 0) > 0 ||
     (this.f1040.f8880?.l10() ?? 0) > 0 ||
-    (this.f1040.f8863?.l19() ?? 0) > 0
-    this.claimableExcessSSTaxWithholding() > 0 || this.f1040.f8801.isNeeded()
+    (this.f1040.f8863?.l19() ?? 0) > 0 ||
+    this.f1040.f8801.isNeeded() ||
+    this.l8() > 0 ||
+    this.l15() > 0
 
   deductions = (): number => 0
   // Part I: Nonrefundable credits
@@ -65,13 +67,6 @@ export default class Schedule3 extends F1040Attachment {
       this.f1040.info.taxPayer.filingStatus === FilingStatus.MFJ ? 600 : 300
     return foreignTax <= limit ? foreignTax : undefined
   }
-  l2 = (): number | undefined => undefined
-    this.l8() > 0 ||
-    this.l15() > 0
-
-  deductions = (): number => 0
-  // Part I: Nonrefundable credits
-  l1 = (): number | undefined => undefined
   l2 = (): number | undefined => this.f1040.f2441?.credit()
   l3 = (): number | undefined => this.f1040.f8863?.l19()
   l4 = (): number | undefined => this.f1040.f8880?.l12()

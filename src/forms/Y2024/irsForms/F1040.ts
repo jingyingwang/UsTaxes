@@ -51,6 +51,7 @@ import F4684 from './F4684'
 import F2439 from './F2439'
 import F2441 from './F2441'
 import ScheduleC from './ScheduleC'
+import ScheduleH from './ScheduleH'
 import ScheduleF from './ScheduleF'
 import F8949 from './F8949'
 import F6251 from './F6251'
@@ -81,6 +82,7 @@ export default class F1040 extends F1040Base {
   scheduleA: ScheduleA
   scheduleB: ScheduleB
   scheduleC?: ScheduleC
+  scheduleH?: ScheduleH
   scheduleD: ScheduleD
   scheduleFs: ScheduleF[]
   scheduleE: ScheduleE
@@ -167,6 +169,10 @@ export default class F1040 extends F1040Base {
       this.f8889Spouse = new F8889(this, this.info.taxPayer.spouse)
     }
 
+    if (this.info.scheduleHInputs.length > 0) {
+      this.scheduleH = new ScheduleH(this)
+    }
+
     this.f8606 = new F8606(this, PersonRole.PRIMARY)
     if (this.info.taxPayer.spouse) {
       this.f8606Spouse = new F8606(this, PersonRole.SPOUSE)
@@ -246,6 +252,7 @@ export default class F1040 extends F1040Base {
       this.scheduleD,
       this.scheduleE,
       ...this.scheduleFs,
+      this.scheduleH,
       this.scheduleSE,
       this.f4684,
       this.scheduleR,

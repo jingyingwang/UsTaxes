@@ -99,8 +99,8 @@
     "typescript-eslint": "7.17.0"
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown .",
-    "*.{ts,js,tsx,jsx}": "eslint ./src --cache --fix"
+    "**/*": "prettier --write --ignore-unknown",
+    "*.{ts,js,tsx,jsx}": "eslint --cache --fix"
   },
   "jest": {
     "moduleNameMapper": {

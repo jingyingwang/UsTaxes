@@ -47,7 +47,7 @@ export default class Schedule2 extends F1040Attachment {
       this.f1040.f5329.toSchedule2l8(),
       this.f1040.f5329Spouse?.toSchedule2l8()
     ]) || undefined
-  l9 = (): number | undefined => undefined // TODO: household employment taxes, schedule H
+  l9 = (): number | undefined => this.f1040.scheduleH?.toSchedule2l9()
   l10 = (): number | undefined => undefined // repayment of firsttime homebuyer credit, form 5405
   l11 = (): number | undefined => this.f1040.f8959.toSchedule2l11()
   l12 = (): number | undefined => this.f1040.f8960.toSchedule2l12()

@@ -26,6 +26,7 @@ import {
   ScheduleK1Form1120S,
   ScheduleK1Form1041,
   ScheduleCInput,
+  ScheduleHInput,
   Form6781Input,
   ScheduleFInput,
   RoyaltyIncome,
@@ -57,6 +58,7 @@ import {
   EditF3921Action,
   EditF3922Action,
   EditScheduleCAction,
+  EditScheduleHAction,
   EditScheduleFAction,
   EditScheduleK1Form1065Action,
   EditForm6781Action,
@@ -127,6 +129,9 @@ export enum ActionName {
   ADD_SCHEDULE_C = 'SCHEDULE_C/ADD',
   EDIT_SCHEDULE_C = 'SCHEDULE_C/EDIT',
   REMOVE_SCHEDULE_C = 'SCHEDULE_C/REMOVE',
+  ADD_SCHEDULE_H = 'SCHEDULE_H/ADD',
+  EDIT_SCHEDULE_H = 'SCHEDULE_H/EDIT',
+  REMOVE_SCHEDULE_H = 'SCHEDULE_H/REMOVE',
   ADD_SCHEDULE_F = 'SCHEDULE_F/ADD',
   EDIT_SCHEDULE_F = 'SCHEDULE_F/EDIT',
   REMOVE_SCHEDULE_F = 'SCHEDULE_F/REMOVE',
@@ -251,6 +256,12 @@ type EditScheduleC = Save<
   EditScheduleCAction
 >
 type RemoveScheduleC = Save<typeof ActionName.REMOVE_SCHEDULE_C, number>
+type AddScheduleH = Save<typeof ActionName.ADD_SCHEDULE_H, ScheduleHInput>
+type EditScheduleH = Save<
+  typeof ActionName.EDIT_SCHEDULE_H,
+  EditScheduleHAction
+>
+type RemoveScheduleH = Save<typeof ActionName.REMOVE_SCHEDULE_H, number>
 type AddScheduleF = Save<typeof ActionName.ADD_SCHEDULE_F, ScheduleFInput>
 type EditScheduleF = Save<
   typeof ActionName.EDIT_SCHEDULE_F,
@@ -393,6 +404,9 @@ export type Actions =
   | AddScheduleC
   | EditScheduleC
   | RemoveScheduleC
+  | AddScheduleH
+  | EditScheduleH
+  | RemoveScheduleH
   | AddScheduleF
   | EditScheduleF
   | RemoveScheduleF
@@ -655,6 +669,8 @@ export const editCasualtyTheftLoss: ActionCreator<EditCasualtyTheftLossAction> =
 export const removeCasualtyTheftLoss: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_CASUALTY_THEFT_LOSS,
   indexValidator
+)
+
 export const setForm2441: ActionCreator<Form2441Input> = makeActionCreator(
   ActionName.SET_FORM_2441
 )
@@ -746,6 +762,19 @@ export const removeScheduleC: ActionCreator<number> = makeActionCreator(
   indexValidator
 )
 
+export const addScheduleH: ActionCreator<ScheduleHInput> = makeActionCreator(
+  ActionName.ADD_SCHEDULE_H,
+  validators.scheduleH
+)
+
+export const editScheduleH: ActionCreator<EditScheduleHAction> =
+  makeActionCreator(ActionName.EDIT_SCHEDULE_H)
+
+export const removeScheduleH: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_SCHEDULE_H,
+  indexValidator
+)
+
 export const addScheduleF: ActionCreator<ScheduleFInput> = makeActionCreator(
   ActionName.ADD_SCHEDULE_F,
   validators.scheduleF
@@ -756,6 +785,9 @@ export const editScheduleF: ActionCreator<EditScheduleFAction> =
 
 export const removeScheduleF: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_SCHEDULE_F,
+  indexValidator
+)
+
 export const addRoyaltyIncome: ActionCreator<RoyaltyIncome> = makeActionCreator(
   ActionName.ADD_ROYALTY_INCOME,
   validators.royaltyIncome

@@ -665,6 +665,24 @@ export interface F8801Input {
   priorYearNetMinimumTaxOnExclusionItems: number
 }
 
+// See https://www.irs.gov/forms-pubs/about-schedule-h-form-1040
+export interface ScheduleHInput {
+  // Total cash wages paid to household employees
+  cashWages: number
+  // Federal income tax withheld (if any, from W-2)
+  federalIncomeTaxWithheld: number
+  // Did you pay total cash wages of $1,000 or more in any calendar quarter?
+  paidOver1000InQuarter: boolean
+  // State where FUTA tax was paid (for state unemployment credit)
+  state?: State
+  // State unemployment contributions paid
+  stateUnemploymentContributions: number
+  // Were all state unemployment contributions paid by the due date of Form 1040?
+  contributionsPaidByDueDate: boolean
+  // Were you a household employer in a credit reduction state?
+  creditReductionState: boolean
+}
+
 // See https://www.irs.gov/instructions/i1065sk1
 export interface ScheduleK1Form1065 {
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
@@ -919,6 +937,7 @@ export interface Information<D = Date> {
   f3922s: F3922[]
   scheduleCInputs: ScheduleCInput[]
   scheduleFInputs: ScheduleFInput[]
+  scheduleHInputs: ScheduleHInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
   form6781: Form6781Input[]
   installmentSales?: InstallmentSale[]
@@ -1019,6 +1038,7 @@ export type EditAssetAction = ArrayItemEditAction<Asset<Date>>
 export type EditF3921Action = ArrayItemEditAction<F3921>
 export type EditF3922Action = ArrayItemEditAction<F3922>
 export type EditScheduleCAction = ArrayItemEditAction<ScheduleCInput>
+export type EditScheduleHAction = ArrayItemEditAction<ScheduleHInput>
 export type EditRoyaltyIncomeAction = ArrayItemEditAction<RoyaltyIncome>
 export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>
