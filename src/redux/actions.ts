@@ -20,6 +20,7 @@ import {
   F3921,
   ScheduleK1Form1065,
   ScheduleCInput,
+  Form6781Input,
   TaxYear,
   HealthSavingsAccountDateString,
   InformationDateString,
@@ -39,7 +40,8 @@ import {
   EditAssetAction,
   EditF3921Action,
   EditScheduleCAction,
-  EditScheduleK1Form1065Action
+  EditScheduleK1Form1065Action,
+  EditForm6781Action
 } from 'ustaxes/core/data'
 import * as validators from 'ustaxes/core/data/validate'
 import { index as indexValidator } from 'ustaxes/core/data/validate'
@@ -97,6 +99,9 @@ export enum ActionName {
   ADD_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/ADD',
   EDIT_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/EDIT',
   REMOVE_SCHEDULE_K1_F1065 = 'SCHEDULE_K1_F1065/REMOVE',
+  ADD_FORM_6781 = 'FORM_6781/ADD',
+  EDIT_FORM_6781 = 'FORM_6781/EDIT',
+  REMOVE_FORM_6781 = 'FORM_6781/REMOVE',
   ADD_CREDIT = 'CREDIT/ADD',
   EDIT_CREDIT = 'CREDIT/EDIT',
   REMOVE_CREDIT = 'CREDIT/REMOVE'
@@ -187,6 +192,9 @@ type RemoveScheduleK1Form1065 = Save<
   typeof ActionName.REMOVE_SCHEDULE_K1_F1065,
   number
 >
+type AddForm6781 = Save<typeof ActionName.ADD_FORM_6781, Form6781Input>
+type EditForm6781 = Save<typeof ActionName.EDIT_FORM_6781, EditForm6781Action>
+type RemoveForm6781 = Save<typeof ActionName.REMOVE_FORM_6781, number>
 type AddCredit = Save<typeof ActionName.ADD_CREDIT, Credit>
 type EditCredit = Save<typeof ActionName.EDIT_CREDIT, EditCreditAction>
 type RemoveCredit = Save<typeof ActionName.REMOVE_CREDIT, number>
@@ -241,6 +249,9 @@ export type Actions =
   | AddScheduleK1Form1065
   | EditScheduleK1Form1065
   | RemoveScheduleK1Form1065
+  | AddForm6781
+  | EditForm6781
+  | RemoveForm6781
   | AddCredit
   | EditCredit
   | RemoveCredit
@@ -535,6 +546,18 @@ export const editScheduleK1Form1065: ActionCreator<EditScheduleK1Form1065Action>
 
 export const removeScheduleK1Form1065: ActionCreator<number> =
   makeActionCreator(ActionName.REMOVE_SCHEDULE_K1_F1065, indexValidator)
+
+export const addForm6781: ActionCreator<Form6781Input> = makeActionCreator(
+  ActionName.ADD_FORM_6781
+)
+
+export const editForm6781: ActionCreator<EditForm6781Action> =
+  makeActionCreator(ActionName.EDIT_FORM_6781)
+
+export const removeForm6781: ActionCreator<number> = makeActionCreator(
+  ActionName.REMOVE_FORM_6781,
+  indexValidator
+)
 
 export const addCredit: ActionCreator<Credit> = makeActionCreator(
   ActionName.ADD_CREDIT,
