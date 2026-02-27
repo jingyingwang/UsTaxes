@@ -42,6 +42,7 @@ const Urls = {
   },
   interview: '/interview',
   amendedReturn: '/amended/f1040x',
+  importPdf: '/import/pdf',
   createPdf: '/createpdf',
   settings: '/settings',
   help: '/help',

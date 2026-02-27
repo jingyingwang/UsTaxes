@@ -51,6 +51,7 @@ import AmendedReturn from './amended/AmendedReturn'
 import { SCorpIncome } from './income/SCorpIncome'
 import { EstateAndTrustIncome } from './income/EstateAndTrustIncome'
 import { BusinessIncome } from './income/BusinessIncome'
+import PDFUpload from './import/PDFUpload'
 import { TaxYear } from 'ustaxes/core/data'
 import { AdvanceChildTaxCredit } from './Y2021/AdvanceChildTaxCredit'
 import { YearsTaxesState } from 'ustaxes/redux'
@@ -199,6 +200,10 @@ export const drawerSections: Section[] = [
     ]
   },
   {
+    title: 'Import',
+    items: [item('Import from PDF', Urls.importPdf, <PDFUpload />)]
+  },
+  {
     title: 'Amended Return',
     items: [item('Form 1040-X', Urls.amendedReturn, <AmendedReturn />)]
   },
@@ -229,7 +234,11 @@ const yearSpecificPages: Partial<{ [k in TaxYear]: Section[] }> = {
     {
       title: 'Credits',
       items: [
-        item('Education Credits (1098-T)', Urls.credits.education, <F1098tInfo />)
+        item(
+          'Education Credits (1098-T)',
+          Urls.credits.education,
+          <F1098tInfo />
+        )
       ]
     }
   ]
