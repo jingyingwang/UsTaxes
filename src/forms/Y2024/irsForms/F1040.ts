@@ -58,6 +58,7 @@ import F8582 from './F8582'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
+import F1116 from './F1116'
 
 export default class F1040 extends F1040Base {
   tag: FormTag = 'f1040'
@@ -104,6 +105,7 @@ export default class F1040 extends F1040Base {
   f8960: F8960
   f8962?: F8962
   f8995?: F8995 | F8995A
+  f1116?: F1116
   qualifiedAndCapGainsWorksheet?: SDQualifiedAndCapGains
   studentLoanInterestWorksheet?: StudentLoanInterestWorksheet
   socialSecurityBenefitsWorksheet?: SocialSecurityBenefitsWorksheet
@@ -138,6 +140,12 @@ export default class F1040 extends F1040Base {
 
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
+
+    // Form 1116 - Foreign Tax Credit
+    const f1116 = new F1116(this)
+    if (f1116.isNeeded()) {
+      this.f1116 = f1116
+    }
 
     if (this.f1099ssas().length > 0) {
       const ssws = new SocialSecurityBenefitsWorksheet(this)
@@ -194,6 +202,7 @@ export default class F1040 extends F1040Base {
       this.scheduleR,
       this.scheduleEIC,
       this.schedule8812,
+      this.f1116,
       this.f4797,
       this.f4952,
       this.f4972,

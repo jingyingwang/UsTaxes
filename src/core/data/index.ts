@@ -129,12 +129,16 @@ export interface F1099BData {
 
 export interface F1099IntData {
   income: number
+  foreignTaxPaid?: number
+  foreignCountry?: string
 }
 
 export interface F1099DivData {
   dividends: number
   qualifiedDividends: number
   totalCapitalGainsDistributions: number
+  foreignTaxPaid?: number
+  foreignCountry?: string
 }
 /*
  TODO: Add in logic for various different distributions

@@ -29,7 +29,17 @@ import { intentionallyFloat } from 'ustaxes/core/util'
 const showIncome = (a: Supported1099): ReactElement => {
   switch (a.type) {
     case Income1099Type.INT: {
-      return <Currency value={a.form.income} />
+      return (
+        <span>
+          <Currency value={a.form.income} />
+          {a.form.foreignTaxPaid ? (
+            <>
+              <br />
+              Foreign Tax Paid: <Currency value={a.form.foreignTaxPaid} />
+            </>
+          ) : null}
+        </span>
+      )
     }
     case Income1099Type.B: {
       const ltg = a.form.longTermProceeds - a.form.longTermCostBasis
@@ -43,7 +53,17 @@ const showIncome = (a: Supported1099): ReactElement => {
       )
     }
     case Income1099Type.DIV: {
-      return <Currency value={a.form.dividends} />
+      return (
+        <span>
+          <Currency value={a.form.dividends} />
+          {a.form.foreignTaxPaid ? (
+            <>
+              <br />
+              Foreign Tax Paid: <Currency value={a.form.foreignTaxPaid} />
+            </>
+          ) : null}
+        </span>
+      )
     }
     case Income1099Type.R: {
       return (
@@ -100,6 +120,9 @@ interface F1099UserInput {
   // benefitsPaid: string | number
   // benefitsRepaid: string | number
   netBenefits: string | number
+  // Foreign tax fields (INT and DIV)
+  foreignTaxPaid: string | number
+  foreignCountry: string
 }
 
 const blankUserInput: F1099UserInput = {
@@ -123,7 +146,10 @@ const blankUserInput: F1099UserInput = {
   // SSA fields
   // benefitsPaid: '',
   // benefitsRepaid: '',
-  netBenefits: ''
+  netBenefits: '',
+  // Foreign tax fields
+  foreignTaxPaid: '',
+  foreignCountry: ''
 }
 
 const toUserInput = (f: Supported1099): F1099UserInput => ({
@@ -136,14 +162,20 @@ const toUserInput = (f: Supported1099): F1099UserInput => ({
     switch (f.type) {
       case Income1099Type.INT: {
         return {
-          interest: f.form.income
+          interest: f.form.income,
+          foreignTaxPaid: f.form.foreignTaxPaid ?? '',
+          foreignCountry: f.form.foreignCountry ?? ''
         }
       }
       case Income1099Type.B: {
         return f.form
       }
       case Income1099Type.DIV: {
-        return f.form
+        return {
+          ...f.form,
+          foreignTaxPaid: f.form.foreignTaxPaid ?? '',
+          foreignCountry: f.form.foreignCountry ?? ''
+        }
       }
       case Income1099Type.R: {
         return f.form
@@ -163,7 +195,13 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
         personRole: input.personRole ?? PersonRole.PRIMARY,
         type: input.formType,
         form: {
-          income: Number(input.interest)
+          income: Number(input.interest),
+          ...(Number(input.foreignTaxPaid) > 0
+            ? { foreignTaxPaid: Number(input.foreignTaxPaid) }
+            : {}),
+          ...(input.foreignCountry
+            ? { foreignCountry: input.foreignCountry }
+            : {})
         }
       }
     }
@@ -190,7 +228,13 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
           qualifiedDividends: Number(input.qualifiedDividends),
           totalCapitalGainsDistributions: Number(
             input.totalCapitalGainsDistributions
-          )
+          ),
+          ...(Number(input.foreignTaxPaid) > 0
+            ? { foreignTaxPaid: Number(input.foreignTaxPaid) }
+            : {}),
+          ...(input.foreignCountry
+            ? { foreignCountry: input.foreignCountry }
+            : {})
         }
       }
     }
@@ -270,6 +314,15 @@ export default function F1099Info(): ReactElement {
         patternConfig={Patterns.currency}
         name="interest"
       />
+      <LabeledInput
+        label={boxLabel('6', 'Foreign Tax Paid')}
+        patternConfig={Patterns.currency}
+        name="foreignTaxPaid"
+      />
+      <LabeledInput
+        label={boxLabel('7', 'Foreign Country')}
+        name="foreignCountry"
+      />
     </Grid>
   )
 
@@ -324,6 +377,15 @@ export default function F1099Info(): ReactElement {
         label={boxLabel('2a', 'Total capital gains distributions')}
         patternConfig={Patterns.currency}
         name="totalCapitalGainsDistributions"
+      />
+      <LabeledInput
+        label={boxLabel('7', 'Foreign Tax Paid')}
+        patternConfig={Patterns.currency}
+        name="foreignTaxPaid"
+      />
+      <LabeledInput
+        label={boxLabel('8', 'Foreign Country')}
+        name="foreignCountry"
       />
     </Grid>
   )
