@@ -5,8 +5,6 @@ import { Field } from 'ustaxes/core/pdfFiller'
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import { HomeOfficeInput } from 'ustaxes/core/data'
 
-const TAX_YEAR = 2025
-
 /**
  * IRS Form 8829 — Expenses for Business Use of Your Home
  *
@@ -26,7 +24,7 @@ export default class F8829 extends F1040Attachment {
   sequenceIndex = 66
 
   private businessIdx: number
-  private _input?: HomeOfficeInput
+  private _input: HomeOfficeInput | undefined | null = null
 
   constructor(f1040: F1040, businessIndex = 0) {
     super(f1040)
@@ -36,10 +34,11 @@ export default class F8829 extends F1040Attachment {
   // ─── Input helpers ────────────────────────────────────────
 
   private input(): HomeOfficeInput | undefined {
-    if (this._input !== undefined) return this._input
-    this._input = this.f1040.info.homeOfficeInputs.find(
-      (h) => h.businessIndex === this.businessIdx
-    )
+    if (this._input !== null) return this._input ?? undefined
+    this._input =
+      this.f1040.info.homeOfficeInputs.find(
+        (h) => h.businessIndex === this.businessIdx
+      ) ?? undefined
     return this._input
   }
 
