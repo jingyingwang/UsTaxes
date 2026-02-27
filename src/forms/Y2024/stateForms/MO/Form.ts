@@ -1,1 +1,5 @@
-export default class MOForm {}
+import StateFormBase from 'ustaxes/core/stateForms/StateFormBase'
+import { MO } from '../progressiveConfigs'
+import F1040 from '../../irsForms/F1040'
+
+export default (f1040: F1040): StateFormBase => new StateFormBase(f1040, MO)

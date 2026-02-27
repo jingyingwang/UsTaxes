@@ -1,1 +1,5 @@
-export default class DEForm {}
+import StateFormBase from 'ustaxes/core/stateForms/StateFormBase'
+import { DE } from '../progressiveConfigs'
+import F1040 from '../../irsForms/F1040'
+
+export default (f1040: F1040): StateFormBase => new StateFormBase(f1040, DE)
