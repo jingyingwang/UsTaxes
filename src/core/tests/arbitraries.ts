@@ -166,19 +166,50 @@ export const f1099DivData: Arbitrary<types.F1099DivData> = interest.chain(
       }))
 )
 
+const washSaleAdjustment = posCurrency(100000)
+
 export const f1099BData: Arbitrary<types.F1099BData> = fc
-  .tuple(investmentResult, investment, investmentResult, investment)
+  .tuple(
+    investmentResult,
+    investment,
+    washSaleAdjustment,
+    investmentResult,
+    investment,
+    washSaleAdjustment,
+    investmentResult,
+    investment,
+    washSaleAdjustment,
+    investmentResult,
+    investment,
+    washSaleAdjustment
+  )
   .map(
     ([
-      shortTermProceeds,
-      shortTermCostBasis,
-      longTermProceeds,
-      longTermCostBasis
+      shortTermBasisReportedProceeds,
+      shortTermBasisReportedCostBasis,
+      shortTermBasisReportedWashSale,
+      shortTermBasisNotReportedProceeds,
+      shortTermBasisNotReportedCostBasis,
+      shortTermBasisNotReportedWashSale,
+      longTermBasisReportedProceeds,
+      longTermBasisReportedCostBasis,
+      longTermBasisReportedWashSale,
+      longTermBasisNotReportedProceeds,
+      longTermBasisNotReportedCostBasis,
+      longTermBasisNotReportedWashSale
     ]) => ({
-      shortTermProceeds,
-      shortTermCostBasis,
-      longTermProceeds,
-      longTermCostBasis
+      shortTermBasisReportedProceeds,
+      shortTermBasisReportedCostBasis,
+      shortTermBasisReportedWashSale,
+      shortTermBasisNotReportedProceeds,
+      shortTermBasisNotReportedCostBasis,
+      shortTermBasisNotReportedWashSale,
+      longTermBasisReportedProceeds,
+      longTermBasisReportedCostBasis,
+      longTermBasisReportedWashSale,
+      longTermBasisNotReportedProceeds,
+      longTermBasisNotReportedCostBasis,
+      longTermBasisNotReportedWashSale
     })
   )
 

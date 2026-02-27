@@ -121,11 +121,50 @@ export enum Income1099Type {
 }
 
 export interface F1099BData {
-  shortTermProceeds: number
-  shortTermCostBasis: number
-  longTermProceeds: number
-  longTermCostBasis: number
+  // Basis reported to IRS (covered)
+  shortTermBasisReportedProceeds: number
+  shortTermBasisReportedCostBasis: number
+  shortTermBasisReportedWashSale: number
+  longTermBasisReportedProceeds: number
+  longTermBasisReportedCostBasis: number
+  longTermBasisReportedWashSale: number
+  // Basis NOT reported to IRS (noncovered)
+  shortTermBasisNotReportedProceeds: number
+  shortTermBasisNotReportedCostBasis: number
+  shortTermBasisNotReportedWashSale: number
+  longTermBasisNotReportedProceeds: number
+  longTermBasisNotReportedCostBasis: number
+  longTermBasisNotReportedWashSale: number
 }
+
+export type LegacyF1099BData = {
+  shortTermProceeds?: number
+  shortTermCostBasis?: number
+  longTermProceeds?: number
+  longTermCostBasis?: number
+}
+
+export const normalizeF1099BData = (
+  form: F1099BData & LegacyF1099BData
+): F1099BData => ({
+  shortTermBasisReportedProceeds:
+    form.shortTermBasisReportedProceeds ?? form.shortTermProceeds ?? 0,
+  shortTermBasisReportedCostBasis:
+    form.shortTermBasisReportedCostBasis ?? form.shortTermCostBasis ?? 0,
+  shortTermBasisReportedWashSale: form.shortTermBasisReportedWashSale ?? 0,
+  shortTermBasisNotReportedProceeds: form.shortTermBasisNotReportedProceeds ?? 0,
+  shortTermBasisNotReportedCostBasis:
+    form.shortTermBasisNotReportedCostBasis ?? 0,
+  shortTermBasisNotReportedWashSale: form.shortTermBasisNotReportedWashSale ?? 0,
+  longTermBasisReportedProceeds:
+    form.longTermBasisReportedProceeds ?? form.longTermProceeds ?? 0,
+  longTermBasisReportedCostBasis:
+    form.longTermBasisReportedCostBasis ?? form.longTermCostBasis ?? 0,
+  longTermBasisReportedWashSale: form.longTermBasisReportedWashSale ?? 0,
+  longTermBasisNotReportedProceeds: form.longTermBasisNotReportedProceeds ?? 0,
+  longTermBasisNotReportedCostBasis: form.longTermBasisNotReportedCostBasis ?? 0,
+  longTermBasisNotReportedWashSale: form.longTermBasisNotReportedWashSale ?? 0
+})
 
 export interface F1099IntData {
   income: number
