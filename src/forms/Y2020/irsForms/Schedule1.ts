@@ -1,6 +1,5 @@
 import F1040Attachment from './F1040Attachment'
 import { FormTag } from 'ustaxes/core/irsForms/Form'
-import ScheduleE from './ScheduleE'
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import F1040 from './F1040'
 import { Field } from 'ustaxes/core/pdfFiller'
@@ -8,7 +7,6 @@ import { Field } from 'ustaxes/core/pdfFiller'
 export default class Schedule1 extends F1040Attachment {
   tag: FormTag = 'f1040s1'
   sequenceIndex = 1
-  scheduleE?: ScheduleE
   otherIncomeStrings: Set<string>
 
   constructor(f1040: F1040) {
@@ -17,16 +15,19 @@ export default class Schedule1 extends F1040Attachment {
   }
 
   isNeeded = (): boolean =>
-    this.f1040.studentLoanInterestWorksheet !== undefined &&
-    this.f1040.studentLoanInterestWorksheet.notMFS() &&
-    this.f1040.studentLoanInterestWorksheet.isNotDependent()
+    this.f1040.scheduleE.isNeeded() ||
+    (this.f1040.studentLoanInterestWorksheet !== undefined &&
+      this.f1040.studentLoanInterestWorksheet.notMFS() &&
+      this.f1040.studentLoanInterestWorksheet.isNotDependent()) ||
+    this.f1040.f8889.isNeeded() ||
+    (this.f1040.f8889Spouse?.isNeeded() ?? false)
 
   l1 = (): number | undefined => undefined
   l2a = (): number | undefined => undefined
   l2b = (): number | undefined => undefined
   l3 = (): number | undefined => undefined
   l4 = (): number | undefined => undefined
-  l5 = (): number | undefined => this.scheduleE?.l41()
+  l5 = (): number | undefined => this.f1040.scheduleE.l41()
   l6 = (): number | undefined => undefined
   l7 = (): number | undefined => undefined
   l8 = (): number => {
