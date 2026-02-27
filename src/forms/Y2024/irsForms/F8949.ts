@@ -202,6 +202,13 @@ export default class F8949 extends F1040Attachment {
     return milliInterval / this.oneDay > 366
   }
 
+  getBoxForAsset = (p: Asset<Date>): string => {
+    const longTerm = this.isLongTerm(p)
+    if (p.basisReportedToIRS === true) return longTerm ? 'D' : 'A'
+    if (p.basisReportedToIRS === false) return longTerm ? 'E' : 'B'
+    return longTerm ? 'F' : 'C'
+  }
+
   shortTermSales = (): LineData[] =>
     this.shortTermLineData().slice(
       this.index * NUM_SHORT_LINES,
@@ -367,7 +374,9 @@ export default class F8949 extends F1040Attachment {
       dateAcquired: showDate(p.openDate),
       dateSold: showDate(p.closeDate),
       proceeds: p.closePrice * p.quantity - (p.closeFee ?? 0),
-      costBasis: p.openPrice * p.quantity + p.openFee
+      costBasis: p.openPrice * p.quantity + p.openFee,
+      code: p.washSaleAdjustment ? 'W' : undefined,
+      adjustment: p.washSaleAdjustment
     }))
 
   private reportedLongTermLines = (): LineData[] =>
@@ -405,7 +414,9 @@ export default class F8949 extends F1040Attachment {
       dateAcquired: showDate(p.openDate),
       dateSold: showDate(p.closeDate),
       proceeds: p.closePrice * p.quantity - (p.closeFee ?? 0),
-      costBasis: p.openPrice * p.quantity + p.openFee
+      costBasis: p.openPrice * p.quantity + p.openFee,
+      code: p.washSaleAdjustment ? 'W' : undefined,
+      adjustment: p.washSaleAdjustment
     }))
 
   private shortTermLineData = (): LineData[] => {

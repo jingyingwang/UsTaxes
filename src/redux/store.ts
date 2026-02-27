@@ -2,7 +2,8 @@ import {
   createStore as reduxCreateStore,
   applyMiddleware,
   Store,
-  CombinedState
+  CombinedState,
+  Middleware
 } from 'redux'
 import logger from 'redux-logger'
 import rootReducer from './reducer'
@@ -160,8 +161,7 @@ export const createStoreUnpersisted = (information: Information): InfoStore =>
   })
 
 export const createStore = (): PersistedStore =>
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-argument
-  reduxCreateStore(persistedReducer, applyMiddleware(logger as any))
+  reduxCreateStore(persistedReducer, applyMiddleware(logger as Middleware))
 
 export const store = createStore()
 
