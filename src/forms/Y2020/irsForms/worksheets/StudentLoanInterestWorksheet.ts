@@ -62,7 +62,14 @@ export default class StudentLoanInterestWorksheet {
 
   l6 = (): number => Math.max(0, this.l4() - this.l5())
 
-  l7 = (): number => Math.min(this.l6() / 15000, 1)
+  l7 = (): number =>
+    Math.min(
+      this.l6() /
+        (this.f1040.info.taxPayer.filingStatus === FilingStatus.MFJ
+          ? 30000
+          : 15000),
+      1
+    )
 
   l8 = (): number => this.l1() * this.l7()
 
