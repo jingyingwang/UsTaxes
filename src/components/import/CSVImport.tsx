@@ -190,7 +190,7 @@ export default function CSVImport(): ReactElement {
           className={`${classes.dropZone} ${
             isDragging ? classes.dropZoneActive : ''
           }`}
-          onDrop={onDrop}
+          onDrop={(e) => void onDrop(e)}
           onDragOver={onDragOver}
           onDragLeave={onDragLeave}
         >
@@ -203,7 +203,7 @@ export default function CSVImport(): ReactElement {
             className={classes.fileInput}
             id="csv-import-file"
             type="file"
-            onChange={onFileSelected}
+            onChange={(e) => void onFileSelected(e)}
           />
           <label htmlFor="csv-import-file">
             <Button variant="contained" color="primary" component="span">

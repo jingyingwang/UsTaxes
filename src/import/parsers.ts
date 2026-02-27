@@ -371,7 +371,20 @@ const parse1099Summary = (
         payer,
         type: Income1099Type.B,
         personRole: PersonRole.PRIMARY,
-        form: totals
+        form: {
+          shortTermBasisReportedProceeds: totals.shortTermProceeds,
+          shortTermBasisReportedCostBasis: totals.shortTermCostBasis,
+          shortTermBasisReportedWashSale: 0,
+          longTermBasisReportedProceeds: totals.longTermProceeds,
+          longTermBasisReportedCostBasis: totals.longTermCostBasis,
+          longTermBasisReportedWashSale: 0,
+          shortTermBasisNotReportedProceeds: 0,
+          shortTermBasisNotReportedCostBasis: 0,
+          shortTermBasisNotReportedWashSale: 0,
+          longTermBasisNotReportedProceeds: 0,
+          longTermBasisNotReportedCostBasis: 0,
+          longTermBasisNotReportedWashSale: 0
+        }
       })
     }
   })

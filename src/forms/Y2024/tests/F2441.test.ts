@@ -21,6 +21,7 @@ const baseInformation: ValidatedInformation = {
   f3921s: [],
   credits: [],
   scheduleCInputs: [],
+  homeOfficeInputs: [],
   scheduleK1Form1065s: [],
   itemizedDeductions: undefined,
   form2441Input: {

@@ -8,6 +8,7 @@ import { blankState } from 'ustaxes/redux/reducer'
 import {
   FilingStatus,
   Information,
+  IraPlanType,
   PersonRole,
   AccountType
 } from 'ustaxes/core/data'
@@ -87,7 +88,7 @@ const makePriorInfo = (): Information => ({
       taxableAmountNotDetermined: false,
       totalDistribution: false,
       federalIncomeTaxWithheld: 500,
-      planType: 'IRA' as const,
+      planType: IraPlanType.IRA,
       contributions: 6000,
       rolloverContributions: 0,
       rothIraConversion: 0,

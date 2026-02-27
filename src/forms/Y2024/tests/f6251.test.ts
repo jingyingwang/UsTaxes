@@ -21,6 +21,7 @@ const baseInformation: ValidatedInformation = {
   credits: [],
   f3922s: [],
   scheduleCInputs: [],
+  homeOfficeInputs: [],
   scheduleFInputs: [],
   scheduleHInputs: [],
   scheduleK1Form1065s: [],

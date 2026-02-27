@@ -47,16 +47,7 @@ const makeInfo = (): ValidatedInformation => ({
   stateResidencies: [{ state: 'AL' }],
   healthSavingsAccounts: [],
   individualRetirementArrangements: [],
-  royaltyIncomes: [],
-  f1098ts: [],
-  f3922s: [],
-  scheduleFInputs: [],
-  scheduleHInputs: [],
-  form6781: [],
-  scheduleK1Form1120Ss: [],
-  scheduleK1Form1041s: [],
-  form2441Input: undefined,
-  netOperatingLossCarryforwards: [],
+  homeOfficeInputs: [],
   amendedReturns: [],
   depreciableAssets: []
 })

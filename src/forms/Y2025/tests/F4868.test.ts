@@ -38,6 +38,7 @@ const buildInfo = (): ValidatedInformation => ({
   f1098es: [],
   f3921s: [],
   scheduleCInputs: [],
+  homeOfficeInputs: [],
   scheduleK1Form1065s: [],
   itemizedDeductions: undefined,
   taxPayer: {

@@ -264,7 +264,7 @@ export default class F8829 extends F1040Attachment {
 
       // Part II (Regular method only)
       ...(isSimplified
-        ? Array(25).fill(undefined)
+        ? new Array<Field>(25).fill(undefined)
         : [
             this.l8(),
             this.l9(),

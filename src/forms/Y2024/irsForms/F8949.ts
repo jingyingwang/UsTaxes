@@ -202,13 +202,6 @@ export default class F8949 extends F1040Attachment {
     return milliInterval / this.oneDay > 366
   }
 
-  getBoxForAsset = (p: Asset<Date>): string => {
-    const longTerm = this.isLongTerm(p)
-    if (p.basisReportedToIRS === true) return longTerm ? 'D' : 'A'
-    if (p.basisReportedToIRS === false) return longTerm ? 'E' : 'B'
-    return longTerm ? 'F' : 'C'
-  }
-
   shortTermSales = (): LineData[] =>
     this.shortTermLineData().slice(
       this.index * NUM_SHORT_LINES,
