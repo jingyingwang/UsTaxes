@@ -24,6 +24,7 @@ export default class Schedule1 extends F1040Attachment {
   isNeeded = (): boolean =>
     (this.f1040.scheduleC?.isNeeded() ?? false) ||
     this.f1040.scheduleE.isNeeded() ||
+    this.f1040.f4684.isNeeded() ||
     (this.f1040.studentLoanInterestWorksheet !== undefined &&
       this.f1040.studentLoanInterestWorksheet.notMFS() &&
       this.f1040.studentLoanInterestWorksheet.isNotDependent()) ||
@@ -36,7 +37,8 @@ export default class Schedule1 extends F1040Attachment {
   l2b = (): number | undefined => undefined
   // Line 3: Business income or (loss) — Schedule C, line 31
   l3 = (): number | undefined => this.f1040.scheduleC?.totalL31()
-  l4 = (): number | undefined => undefined
+  // Line 4: Other gains or losses (Form 4684, casualties and thefts)
+  l4 = (): number | undefined => this.f1040.f4684.toSchedule1Line4()
   l5 = (): number | undefined => this.f1040.scheduleE.l41()
   l6 = (): number | undefined => undefined
   l7 = (): number | undefined => undefined

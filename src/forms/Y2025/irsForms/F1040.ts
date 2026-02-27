@@ -57,6 +57,10 @@ import F8606 from './F8606'
 import F8853 from './F8853'
 import F8582 from './F8582'
 import F4562 from './F4562'
+import F4684 from './F4684'
+import F6252 from './F6252'
+import F6781 from './F6781'
+import F8824 from './F8824'
 import F8829 from './F8829'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
@@ -88,12 +92,16 @@ export default class F1040 extends F1040Base {
   f4563?: F4563
   f4797?: F4797
   f4562?: F4562
+  f4684: F4684
   f4952?: F4952
   f8829?: F8829
   f4972?: F4972
   f5695?: F5695
   f6251: F6251
+  f6252: F6252
+  f6781: F6781
   f8814?: F8814
+  f8824: F8824
   f8582?: F8582
   f8606: F8606
   f8606Spouse?: F8606
@@ -138,6 +146,10 @@ export default class F1040 extends F1040Base {
     this.schedule8812 = new Schedule8812(this)
 
     this.f4562 = new F4562(this)
+    this.f4684 = new F4684(this)
+    this.f6252 = new F6252(this)
+    this.f6781 = new F6781(this)
+    this.f8824 = new F8824(this)
     this.f8829 = new F8829(this)
     this.f6251 = new F6251(this)
     this.f8949 = new F8949(this)
@@ -213,7 +225,11 @@ export default class F1040 extends F1040Base {
       this.scheduleEIC,
       this.schedule8812,
       this.f4562,
+      this.f4684,
       this.f4797,
+      this.f6252,
+      this.f6781,
+      this.f8824,
       this.f8829,
       this.f4952,
       this.f4972,

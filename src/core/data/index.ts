@@ -1055,6 +1055,7 @@ export interface Information<D = Date> {
   scheduleK1Form1041s: ScheduleK1Form1041[]
   itemizedDeductions: ItemizedDeductions | undefined
   casualtyTheftLosses?: CasualtyTheftLoss[]
+  likeKindExchanges?: LikeKindExchange[]
   priorYearTax?: number
   form2441Input: Form2441Input | undefined
   refund?: Refund
@@ -1111,6 +1112,15 @@ export interface Asset<D = Date> {
 export type SoldAsset<D> = Asset<D> & {
   closePrice: number
   closeDate: D
+}
+
+export interface LikeKindExchange {
+  description: string
+  fmvReceived: number
+  adjustedBasis: number
+  bootPaid: number
+  bootReceived: number
+  fmvPropertyReceived: number
 }
 
 export type InstallmentSaleType = 'capital' | 'business'
