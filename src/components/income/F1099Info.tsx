@@ -13,7 +13,8 @@ import {
   Supported1099,
   Income1099Type,
   PlanType1099,
-  PlanType1099Texts
+  PlanType1099Texts,
+  normalizeF1099BData
 } from 'ustaxes/core/data'
 import {
   Currency,
@@ -57,13 +58,32 @@ const showIncome = (a: Supported1099): ReactElement => {
       )
     }
     case Income1099Type.B: {
-      const ltg = a.form.longTermProceeds - a.form.longTermCostBasis
-      const stg = a.form.shortTermProceeds - a.form.shortTermCostBasis
+      const form = normalizeF1099BData(a.form)
+      const stReported =
+        form.shortTermBasisReportedProceeds -
+        form.shortTermBasisReportedCostBasis +
+        form.shortTermBasisReportedWashSale
+      const stNotReported =
+        form.shortTermBasisNotReportedProceeds -
+        form.shortTermBasisNotReportedCostBasis +
+        form.shortTermBasisNotReportedWashSale
+      const ltReported =
+        form.longTermBasisReportedProceeds -
+        form.longTermBasisReportedCostBasis +
+        form.longTermBasisReportedWashSale
+      const ltNotReported =
+        form.longTermBasisNotReportedProceeds -
+        form.longTermBasisNotReportedCostBasis +
+        form.longTermBasisNotReportedWashSale
       return (
         <span>
-          Long term: <Currency value={ltg} />
+          Short term (basis reported): <Currency value={stReported} />
           <br />
-          Short term: <Currency value={stg} />
+          Short term (basis not reported): <Currency value={stNotReported} />
+          <br />
+          Long term (basis reported): <Currency value={ltReported} />
+          <br />
+          Long term (basis not reported): <Currency value={ltNotReported} />
         </span>
       )
     }
@@ -122,10 +142,18 @@ interface F1099UserInput {
   earlyWithdrawalPenalty: string | number
   privateActivityBondInterest: string | number
   // B Fields
-  shortTermProceeds: string | number
-  shortTermCostBasis: string | number
-  longTermProceeds: string | number
-  longTermCostBasis: string | number
+  shortTermBasisReportedProceeds: string | number
+  shortTermBasisReportedCostBasis: string | number
+  shortTermBasisReportedWashSale: string | number
+  shortTermBasisNotReportedProceeds: string | number
+  shortTermBasisNotReportedCostBasis: string | number
+  shortTermBasisNotReportedWashSale: string | number
+  longTermBasisReportedProceeds: string | number
+  longTermBasisReportedCostBasis: string | number
+  longTermBasisReportedWashSale: string | number
+  longTermBasisNotReportedProceeds: string | number
+  longTermBasisNotReportedCostBasis: string | number
+  longTermBasisNotReportedWashSale: string | number
   // Div fields
   dividends: string | number
   qualifiedDividends: string | number
@@ -151,10 +179,18 @@ const blankUserInput: F1099UserInput = {
   earlyWithdrawalPenalty: '',
   privateActivityBondInterest: '',
   // B Fields
-  shortTermProceeds: '',
-  shortTermCostBasis: '',
-  longTermProceeds: '',
-  longTermCostBasis: '',
+  shortTermBasisReportedProceeds: '',
+  shortTermBasisReportedCostBasis: '',
+  shortTermBasisReportedWashSale: '',
+  shortTermBasisNotReportedProceeds: '',
+  shortTermBasisNotReportedCostBasis: '',
+  shortTermBasisNotReportedWashSale: '',
+  longTermBasisReportedProceeds: '',
+  longTermBasisReportedCostBasis: '',
+  longTermBasisReportedWashSale: '',
+  longTermBasisNotReportedProceeds: '',
+  longTermBasisNotReportedCostBasis: '',
+  longTermBasisNotReportedWashSale: '',
   // Div fields
   dividends: '',
   qualifiedDividends: '',
@@ -188,7 +224,7 @@ const toUserInput = (f: Supported1099): F1099UserInput => ({
         }
       }
       case Income1099Type.B: {
-        return f.form
+        return normalizeF1099BData(f.form)
       }
       case Income1099Type.DIV: {
         return {
@@ -232,10 +268,42 @@ const toF1099 = (input: F1099UserInput): Supported1099 | undefined => {
         personRole: input.personRole ?? PersonRole.PRIMARY,
         type: input.formType,
         form: {
-          shortTermCostBasis: Number(input.shortTermCostBasis),
-          shortTermProceeds: Number(input.shortTermProceeds),
-          longTermCostBasis: Number(input.longTermCostBasis),
-          longTermProceeds: Number(input.longTermProceeds)
+          shortTermBasisReportedProceeds: Number(
+            input.shortTermBasisReportedProceeds || 0
+          ),
+          shortTermBasisReportedCostBasis: Number(
+            input.shortTermBasisReportedCostBasis || 0
+          ),
+          shortTermBasisReportedWashSale: Number(
+            input.shortTermBasisReportedWashSale || 0
+          ),
+          shortTermBasisNotReportedProceeds: Number(
+            input.shortTermBasisNotReportedProceeds || 0
+          ),
+          shortTermBasisNotReportedCostBasis: Number(
+            input.shortTermBasisNotReportedCostBasis || 0
+          ),
+          shortTermBasisNotReportedWashSale: Number(
+            input.shortTermBasisNotReportedWashSale || 0
+          ),
+          longTermBasisReportedProceeds: Number(
+            input.longTermBasisReportedProceeds || 0
+          ),
+          longTermBasisReportedCostBasis: Number(
+            input.longTermBasisReportedCostBasis || 0
+          ),
+          longTermBasisReportedWashSale: Number(
+            input.longTermBasisReportedWashSale || 0
+          ),
+          longTermBasisNotReportedProceeds: Number(
+            input.longTermBasisNotReportedProceeds || 0
+          ),
+          longTermBasisNotReportedCostBasis: Number(
+            input.longTermBasisNotReportedCostBasis || 0
+          ),
+          longTermBasisNotReportedWashSale: Number(
+            input.longTermBasisNotReportedWashSale || 0
+          )
         }
       }
     }
@@ -350,34 +418,102 @@ export default function F1099Info(): ReactElement {
 
   const bFields = (
     <>
-      <h3>Long Term Covered Transactions</h3>
+      <h3>Short Term Transactions</h3>
+      <h4>Basis reported to IRS</h4>
       <Grid container spacing={2}>
         <LabeledInput
-          label="Proceeds"
+          label={boxLabel('1d', 'Proceeds')}
           patternConfig={Patterns.currency}
-          name="longTermProceeds"
-          sizes={{ xs: 6 }}
+          name="shortTermBasisReportedProceeds"
+          sizes={{ xs: 4 }}
+          required={false}
         />
         <LabeledInput
-          label="Cost basis"
+          label={boxLabel('1e', 'Cost or other basis')}
           patternConfig={Patterns.currency}
-          name="longTermCostBasis"
-          sizes={{ xs: 6 }}
+          name="shortTermBasisReportedCostBasis"
+          sizes={{ xs: 4 }}
+          required={false}
+        />
+        <LabeledInput
+          label={boxLabel('1g', 'Wash sale loss disallowed')}
+          patternConfig={Patterns.currency}
+          name="shortTermBasisReportedWashSale"
+          sizes={{ xs: 4 }}
+          required={false}
         />
       </Grid>
-      <h3>Short Term Covered Transactions</h3>
+      <h4>Basis NOT reported to IRS</h4>
       <Grid container spacing={2}>
         <LabeledInput
-          label="Proceeds"
+          label={boxLabel('1d', 'Proceeds')}
           patternConfig={Patterns.currency}
-          name="shortTermProceeds"
-          sizes={{ xs: 6 }}
+          name="shortTermBasisNotReportedProceeds"
+          sizes={{ xs: 4 }}
+          required={false}
         />
         <LabeledInput
-          label="Cost basis"
+          label={boxLabel('1e', 'Cost or other basis')}
           patternConfig={Patterns.currency}
-          name="shortTermCostBasis"
-          sizes={{ xs: 6 }}
+          name="shortTermBasisNotReportedCostBasis"
+          sizes={{ xs: 4 }}
+          required={false}
+        />
+        <LabeledInput
+          label={boxLabel('1g', 'Wash sale loss disallowed')}
+          patternConfig={Patterns.currency}
+          name="shortTermBasisNotReportedWashSale"
+          sizes={{ xs: 4 }}
+          required={false}
+        />
+      </Grid>
+      <h3>Long Term Transactions</h3>
+      <h4>Basis reported to IRS</h4>
+      <Grid container spacing={2}>
+        <LabeledInput
+          label={boxLabel('1d', 'Proceeds')}
+          patternConfig={Patterns.currency}
+          name="longTermBasisReportedProceeds"
+          sizes={{ xs: 4 }}
+          required={false}
+        />
+        <LabeledInput
+          label={boxLabel('1e', 'Cost or other basis')}
+          patternConfig={Patterns.currency}
+          name="longTermBasisReportedCostBasis"
+          sizes={{ xs: 4 }}
+          required={false}
+        />
+        <LabeledInput
+          label={boxLabel('1g', 'Wash sale loss disallowed')}
+          patternConfig={Patterns.currency}
+          name="longTermBasisReportedWashSale"
+          sizes={{ xs: 4 }}
+          required={false}
+        />
+      </Grid>
+      <h4>Basis NOT reported to IRS</h4>
+      <Grid container spacing={2}>
+        <LabeledInput
+          label={boxLabel('1d', 'Proceeds')}
+          patternConfig={Patterns.currency}
+          name="longTermBasisNotReportedProceeds"
+          sizes={{ xs: 4 }}
+          required={false}
+        />
+        <LabeledInput
+          label={boxLabel('1e', 'Cost or other basis')}
+          patternConfig={Patterns.currency}
+          name="longTermBasisNotReportedCostBasis"
+          sizes={{ xs: 4 }}
+          required={false}
+        />
+        <LabeledInput
+          label={boxLabel('1g', 'Wash sale loss disallowed')}
+          patternConfig={Patterns.currency}
+          name="longTermBasisNotReportedWashSale"
+          sizes={{ xs: 4 }}
+          required={false}
         />
       </Grid>
     </>

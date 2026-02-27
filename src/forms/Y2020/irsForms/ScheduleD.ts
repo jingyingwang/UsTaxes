@@ -1,5 +1,5 @@
 import F1040Attachment from './F1040Attachment'
-import { F1099BData, FilingStatus } from 'ustaxes/core/data'
+import { FilingStatus, normalizeF1099BData } from 'ustaxes/core/data'
 import { FormTag } from 'ustaxes/core/irsForms/Form'
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import SDRateGainWorksheet from './worksheets/SDRateGainWorksheet'
@@ -8,10 +8,17 @@ import F8949 from './F8949'
 import F1040 from './F1040'
 import { Field } from 'ustaxes/core/pdfFiller'
 
+type F1099BAggregate = {
+  shortTermProceeds: number
+  shortTermCostBasis: number
+  longTermProceeds: number
+  longTermCostBasis: number
+}
+
 export default class ScheduleD extends F1040Attachment {
   tag: FormTag = 'f1040sd'
   sequenceIndex = 12
-  aggregated: F1099BData
+  aggregated: F1099BAggregate
   rateGainWorksheet: SDRateGainWorksheet
   unrecaptured1250: SDUnrecaptured1250
 
@@ -21,13 +28,37 @@ export default class ScheduleD extends F1040Attachment {
   constructor(f1040: F1040) {
     super(f1040)
 
-    const bs: F1099BData[] = f1040.f1099Bs().map((f) => f.form)
+    const bs = f1040.f1099Bs().map((f) => normalizeF1099BData(f.form))
 
     this.aggregated = {
-      shortTermProceeds: bs.reduce((l, r) => l + r.shortTermProceeds, 0),
-      shortTermCostBasis: bs.reduce((l, r) => l + r.shortTermCostBasis, 0),
-      longTermProceeds: bs.reduce((l, r) => l + r.longTermProceeds, 0),
-      longTermCostBasis: bs.reduce((l, r) => l + r.longTermCostBasis, 0)
+      shortTermProceeds: bs.reduce(
+        (l, r) =>
+          r.shortTermBasisReportedWashSale === 0
+            ? l + r.shortTermBasisReportedProceeds
+            : l,
+        0
+      ),
+      shortTermCostBasis: bs.reduce(
+        (l, r) =>
+          r.shortTermBasisReportedWashSale === 0
+            ? l + r.shortTermBasisReportedCostBasis
+            : l,
+        0
+      ),
+      longTermProceeds: bs.reduce(
+        (l, r) =>
+          r.longTermBasisReportedWashSale === 0
+            ? l + r.longTermBasisReportedProceeds
+            : l,
+        0
+      ),
+      longTermCostBasis: bs.reduce(
+        (l, r) =>
+          r.longTermBasisReportedWashSale === 0
+            ? l + r.longTermBasisReportedCostBasis
+            : l,
+        0
+      )
     }
 
     this.rateGainWorksheet = new SDRateGainWorksheet()
