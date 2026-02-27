@@ -56,6 +56,7 @@ import F4137 from './F4137'
 import F8919 from './F8919'
 import F8853 from './F8853'
 import F8582 from './F8582'
+import F8606 from './F8606'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
@@ -92,6 +93,8 @@ export default class F1040 extends F1040Base {
   f6781: F6781
   f8814?: F8814
   f8582?: F8582
+  f8606: F8606
+  f8606Spouse?: F8606
   f8853?: F8853
   f8863?: F8863
   f8888?: F8888
@@ -140,6 +143,11 @@ export default class F1040 extends F1040Base {
     // add in separate form 8889 for the spouse
     if (this.info.taxPayer.spouse) {
       this.f8889Spouse = new F8889(this, this.info.taxPayer.spouse)
+    }
+
+    this.f8606 = new F8606(this, PersonRole.PRIMARY)
+    if (this.info.taxPayer.spouse) {
+      this.f8606Spouse = new F8606(this, PersonRole.SPOUSE)
     }
 
     this.f8959 = new F8959(this)
@@ -207,6 +215,8 @@ export default class F1040 extends F1040Base {
       this.f5695,
       this.f6251,
       this.f6781,
+      this.f8606,
+      this.f8606Spouse,
       this.f8814,
       this.f8888,
       this.f8889,
@@ -350,8 +360,19 @@ export default class F1040 extends F1040Base {
   l3b = (): number | undefined => this.scheduleB.to1040l3b()
   // This is the value of box 1 in 1099-R forms coming from IRAs
   l4a = (): number | undefined => this.totalGrossDistributionsFromIra()
-  // This should be the value of box 2a in 1099-R coming from IRAs
-  l4b = (): number | undefined => this.totalTaxableFromIra()
+  // Taxable IRA distributions: use Form 8606 calculation when applicable,
+  // otherwise fall back to summing 1099-R box 2a values
+  l4b = (): number | undefined => {
+    const f8606Needed =
+      this.f8606.isNeeded() || (this.f8606Spouse?.isNeeded() ?? false)
+    if (f8606Needed) {
+      return sumFields([
+        this.f8606.taxableIraDistributions(),
+        this.f8606Spouse?.taxableIraDistributions()
+      ])
+    }
+    return this.totalTaxableFromIra()
+  }
   // This is the value of box 1 in 1099-R forms coming from pensions/annuities
   l5a = (): number | undefined =>
     this.totalGrossDistributionsFrom1099R(PlanType1099.Pension)
