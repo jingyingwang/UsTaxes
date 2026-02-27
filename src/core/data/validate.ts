@@ -99,3 +99,7 @@ export const capitalLossCarryforward =
   fns.CapitalLossCarryforward as ValidateFunction<types.CapitalLossCarryforward>
 export const costBasisMethod =
   fns.CostBasisMethod as ValidateFunction<types.CostBasisMethod>
+export const form6781 =
+  fns.Form6781Input as ValidateFunction<types.Form6781Input>
+export const editForm6781Action =
+  fns.EditForm6781Action as ValidateFunction<types.EditForm6781Action>

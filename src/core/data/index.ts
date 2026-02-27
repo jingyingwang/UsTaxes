@@ -504,6 +504,20 @@ export interface ScheduleCInput {
   otherExpenseType?: string
 }
 
+// See https://www.irs.gov/forms-pubs/about-form-6781
+// Section 1256 contracts: regulated futures, foreign currency, non-equity options
+// Subject to 60% long-term / 40% short-term split and mark-to-market treatment
+export interface Section1256Contract {
+  description: string
+  gainOrLoss: number // Positive = gain, negative = loss (mark-to-market)
+}
+
+export interface Form6781Input {
+  section1256Contracts: Section1256Contract[]
+  // Line 5: Net section 1256 contracts loss election (carryback to prior years)
+  netSectionLossElection: number
+}
+
 // See https://www.irs.gov/instructions/i1065sk1
 export interface ScheduleK1Form1065 {
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
@@ -645,6 +659,7 @@ export interface Information<D = Date> {
   f3921s: F3921[]
   scheduleCInputs: ScheduleCInput[]
   scheduleK1Form1065s: ScheduleK1Form1065[]
+  form6781: Form6781Input[]
   itemizedDeductions: ItemizedDeductions | undefined
   refund?: Refund
   taxPayer: TaxPayer<D>
@@ -724,4 +739,5 @@ export type EditF3921Action = ArrayItemEditAction<F3921>
 export type EditScheduleCAction = ArrayItemEditAction<ScheduleCInput>
 export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>
+export type EditForm6781Action = ArrayItemEditAction<Form6781Input>
 export type EditCreditAction = ArrayItemEditAction<Credit>

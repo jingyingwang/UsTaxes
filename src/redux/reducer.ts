@@ -18,6 +18,7 @@ export const blankState: Information = {
   f3921s: [],
   scheduleCInputs: [],
   scheduleK1Form1065s: [],
+  form6781: [],
   itemizedDeductions: undefined,
   stateResidencies: [],
   healthSavingsAccounts: [],
@@ -411,6 +412,28 @@ const formReducer = (
       return {
         ...newState,
         individualRetirementArrangements: newIra
+      }
+    }
+    case ActionName.ADD_FORM_6781: {
+      return {
+        ...newState,
+        form6781: [...newState.form6781, action.formData]
+      }
+    }
+    case ActionName.EDIT_FORM_6781: {
+      const newForm6781 = [...newState.form6781]
+      newForm6781.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        form6781: newForm6781
+      }
+    }
+    case ActionName.REMOVE_FORM_6781: {
+      const newForm6781 = [...newState.form6781]
+      newForm6781.splice(action.formData, 1)
+      return {
+        ...newState,
+        form6781: newForm6781
       }
     }
     case ActionName.ADD_CREDIT: {

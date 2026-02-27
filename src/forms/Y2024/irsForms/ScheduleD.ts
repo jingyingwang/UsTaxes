@@ -58,7 +58,8 @@ export default class ScheduleD extends F1040Attachment {
     this.f1040.f1099Bs().length > 0 ||
     this.f1040.f8949.isNeeded() ||
     (this.carryforward !== undefined &&
-      (this.carryforward.shortTerm > 0 || this.carryforward.longTerm > 0))
+      (this.carryforward.shortTerm > 0 || this.carryforward.longTerm > 0)) ||
+    this.f1040.f6781.isNeeded()
 
   l21Min = (): number => {
     if (this.f1040.info.taxPayer.filingStatus === FilingStatus.MFS) {
@@ -113,7 +114,11 @@ export default class ScheduleD extends F1040Attachment {
   l3h = (): number =>
     sumFields(this.l3f8949s().map((f) => f.shortTermTotalGain()))
 
-  l4 = (): number | undefined => undefined
+  // Short-term gain or loss from Forms 4684, 6781, and 8824
+  l4 = (): number | undefined =>
+    this.f1040.f6781.isNeeded()
+      ? this.f1040.f6781.shortTermGainOrLoss()
+      : undefined
 
   l5 = (): number | undefined => undefined
 
@@ -186,7 +191,11 @@ export default class ScheduleD extends F1040Attachment {
   l10h = (): number =>
     sumFields(this.l10f8949s().map((f) => f.longTermTotalGain()))
 
-  l11 = (): number | undefined => undefined
+  // Long-term gain or loss from Forms 2439, 4684, 6781, and 8824
+  l11 = (): number | undefined =>
+    this.f1040.f6781.isNeeded()
+      ? this.f1040.f6781.longTermGainOrLoss()
+      : undefined
 
   l12 = (): number | undefined => undefined
 

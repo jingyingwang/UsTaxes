@@ -327,6 +327,23 @@ const scheduleCInput: Arbitrary<types.ScheduleCInput> = fc
     })
   )
 
+const section1256Contract: Arbitrary<types.Section1256Contract> = fc
+  .tuple(maxWords(3), posNegCurrency(500000))
+  .map(([description, gainOrLoss]) => ({
+    description,
+    gainOrLoss
+  }))
+
+const form6781Input: Arbitrary<types.Form6781Input> = fc
+  .tuple(
+    fc.array(section1256Contract, { maxLength: 10 }),
+    fc.constant(0) // netSectionLossElection (rarely used)
+  )
+  .map(([section1256Contracts, netSectionLossElection]) => ({
+    section1256Contracts,
+    netSectionLossElection
+  }))
+
 const scheduleK1Form1065: Arbitrary<types.ScheduleK1Form1065> = fc
   .tuple(
     maxWords(2),
@@ -736,6 +753,7 @@ export class Arbitraries {
         fc.array(f3921),
         fc.array(scheduleCInput),
         fc.array(scheduleK1Form1065),
+        fc.array(form6781Input, { maxLength: 2 }),
         itemizedDeductions,
         refund,
         this.taxPayer(),
@@ -755,6 +773,7 @@ export class Arbitraries {
           f3921s,
           scheduleCInputs,
           scheduleK1Form1065s,
+          form6781,
           itemizedDeductions,
           refund,
           taxPayer,
@@ -772,6 +791,7 @@ export class Arbitraries {
           f3921s,
           scheduleCInputs,
           scheduleK1Form1065s,
+          form6781,
           itemizedDeductions,
           refund,
           taxPayer,
