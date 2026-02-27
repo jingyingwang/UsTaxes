@@ -107,3 +107,7 @@ export const scheduleF =
   fns.ScheduleFInput as ValidateFunction<types.ScheduleFInput>
 export const editScheduleFAction =
   fns.EditScheduleFAction as ValidateFunction<types.EditScheduleFAction>
+export const nolCarryforward =
+  fns.NOLCarryforward as ValidateFunction<types.NOLCarryforward>
+export const editNOLCarryforwardAction =
+  fns.EditNOLCarryforwardAction as ValidateFunction<types.EditNOLCarryforwardAction>

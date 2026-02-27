@@ -754,6 +754,18 @@ export interface Credit {
   type: CreditType
 }
 
+/**
+ * Represents a net operating loss from a specific tax year that can be
+ * carried forward to future years. Post-TCJA (2018+) NOLs are limited
+ * to offsetting 80% of taxable income; pre-2018 NOLs offset 100%.
+ */
+export interface NOLCarryforward {
+  /** The tax year in which the NOL was originally generated */
+  year: number
+  /** The remaining NOL amount available for carryforward (positive number) */
+  amount: number
+}
+
 export interface Information<D = Date> {
   f1099s: Supported1099[]
   w2s: IncomeW2[]
@@ -777,6 +789,7 @@ export interface Information<D = Date> {
   healthSavingsAccounts: HealthSavingsAccount<D>[]
   individualRetirementArrangements: Ira[]
   capitalLossCarryforward?: CapitalLossCarryforward
+  netOperatingLossCarryforwards: NOLCarryforward[]
 }
 
 export type InformationDateString = Information<string>
@@ -851,3 +864,4 @@ export type EditScheduleK1Form1065Action =
   ArrayItemEditAction<ScheduleK1Form1065>
 export type EditForm6781Action = ArrayItemEditAction<Form6781Input>
 export type EditCreditAction = ArrayItemEditAction<Credit>
+export type EditNOLCarryforwardAction = ArrayItemEditAction<NOLCarryforward>

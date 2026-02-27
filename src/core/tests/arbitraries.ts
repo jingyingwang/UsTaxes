@@ -864,6 +864,14 @@ export class Arbitraries {
       type: types.CreditType.AdvanceChildTaxCredit
     }))
 
+  nolCarryforward = (): Arbitrary<types.NOLCarryforward> =>
+    fc
+      .tuple(
+        fc.integer({ min: 2018, max: this.currentYear - 1 }),
+        fc.nat({ max: 100000 })
+      )
+      .map(([year, amount]) => ({ year, amount }))
+
   information = (): Arbitrary<ValidatedInformation> =>
     fc
       .tuple(
@@ -885,7 +893,8 @@ export class Arbitraries {
         state,
         fc.array(this.healthSavingsAccount()),
         fc.array(this.credit(), { maxLength: 2 }),
-        fc.array(this.ira())
+        fc.array(this.ira()),
+        fc.array(this.nolCarryforward(), { maxLength: 3 })
       )
       .map(
         ([
@@ -907,7 +916,8 @@ export class Arbitraries {
           state,
           healthSavingsAccounts,
           credits,
-          individualRetirementArrangements
+          individualRetirementArrangements,
+          netOperatingLossCarryforwards
         ]) => ({
           f1099s,
           w2s,
@@ -927,7 +937,8 @@ export class Arbitraries {
           stateResidencies: [{ state }],
           healthSavingsAccounts,
           credits,
-          individualRetirementArrangements
+          individualRetirementArrangements,
+          netOperatingLossCarryforwards
         })
       )
 }

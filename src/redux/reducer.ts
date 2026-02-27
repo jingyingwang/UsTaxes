@@ -26,7 +26,8 @@ export const blankState: Information = {
   stateResidencies: [],
   healthSavingsAccounts: [],
   credits: [],
-  individualRetirementArrangements: []
+  individualRetirementArrangements: [],
+  netOperatingLossCarryforwards: []
 }
 
 const formReducer = (
@@ -540,6 +541,31 @@ const formReducer = (
       return {
         ...newState,
         priorYearTax: action.formData
+      }
+    }
+    case ActionName.ADD_NOL_CARRYFORWARD: {
+      return {
+        ...newState,
+        netOperatingLossCarryforwards: [
+          ...newState.netOperatingLossCarryforwards,
+          action.formData
+        ]
+      }
+    }
+    case ActionName.EDIT_NOL_CARRYFORWARD: {
+      const newNols = [...newState.netOperatingLossCarryforwards]
+      newNols.splice(action.formData.index, 1, action.formData.value)
+      return {
+        ...newState,
+        netOperatingLossCarryforwards: newNols
+      }
+    }
+    case ActionName.REMOVE_NOL_CARRYFORWARD: {
+      const newNols = [...newState.netOperatingLossCarryforwards]
+      newNols.splice(action.formData, 1)
+      return {
+        ...newState,
+        netOperatingLossCarryforwards: newNols
       }
     }
 
