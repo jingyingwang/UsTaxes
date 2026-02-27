@@ -566,6 +566,10 @@ const formReducer = (
       return {
         ...newState,
         netOperatingLossCarryforwards: newNols
+    case ActionName.SET_F8801_INPUT: {
+      return {
+        ...newState,
+        f8801Input: action.formData
       }
     }
 

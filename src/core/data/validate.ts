@@ -111,3 +111,4 @@ export const nolCarryforward =
   fns.NOLCarryforward as ValidateFunction<types.NOLCarryforward>
 export const editNOLCarryforwardAction =
   fns.EditNOLCarryforwardAction as ValidateFunction<types.EditNOLCarryforwardAction>
+export const f8801Input = fns.F8801Input as ValidateFunction<types.F8801Input>

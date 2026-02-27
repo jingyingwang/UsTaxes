@@ -55,6 +55,7 @@ import ScheduleF from './ScheduleF'
 import F8949 from './F8949'
 import F6251 from './F6251'
 import F6781 from './F6781'
+import F8801 from './F8801'
 import F4137 from './F4137'
 import F8919 from './F8919'
 import F8853 from './F8853'
@@ -100,6 +101,7 @@ export default class F1040 extends F1040Base {
   f5695?: F5695
   f6251: F6251
   f6781: F6781
+  f8801: F8801
   f8814?: F8814
   f8582?: F8582
   f8606: F8606
@@ -152,6 +154,7 @@ export default class F1040 extends F1040Base {
 
     this.f6251 = new F6251(this)
     this.f6781 = new F6781(this)
+    this.f8801 = new F8801(this)
     this.f8949 = new F8949(this)
     this.f8889 = new F8889(this, this.info.taxPayer.primaryPerson)
 
@@ -248,6 +251,7 @@ export default class F1040 extends F1040Base {
       this.f6781,
       this.f8606,
       this.f8606Spouse,
+      this.f8801,
       this.f8814,
       this.f8880,
       this.f8888,

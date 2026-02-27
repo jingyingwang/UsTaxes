@@ -600,6 +600,15 @@ export interface ScheduleFInput {
 
 export type EditScheduleFAction = ArrayItemEditAction<ScheduleFInput>
 
+// See https://www.irs.gov/forms-pubs/about-form-8801
+// Prior year AMT credit information needed for Form 8801
+export interface F8801Input {
+  // Prior year minimum tax credit carryforward (prior year Form 8801, line 26)
+  priorYearMinimumTaxCredit: number
+  // Prior year net minimum tax from exclusion items (prior year Form 8801, line 7 or recomputed)
+  priorYearNetMinimumTaxOnExclusionItems: number
+}
+
 // See https://www.irs.gov/instructions/i1065sk1
 export interface ScheduleK1Form1065 {
   personRole: PersonRole.PRIMARY | PersonRole.SPOUSE
@@ -791,6 +800,7 @@ export interface Information<D = Date> {
   individualRetirementArrangements: Ira[]
   capitalLossCarryforward?: CapitalLossCarryforward
   netOperatingLossCarryforwards: NOLCarryforward[]
+  f8801Input?: F8801Input
 }
 
 export type InformationDateString = Information<string>
@@ -875,3 +885,4 @@ export type EditScheduleK1Form1065Action =
 export type EditForm6781Action = ArrayItemEditAction<Form6781Input>
 export type EditCreditAction = ArrayItemEditAction<Credit>
 export type EditNOLCarryforwardAction = ArrayItemEditAction<NOLCarryforward>
+export type EditF8801InputAction = F8801Input | undefined

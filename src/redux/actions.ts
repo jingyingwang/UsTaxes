@@ -32,6 +32,7 @@ import {
   CapitalLossCarryforward,
   NOLCarryforward,
   EditNOLCarryforwardAction
+  F8801Input
 } from 'ustaxes/core/data'
 
 import {
@@ -128,6 +129,7 @@ export enum ActionName {
   ADD_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/ADD',
   EDIT_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/EDIT',
   REMOVE_NOL_CARRYFORWARD = 'NOL_CARRYFORWARD/REMOVE'
+  SET_F8801_INPUT = 'SET_F8801_INPUT'
 }
 
 interface Save<T, R> {
@@ -259,6 +261,7 @@ type RemoveNOLCarryforward = Save<
   typeof ActionName.REMOVE_NOL_CARRYFORWARD,
   number
 >
+type SetF8801Input = Save<typeof ActionName.SET_F8801_INPUT, F8801Input>
 
 export type Actions =
   | SaveRefundInfo
@@ -330,6 +333,7 @@ export type Actions =
   | AddNOLCarryforward
   | EditNOLCarryforward
   | RemoveNOLCarryforward
+  | SetF8801Input
 
 export type SignalAction = (year: TaxYear) => Actions
 export type ActionCreator<A> = (formData: A) => SignalAction
@@ -705,4 +709,6 @@ export const editNOLCarryforward: ActionCreator<EditNOLCarryforwardAction> =
 export const removeNOLCarryforward: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_NOL_CARRYFORWARD,
   indexValidator
+export const setF8801Input: ActionCreator<F8801Input> = makeActionCreator(
+  ActionName.SET_F8801_INPUT
 )

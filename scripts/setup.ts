@@ -74,6 +74,7 @@ const moduleCode = standaloneCode(ajv, {
   EditScheduleFAction: '#/definitions/EditScheduleFAction',
   NOLCarryforward: '#/definitions/NOLCarryforward',
   EditNOLCarryforwardAction: '#/definitions/EditNOLCarryforwardAction'
+  F8801Input: '#/definitions/F8801Input'
 })
 
 fs.writeFileSync(outputPath, moduleCode)
