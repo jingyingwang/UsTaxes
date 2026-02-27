@@ -82,7 +82,7 @@ export default class StateFormBase extends Form {
     )
 
   standardDeductionAmount = (): number =>
-    this.config.standardDeduction[this.info.taxPayer.filingStatus] ?? 0
+    this.config.standardDeduction[this.info.taxPayer.filingStatus]
 
   exemptionCount = (): number => {
     let count = 1
@@ -113,7 +113,7 @@ export default class StateFormBase extends Form {
 
   taxBrackets = (): TaxBracket[] => {
     const fs = this.info.taxPayer.filingStatus
-    return this.config.brackets[fs] ?? this.config.brackets[FilingStatus.S]
+    return this.config.brackets[fs]
   }
 
   stateTax = (): number => computeTax(this.taxBrackets(), this.taxableIncome())
