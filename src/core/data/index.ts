@@ -568,6 +568,7 @@ export interface ItemizedDeductions {
   investmentInterest: string | number
   charityCashCheck: string | number
   charityOther: string | number
+  casualtyAndTheftLosses: string | number
 }
 
 export type CasualtyLossUse = 'Personal' | 'Business' | 'Income'

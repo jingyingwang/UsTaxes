@@ -24,6 +24,7 @@ interface ItemizedDeductionUserInput {
   investmentInterest: string | number
   charityCashCheck: string | number
   charityOther: string | number
+  casualtyAndTheftLosses: string | number
 }
 
 const blankUserInput: ItemizedDeductionUserInput = {
@@ -38,7 +39,8 @@ const blankUserInput: ItemizedDeductionUserInput = {
   interest8d: '',
   investmentInterest: '',
   charityCashCheck: '',
-  charityOther: ''
+  charityOther: '',
+  casualtyAndTheftLosses: ''
 }
 
 const toUserInput = (f: ItemizedDeductions): ItemizedDeductionUserInput => ({
@@ -54,7 +56,8 @@ const toUserInput = (f: ItemizedDeductions): ItemizedDeductionUserInput => ({
   interest8d: f.interest8d,
   investmentInterest: f.investmentInterest,
   charityCashCheck: f.charityCashCheck,
-  charityOther: f.charityOther
+  charityOther: f.charityOther,
+  casualtyAndTheftLosses: f.casualtyAndTheftLosses
 })
 
 const toItemizedDeductions = (
@@ -72,7 +75,8 @@ const toItemizedDeductions = (
     interest8d: Number(f.interest8d),
     investmentInterest: Number(f.investmentInterest),
     charityCashCheck: Number(f.charityCashCheck),
-    charityOther: Number(f.charityOther)
+    charityOther: Number(f.charityOther),
+    casualtyAndTheftLosses: Number(f.casualtyAndTheftLosses)
   }
 }
 
@@ -213,6 +217,15 @@ export const ItemizedDeductionsInfo = (): ReactElement => {
           label="Other than Cash or Check (Limit $500)"
           patternConfig={currencyMax500Pattern}
           name="charityOther"
+          required={false}
+        />
+      </Grid>
+      <p>Casualty and Theft Losses</p>
+      <Grid container spacing={2}>
+        <LabeledInput
+          label="Casualty and theft loss(es) from a federally declared disaster (from Form 4684)"
+          patternConfig={Patterns.currency}
+          name="casualtyAndTheftLosses"
           required={false}
         />
       </Grid>

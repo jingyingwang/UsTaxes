@@ -425,7 +425,8 @@ const itemizedDeductions: Arbitrary<types.ItemizedDeductions> = fc
     posCurrency(10000),
     posCurrency(7500),
     posCurrency(2500),
-    posCurrency(1000)
+    posCurrency(1000),
+    posCurrency(5000)
   )
   .map(
     ([
@@ -440,7 +441,8 @@ const itemizedDeductions: Arbitrary<types.ItemizedDeductions> = fc
       interest8d,
       investmentInterest,
       charityCashCheck,
-      charityOther
+      charityOther,
+      casualtyAndTheftLosses
     ]) => ({
       medicalAndDental,
       stateAndLocalTaxes,
@@ -453,7 +455,8 @@ const itemizedDeductions: Arbitrary<types.ItemizedDeductions> = fc
       interest8d,
       investmentInterest,
       charityCashCheck,
-      charityOther
+      charityOther,
+      casualtyAndTheftLosses
     })
   )
 
