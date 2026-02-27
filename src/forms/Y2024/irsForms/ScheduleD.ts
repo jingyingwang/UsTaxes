@@ -28,7 +28,7 @@ export default class ScheduleD extends F1040Attachment {
     this.rateGainWorksheet = new SDRateGainWorksheet()
     this.taxWorksheet = new SDTaxWorksheet(f1040)
     this.qualifiedDivAndCGWorksheet = new QualDivAndCGWorksheet(f1040)
-    this.unrecaptured1250 = new SDUnrecaptured1250()
+    this.unrecaptured1250 = new SDUnrecaptured1250(f1040)
   }
 
   get aggregated(): F1099BData {
@@ -47,7 +47,9 @@ export default class ScheduleD extends F1040Attachment {
   }
 
   isNeeded = (): boolean =>
-    this.f1040.f1099Bs().length > 0 || this.f1040.f8949.isNeeded()
+    this.f1040.f1099Bs().length > 0 ||
+    this.f1040.f8949.isNeeded() ||
+    (this.f1040.f4797?.longTermGain() ?? 0) > 0
 
   l21Min = (): number => {
     if (this.f1040.info.taxPayer.filingStatus === FilingStatus.MFS) {
@@ -168,7 +170,7 @@ export default class ScheduleD extends F1040Attachment {
   l10h = (): number =>
     sumFields(this.l10f8949s().map((f) => f.longTermTotalGain()))
 
-  l11 = (): number | undefined => undefined
+  l11 = (): number | undefined => this.f1040.f4797?.longTermGain()
 
   l12 = (): number | undefined => undefined
 

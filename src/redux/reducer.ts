@@ -22,7 +22,9 @@ export const blankState: Information = {
   stateResidencies: [],
   healthSavingsAccounts: [],
   credits: [],
-  individualRetirementArrangements: []
+  individualRetirementArrangements: [],
+  businessPropertySales: [],
+  section1231LossCarryover: 0
 }
 
 const formReducer = (

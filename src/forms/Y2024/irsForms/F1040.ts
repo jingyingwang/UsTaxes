@@ -161,6 +161,13 @@ export default class F1040 extends F1040Base {
         this.f8995 = new F8995(this)
       }
     }
+
+    if (
+      (this.info.businessPropertySales?.length ?? 0) > 0 ||
+      (this.info.section1231LossCarryover ?? 0) !== 0
+    ) {
+      this.f4797 = new F4797(this)
+    }
   }
 
   get f8949s(): F8949[] {

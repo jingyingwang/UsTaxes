@@ -13,7 +13,8 @@ import {
   Address,
   IncomeW2,
   Property,
-  ScheduleK1Form1065
+  ScheduleK1Form1065,
+  BusinessPropertySale
 } from '.'
 
 const anonymizePerson = (person: Person): Person => {
@@ -114,6 +115,14 @@ const anonymizeRealEstate = (realEstate: Property): Property => ({
   address: anonymizeAddress(realEstate.address, 'property')
 })
 
+const anonymizeBusinessPropertySale = (
+  sale: BusinessPropertySale,
+  idx: number
+): BusinessPropertySale => ({
+  ...sale,
+  description: `property ${idx}`
+})
+
 const anonymizeK1 = (
   k1: ScheduleK1Form1065,
   idx: number
@@ -141,7 +150,10 @@ export const anonymizeInformation = (info: Information): Information => ({
   taxPayer: anonymizeTaxPayer(info.taxPayer),
   w2s: info.w2s.map(anonymizeW2),
   realEstate: info.realEstate.map(anonymizeRealEstate),
-  scheduleK1Form1065s: info.scheduleK1Form1065s.map(anonymizeK1)
+  scheduleK1Form1065s: info.scheduleK1Form1065s.map(anonymizeK1),
+  businessPropertySales: info.businessPropertySales?.map(
+    anonymizeBusinessPropertySale
+  )
 })
 
 export default (input: YearsTaxesState): YearsTaxesState => ({

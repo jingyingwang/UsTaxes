@@ -414,6 +414,24 @@ export interface Property {
   otherExpenseType?: string
 }
 
+export enum BusinessPropertyType {
+  section1245,
+  section1250,
+  section1231
+}
+
+export type BusinessPropertyTypeName = keyof typeof BusinessPropertyType
+
+export interface BusinessPropertySale<D = Date> {
+  description: string
+  dateAcquired: D
+  dateSold: D
+  grossSalesPrice: number
+  costOrOtherBasis: number
+  depreciation: number
+  propertyType: BusinessPropertyTypeName
+}
+
 export interface F1098e {
   lender: string
   interest: number
@@ -639,6 +657,8 @@ export interface Information<D = Date> {
   stateResidencies: StateResidency[]
   healthSavingsAccounts: HealthSavingsAccount<D>[]
   individualRetirementArrangements: Ira[]
+  businessPropertySales?: BusinessPropertySale<D>[]
+  section1231LossCarryover?: number
 }
 
 export type InformationDateString = Information<string>
