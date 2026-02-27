@@ -25,7 +25,10 @@ const baseInformation: ValidatedInformation = {
   scheduleHInputs: [],
   scheduleK1Form1065s: [],
   form6781: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
   itemizedDeductions: undefined,
+  casualtyTheftLosses: [],
   form2441Input: undefined,
   w2s: [
     {

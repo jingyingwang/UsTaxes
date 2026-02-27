@@ -7,10 +7,20 @@ import { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 const baseInformation: ValidatedInformation = {
   f1099s: [],
   f3921s: [],
+  f3922s: [],
   credits: [],
   scheduleCInputs: [],
+  scheduleFInputs: [],
+  scheduleHInputs: [],
   scheduleK1Form1065s: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
+  form6781: [],
   itemizedDeductions: undefined,
+  casualtyTheftLosses: [],
+  form2441Input: undefined,
+  royaltyIncomes: [],
+  netOperatingLossCarryforwards: [],
   w2s: [
     {
       employer: { EIN: '111111111', employerName: 'Test Employer' },
@@ -52,6 +62,7 @@ const baseInformation: ValidatedInformation = {
   },
   questions: {},
   f1098es: [],
+  f1098ts: [],
   stateResidencies: [{ state: 'CA' }],
   healthSavingsAccounts: [],
   individualRetirementArrangements: [],

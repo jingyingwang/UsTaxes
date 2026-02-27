@@ -1,5 +1,10 @@
 import { FormTag } from 'ustaxes/core/irsForms/Form'
-import { Asset, isSold, normalizeF1099BData, SoldAsset } from 'ustaxes/core/data'
+import {
+  Asset,
+  isSold,
+  normalizeF1099BData,
+  SoldAsset
+} from 'ustaxes/core/data'
 import F1040Attachment from './F1040Attachment'
 import F1040 from './F1040'
 import { CURRENT_YEAR } from '../data/federal'
@@ -157,7 +162,8 @@ export default class F8949 extends F1040Attachment {
   part2BoxD = (): boolean =>
     this.effectiveCategory() === 'reported' && this.longTermSales().length > 0
   part2BoxE = (): boolean =>
-    this.effectiveCategory() === 'not_reported' && this.longTermSales().length > 0
+    this.effectiveCategory() === 'not_reported' &&
+    this.longTermSales().length > 0
   part2BoxF = (): boolean =>
     this.effectiveCategory() === 'unreported' && this.longTermSales().length > 0
 
@@ -178,6 +184,28 @@ export default class F8949 extends F1040Attachment {
     if (p.closeDate === undefined || p.closePrice === undefined) return false
     const milliInterval = p.closeDate.getTime() - p.openDate.getTime()
     return milliInterval / this.oneDay > 366
+  }
+
+  /**
+   * Determine which box an individual asset belongs to based on
+   * basisReportedToIRS and holding period.
+   */
+  getBoxForAsset = (asset: Asset<Date>): string => {
+    const longTerm = this.isLongTerm(asset)
+    if (asset.basisReportedToIRS === true) {
+      return longTerm ? 'D' : 'A'
+    }
+    if (asset.basisReportedToIRS === false) {
+      return longTerm ? 'E' : 'B'
+    }
+    // No basisReportedToIRS info → unreported
+    return longTerm ? 'F' : 'C'
+  }
+
+  private assetCategory = (asset: Asset<Date>): F8949Category => {
+    if (asset.basisReportedToIRS === true) return 'reported'
+    if (asset.basisReportedToIRS === false) return 'not_reported'
+    return 'unreported'
   }
 
   shortTermSales = (): LineData[] =>
@@ -281,13 +309,14 @@ export default class F8949 extends F1040Attachment {
         this.longTermLineDataForCategory(category).length > 0
     )
 
-
   private hasAmounts = (
     proceeds: number,
     costBasis: number,
     adjustment: number
   ): boolean =>
-    Math.abs(proceeds) > 0 || Math.abs(costBasis) > 0 || Math.abs(adjustment) > 0
+    Math.abs(proceeds) > 0 ||
+    Math.abs(costBasis) > 0 ||
+    Math.abs(adjustment) > 0
 
   private buildSummaryLine = (
     label: string,
@@ -309,8 +338,39 @@ export default class F8949 extends F1040Attachment {
     ]
   }
 
-  private reportedShortTermLines = (): LineData[] =>
-    this.f1040.f1099Bs().flatMap((b) => {
+  private assetShortTermLinesForCategory = (
+    category: F8949Category
+  ): LineData[] =>
+    this.thisYearShortTermSales()
+      .filter((p) => this.assetCategory(p) === category)
+      .map((p) => ({
+        description: p.name,
+        dateAcquired: showDate(p.openDate),
+        dateSold: showDate(p.closeDate),
+        proceeds: p.closePrice * p.quantity - (p.closeFee ?? 0),
+        costBasis: p.openPrice * p.quantity + p.openFee,
+        code: p.washSaleAdjustment ? 'W' : undefined,
+        adjustment: p.washSaleAdjustment
+      }))
+
+  private assetLongTermLinesForCategory = (
+    category: F8949Category
+  ): LineData[] =>
+    this.thisYearLongTermSales()
+      .filter((p) => this.assetCategory(p) === category)
+      .map((p) => ({
+        description: p.name,
+        dateAcquired: showDate(p.openDate),
+        dateSold: showDate(p.closeDate),
+        proceeds: p.closePrice * p.quantity - (p.closeFee ?? 0),
+        costBasis: p.openPrice * p.quantity + p.openFee,
+        code: p.washSaleAdjustment ? 'W' : undefined,
+        adjustment: p.washSaleAdjustment
+      }))
+
+  private reportedShortTermLines = (): LineData[] => [
+    ...this.assetShortTermLinesForCategory('reported'),
+    ...this.f1040.f1099Bs().flatMap((b) => {
       const form = normalizeF1099BData(b.form)
       const proceeds = form.shortTermBasisReportedProceeds
       const costBasis = form.shortTermBasisReportedCostBasis
@@ -323,9 +383,11 @@ export default class F8949 extends F1040Attachment {
         washSale
       )
     })
+  ]
 
-  private notReportedShortTermLines = (): LineData[] =>
-    this.f1040.f1099Bs().flatMap((b) => {
+  private notReportedShortTermLines = (): LineData[] => [
+    ...this.assetShortTermLinesForCategory('not_reported'),
+    ...this.f1040.f1099Bs().flatMap((b) => {
       const form = normalizeF1099BData(b.form)
       const proceeds = form.shortTermBasisNotReportedProceeds
       const costBasis = form.shortTermBasisNotReportedCostBasis
@@ -337,18 +399,14 @@ export default class F8949 extends F1040Attachment {
         washSale
       )
     })
+  ]
 
   private unreportedShortTermLines = (): LineData[] =>
-    this.thisYearShortTermSales().map((p) => ({
-      description: p.name,
-      dateAcquired: showDate(p.openDate),
-      dateSold: showDate(p.closeDate),
-      proceeds: p.closePrice * p.quantity - (p.closeFee ?? 0),
-      costBasis: p.openPrice * p.quantity + p.openFee
-    }))
+    this.assetShortTermLinesForCategory('unreported')
 
-  private reportedLongTermLines = (): LineData[] =>
-    this.f1040.f1099Bs().flatMap((b) => {
+  private reportedLongTermLines = (): LineData[] => [
+    ...this.assetLongTermLinesForCategory('reported'),
+    ...this.f1040.f1099Bs().flatMap((b) => {
       const form = normalizeF1099BData(b.form)
       const proceeds = form.longTermBasisReportedProceeds
       const costBasis = form.longTermBasisReportedCostBasis
@@ -361,9 +419,11 @@ export default class F8949 extends F1040Attachment {
         washSale
       )
     })
+  ]
 
-  private notReportedLongTermLines = (): LineData[] =>
-    this.f1040.f1099Bs().flatMap((b) => {
+  private notReportedLongTermLines = (): LineData[] => [
+    ...this.assetLongTermLinesForCategory('not_reported'),
+    ...this.f1040.f1099Bs().flatMap((b) => {
       const form = normalizeF1099BData(b.form)
       const proceeds = form.longTermBasisNotReportedProceeds
       const costBasis = form.longTermBasisNotReportedCostBasis
@@ -375,15 +435,10 @@ export default class F8949 extends F1040Attachment {
         washSale
       )
     })
+  ]
 
   private unreportedLongTermLines = (): LineData[] =>
-    this.thisYearLongTermSales().map((p) => ({
-      description: p.name,
-      dateAcquired: showDate(p.openDate),
-      dateSold: showDate(p.closeDate),
-      proceeds: p.closePrice * p.quantity - (p.closeFee ?? 0),
-      costBasis: p.openPrice * p.quantity + p.openFee
-    }))
+    this.assetLongTermLinesForCategory('unreported')
 
   private shortTermLineData = (): LineData[] => {
     const category = this.effectiveCategory()

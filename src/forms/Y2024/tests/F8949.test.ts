@@ -7,12 +7,24 @@ const makeInfo = (): ValidatedInformation => ({
   f1099s: [],
   w2s: [],
   realEstate: [],
+  royaltyIncomes: [],
   estimatedTaxes: [],
   f1098es: [],
+  f1098ts: [],
   f3921s: [],
+  f3922s: [],
   scheduleCInputs: [],
+  scheduleFInputs: [],
+  scheduleHInputs: [],
   scheduleK1Form1065s: [],
+  scheduleK1Form1120Ss: [],
+  scheduleK1Form1041s: [],
+  form6781: [],
   itemizedDeductions: undefined,
+  casualtyTheftLosses: [],
+  form2441Input: undefined,
+  netOperatingLossCarryforwards: [],
+  amendedReturns: [],
   taxPayer: {
     filingStatus: FilingStatus.S,
     primaryPerson: {
@@ -130,7 +142,7 @@ describe('F8949', () => {
         washSaleAdjustment: 50
       })
       const f1040 = new F1040(makeInfo(), [asset])
-      const f8949 = new F8949(f1040, 0, 'F')
+      const f8949 = new F8949(f1040)
       const adj = f8949.longTermTotalAdjustments()
       expect(adj).toBe(50)
     })
