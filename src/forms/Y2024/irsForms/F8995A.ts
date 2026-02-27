@@ -4,6 +4,7 @@ import { FormTag } from 'ustaxes/core/irsForms/Form'
 import { FilingStatus } from 'ustaxes/core/data'
 import { sumFields } from 'ustaxes/core/irsForms/util'
 import { Field } from 'ustaxes/core/pdfFiller'
+import { QbiItem } from 'ustaxes/forms/qbi'
 
 function ifNumber(
   num: number | undefined,
@@ -16,9 +17,11 @@ export default class F8995A extends F8995 {
   tag: FormTag = 'f8995a'
   sequenceIndex = 55.5
 
-  l2a = (): number | undefined => this.applicableK1s()[0]?.section199AQBI
-  l2b = (): number | undefined => this.applicableK1s()[1]?.section199AQBI
-  l2c = (): number | undefined => this.applicableK1s()[2]?.section199AQBI
+  qbiItemsForForm = (): QbiItem[] => this.qbiItems().slice(0, 3)
+
+  l2a = (): number | undefined => this.qbiItemsForForm()[0]?.qbi
+  l2b = (): number | undefined => this.qbiItemsForForm()[1]?.qbi
+  l2c = (): number | undefined => this.qbiItemsForForm()[2]?.qbi
 
   l3a = (): number | undefined => ifNumber(this.l2a(), (num) => num * 0.2)
   l3b = (): number | undefined => ifNumber(this.l2b(), (num) => num * 0.2)
@@ -152,23 +155,25 @@ export default class F8995A extends F8995 {
   deductions = (): number => this.l39()
   l40 = (): number => Math.min(0, this.l28() + this.l29())
 
-  fields = (): Field[] => [
+  fields = (): Field[] => {
+    const items = this.qbiItemsForForm()
+    return [
     this.f1040.namesString(),
     this.f1040.info.taxPayer.primaryPerson.ssid,
-    this.applicableK1s()[0]?.partnershipName,
+    items[0]?.name,
     false, // 1Ab
     false, // 1Ac
-    this.applicableK1s()[0]?.partnershipEin,
+    items[0]?.ein,
     false, // 1Ae
-    this.applicableK1s()[1]?.partnershipName,
+    items[1]?.name,
     false, // 1Bb
     false, // 1Bc
-    this.applicableK1s()[1]?.partnershipEin,
+    items[1]?.ein,
     false, // 1Be
-    this.applicableK1s()[2]?.partnershipName,
+    items[2]?.name,
     false, // 1Cb
     false, // 1Cc
-    this.applicableK1s()[2]?.partnershipEin,
+    items[2]?.ein,
     false, // 1Ce
     this.l2a(),
     this.l2b(),
@@ -265,4 +270,5 @@ export default class F8995A extends F8995 {
     this.l39(),
     this.l40()
   ]
+  }
 }

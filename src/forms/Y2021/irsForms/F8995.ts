@@ -2,6 +2,7 @@ import F1040Attachment from './F1040Attachment'
 import { FormTag } from 'ustaxes/core/irsForms/Form'
 import { FilingStatus } from 'ustaxes/core/data'
 import { Field } from 'ustaxes/core/pdfFiller'
+import { buildQbiItems, QbiItem } from 'ustaxes/forms/qbi'
 
 export function getF8995PhaseOutIncome(filingStatus: FilingStatus): number {
   let formAMinAmount = 164900
@@ -24,8 +25,8 @@ export default class F8995 extends F1040Attachment {
   tag: FormTag = 'f8995'
   sequenceIndex = 999
 
-  applicableK1s = () =>
-    this.f1040.info.scheduleK1Form1065s.filter((k1) => k1.section199AQBI > 0)
+  qbiItems = (): QbiItem[] => buildQbiItems(this.f1040.info)
+  qbiItemsForForm = (): QbiItem[] => this.qbiItems().slice(0, 5)
 
   netCapitalGains = (): number => {
     let rtn = this.f1040.l3a() ?? 0
@@ -41,9 +42,7 @@ export default class F8995 extends F1040Attachment {
   }
 
   l2 = (): number | undefined =>
-    this.applicableK1s()
-      .map((k1) => k1.section199AQBI)
-      .reduce((c, a) => c + a, 0)
+    this.qbiItems().map((item) => item.qbi).reduce((c, a) => c + a, 0)
   l3 = (): number | undefined => undefined
   l4 = (): number | undefined =>
     ifNumber(this.l2(), (num) => num + (this.l3() ?? 0))
@@ -67,24 +66,26 @@ export default class F8995 extends F1040Attachment {
 
   deductions = (): number => this.l15()
 
-  fields = (): Field[] => [
+  fields = (): Field[] => {
+    const items = this.qbiItemsForForm()
+    return [
     this.f1040.namesString(),
     this.f1040.info.taxPayer.primaryPerson.ssid,
-    this.applicableK1s()[0]?.partnershipName,
-    this.applicableK1s()[0]?.partnershipEin,
-    this.applicableK1s()[0]?.section199AQBI,
-    this.applicableK1s()[1]?.partnershipName,
-    this.applicableK1s()[1]?.partnershipEin,
-    this.applicableK1s()[1]?.section199AQBI,
-    this.applicableK1s()[2]?.partnershipName,
-    this.applicableK1s()[2]?.partnershipEin,
-    this.applicableK1s()[2]?.section199AQBI,
-    this.applicableK1s()[3]?.partnershipName,
-    this.applicableK1s()[3]?.partnershipEin,
-    this.applicableK1s()[3]?.section199AQBI,
-    this.applicableK1s()[4]?.partnershipName,
-    this.applicableK1s()[4]?.partnershipEin,
-    this.applicableK1s()[4]?.section199AQBI,
+    items[0]?.name,
+    items[0]?.ein,
+    items[0]?.qbi,
+    items[1]?.name,
+    items[1]?.ein,
+    items[1]?.qbi,
+    items[2]?.name,
+    items[2]?.ein,
+    items[2]?.qbi,
+    items[3]?.name,
+    items[3]?.ein,
+    items[3]?.qbi,
+    items[4]?.name,
+    items[4]?.ein,
+    items[4]?.qbi,
     this.l2(),
     this.l3(),
     this.l4(),
@@ -102,4 +103,5 @@ export default class F8995 extends F1040Attachment {
     this.l16(),
     this.l17()
   ]
+  }
 }

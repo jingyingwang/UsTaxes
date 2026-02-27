@@ -58,6 +58,7 @@ import F8582 from './F8582'
 import { Field } from 'ustaxes/core/pdfFiller'
 import F1040Base, { ValidatedInformation } from 'ustaxes/forms/F1040Base'
 import F1040Attachment from './F1040Attachment'
+import { totalQbi as computeTotalQbi } from 'ustaxes/forms/qbi'
 
 export default class F1040 extends F1040Base {
   tag: FormTag = 'f1040'
@@ -170,10 +171,7 @@ export default class F1040 extends F1040Base {
     return this._f8949s
   }
 
-  totalQbi = () =>
-    this.info.scheduleK1Form1065s
-      .map((k1) => k1.section199AQBI)
-      .reduce((c, a) => c + a, 0)
+  totalQbi = () => computeTotalQbi(this.info)
 
   toString = (): string => `
     Form 1040 generated from information:
