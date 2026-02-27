@@ -4,7 +4,7 @@
  */
 import StateFormBase, { F1040Like } from 'ustaxes/core/stateForms/StateFormBase'
 import { FilingStatus } from 'ustaxes/core/data'
-import { MD } from './progressiveConfigs'
+import { MD } from '../progressiveConfigs'
 
 const stdDedLimits: {
   [K in FilingStatus]: { min: number; max: number }
@@ -24,7 +24,7 @@ export default class MDForm extends StateFormBase {
   standardDeductionAmount = (): number => {
     const fs = this.info.taxPayer.filingStatus
     const limits = stdDedLimits[fs]
-    const pctDeduction = Math.round(this.federalAGI() * 0.15)
+    const pctDeduction = Math.round(this.adjustedIncome() * 0.15)
     return Math.max(limits.min, Math.min(limits.max, pctDeduction))
   }
 }

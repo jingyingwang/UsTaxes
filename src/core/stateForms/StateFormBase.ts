@@ -86,9 +86,11 @@ export default class StateFormBase extends Form {
 
   exemptionCount = (): number => {
     let count = 1
+    // MFJ and W (qualifying widow/er) count both spouses on one return.
+    // MFS files individually — only one exemption per return.
     if (
       this.info.taxPayer.filingStatus === FilingStatus.MFJ ||
-      this.info.taxPayer.filingStatus === FilingStatus.MFS
+      this.info.taxPayer.filingStatus === FilingStatus.W
     ) {
       count += 1
     }
