@@ -4,6 +4,7 @@ import StateForm from 'ustaxes/core/stateForms/Form'
 import { Either } from 'ustaxes/core/util'
 import { createStateReturn as createStateReturnF } from '../../StateForms'
 import { StateFormError } from '../../StateForms'
+import makeCAForm from './CA/Form'
 import MAForm from './MA/Form'
 import makeGAForm from './GA/Form'
 import makeNJForm from './NJ/Form'
@@ -25,6 +26,7 @@ export const noFilingRequirementStates: State[] = [
 export const stateForms: {
   [K in State]?: (f1040: F1040) => StateForm
 } = {
+  CA: makeCAForm,
   GA: makeGAForm,
   MA: (f1040: F1040) => new MAForm(f1040),
   NJ: makeNJForm,
