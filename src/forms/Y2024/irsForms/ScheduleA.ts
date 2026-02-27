@@ -36,7 +36,7 @@ export default class ScheduleA extends F1040Attachment {
     const standardDeduction = this.f1040.standardDeduction()
     const itemizedAmount = this.deductions()
     const hasItemizedInput = this.f1040.info.itemizedDeductions !== undefined
-    const hasCasualtyLoss = (this.f1040.f4684?.personalCasualtyDeduction() ?? 0) > 0
+    const hasCasualtyLoss = this.f1040.f4684.personalCasualtyDeduction() > 0
 
     if (!hasItemizedInput && !hasCasualtyLoss) {
       return false
@@ -109,7 +109,7 @@ export default class ScheduleA extends F1040Attachment {
   l13 = (): number => 0
   l14 = (): number => this.l11() + this.l12() + this.l13()
 
-  l15 = (): number => this.f1040.f4684?.personalCasualtyDeduction() ?? 0
+  l15 = (): number => this.f1040.f4684.personalCasualtyDeduction()
 
   // TODO
   l16Other1 = (): string | undefined => undefined
