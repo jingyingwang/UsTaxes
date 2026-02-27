@@ -4,8 +4,7 @@ import {
   ParsedTransaction,
   ParseResult,
   ValidationResult,
-  validateF1099BData,
-  aggregateTransactions
+  validateF1099BData
 } from '../index'
 import {
   parseDollar,
@@ -125,11 +124,7 @@ export const schwabParser: CSVParser = {
       }
 
       // Skip summary/total rows
-      if (
-        firstCell.includes('total') ||
-        firstCell.includes('subtotal') ||
-        firstCell === ''
-      ) {
+      if (firstCell.includes('total') || firstCell.includes('subtotal')) {
         return left([])
       }
 
@@ -170,11 +165,3 @@ export const schwabParser: CSVParser = {
     return validateF1099BData(data)
   }
 }
-
-export const parseSchwabCsv = (
-  headers: string[],
-  rows: string[][]
-): ParseResult => schwabParser.parse(headers, rows)
-
-export const schwabToF1099B = (transactions: ParsedTransaction[]) =>
-  aggregateTransactions(transactions)

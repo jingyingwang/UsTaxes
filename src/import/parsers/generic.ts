@@ -4,8 +4,7 @@ import {
   ParsedTransaction,
   ParseResult,
   ValidationResult,
-  validateF1099BData,
-  aggregateTransactions
+  validateF1099BData
 } from '../index'
 import { parseDollar, determineTermType, termTypeFromLabel } from './common'
 
@@ -164,18 +163,22 @@ export const parseWithMapping = (
     const row = rows[i]
     if (row.every((cell) => cell.trim() === '')) continue
 
-    const rowErrors: string[] = []
+    const proceedsStr = (row[mapping.proceeds] ?? '').trim()
+    const costBasisStr = (row[mapping.costBasis] ?? '').trim()
 
-    const proceeds = parseDollar(row[mapping.proceeds] ?? '')
-    const costBasis = parseDollar(row[mapping.costBasis] ?? '')
-
-    if (
-      row[mapping.proceeds]?.trim() === '' &&
-      row[mapping.costBasis]?.trim() === ''
-    ) {
+    if (proceedsStr === '' && costBasisStr === '') {
       // Skip fully empty data rows (likely section headers/footers)
       continue
     }
+
+    // Validate required fields
+    if (proceedsStr === '') {
+      errors.push({ row: i + 1, messages: ['Missing proceeds value'] })
+      continue
+    }
+
+    const proceeds = parseDollar(proceedsStr)
+    const costBasis = parseDollar(costBasisStr)
 
     const washSale =
       mapping.washSale !== undefined
@@ -208,11 +211,6 @@ export const parseWithMapping = (
       const val = (row[mapping.basisReported] ?? '').trim().toLowerCase()
       basisReported =
         val !== 'no' && val !== 'n' && val !== 'noncovered' && val !== 'false'
-    }
-
-    if (rowErrors.length > 0) {
-      errors.push({ row: i + 1, messages: rowErrors })
-      continue
     }
 
     transactions.push({
@@ -264,6 +262,3 @@ export const buildMappingFromAssignments = (
     basisReported: findIdx('Basis Reported to IRS')
   }
 }
-
-export const genericToF1099B = (transactions: ParsedTransaction[]) =>
-  aggregateTransactions(transactions)

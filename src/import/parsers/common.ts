@@ -45,7 +45,11 @@ export const findColumn = (headers: string[], candidates: string[]): number => {
   return -1
 }
 
-/** Parse rows using column indices, collecting per-row errors. */
+/**
+ * Parse rows using column indices, collecting per-row errors.
+ * Rows that return left([]) (empty error array) are treated as
+ * "skip this row" — used by parsers to skip section headers, totals, etc.
+ */
 export const parseRowsWithColumns = (
   rows: string[][],
   extractTransaction: (
@@ -63,7 +67,10 @@ export const parseRowsWithColumns = (
 
     const result = extractTransaction(row, i)
     if (result._tag === 'left') {
-      errors.push({ row: i + 1, messages: result.left })
+      // Empty error array means "skip this row" (section headers, totals)
+      if (result.left.length > 0) {
+        errors.push({ row: i + 1, messages: result.left })
+      }
     } else {
       transactions.push(result.right)
     }

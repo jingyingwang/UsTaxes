@@ -249,7 +249,10 @@ export const CSVImport = (): ReactElement => {
           // Show manual mapping UI
           setNeedsManualMapping(true)
           run(preflightCsv(contents)).fold(
-            (e) => console.error('CSV preflight error', e),
+            (e) =>
+              setParseErrors(
+                e.map((err) => ({ row: err.row ?? 0, messages: [err.message] }))
+              ),
             setPreflightRows
           )
           return
@@ -282,7 +285,10 @@ export const CSVImport = (): ReactElement => {
 
     const parsed = run(preflightCsvAll(rawContents))
     parsed.fold(
-      (e) => console.error('CSV parse error', e),
+      (e) =>
+        setParseErrors(
+          e.map((err) => ({ row: err.row ?? 0, messages: [err.message] }))
+        ),
       (allRows) => {
         const dataRows = allRows.slice(1 + dropFirstNRows)
         const result = parseWithMapping(dataRows, mapping)

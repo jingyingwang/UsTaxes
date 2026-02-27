@@ -4,8 +4,7 @@ import {
   ParsedTransaction,
   ParseResult,
   ValidationResult,
-  validateF1099BData,
-  aggregateTransactions
+  validateF1099BData
 } from '../index'
 import {
   parseDollar,
@@ -110,14 +109,15 @@ export const fidelityParser: CSVParser = {
     }
 
     return parseRowsWithColumns(rows, (row, rowIdx) => {
+      // Validate required fields before parsing
+      if ((row[proceedsIdx] ?? '').trim() === '') {
+        return left([`Row ${rowIdx + 1}: Missing proceeds value`])
+      }
+
       const proceeds = parseDollar(row[proceedsIdx] ?? '')
       const costBasis = parseDollar(row[costBasisIdx] ?? '')
       const washSale =
         washSaleIdx >= 0 ? parseDollar(row[washSaleIdx] ?? '') : 0
-
-      if (isNaN(proceeds) && row[proceedsIdx]?.trim() === '') {
-        return left([`Row ${rowIdx + 1}: Missing proceeds value`])
-      }
 
       const termLabel = termIdx >= 0 ? row[termIdx] ?? '' : ''
       const termType = termLabel ? termTypeFromLabel(termLabel) : 'SHORT'
@@ -148,11 +148,3 @@ export const fidelityParser: CSVParser = {
     return validateF1099BData(data)
   }
 }
-
-export const parseFidelityCsv = (
-  headers: string[],
-  rows: string[][]
-): ParseResult => fidelityParser.parse(headers, rows)
-
-export const fidelityToF1099B = (transactions: ParsedTransaction[]) =>
-  aggregateTransactions(transactions)

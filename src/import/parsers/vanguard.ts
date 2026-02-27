@@ -4,8 +4,7 @@ import {
   ParsedTransaction,
   ParseResult,
   ValidationResult,
-  validateF1099BData,
-  aggregateTransactions
+  validateF1099BData
 } from '../index'
 import {
   parseDollar,
@@ -151,11 +150,3 @@ export const vanguardParser: CSVParser = {
     return validateF1099BData(data)
   }
 }
-
-export const parseVanguardCsv = (
-  headers: string[],
-  rows: string[][]
-): ParseResult => vanguardParser.parse(headers, rows)
-
-export const vanguardToF1099B = (transactions: ParsedTransaction[]) =>
-  aggregateTransactions(transactions)
