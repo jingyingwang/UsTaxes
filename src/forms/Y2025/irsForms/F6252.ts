@@ -6,7 +6,7 @@ import F1040Attachment from './F1040Attachment'
 
 export default class F6252 extends F1040Attachment {
   tag: FormTag = 'f6252'
-  sequenceIndex = 999
+  sequenceIndex = 9
 
   installmentSales = (): InstallmentSale[] =>
     this.f1040.info.installmentSales ?? []
