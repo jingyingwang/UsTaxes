@@ -26,27 +26,27 @@ interface FederalBrackets {
   longTermCapGains: Rates & { status: { [key in FilingStatus]: Brackets } }
 }
 
-// Tax brackets can be most easily found via google
-// The standard deduction amounts with the allowances can be most
-// easily found at the end of 1040-SR
+// Tax brackets from IRS Rev. Proc. 2024-40
+// Standard deductions updated per OBBBA (One Big Beautiful Bill Act) for TY2025
+// The additional standard deduction for age 65+/blind: $2,000 unmarried, $1,600 married
 const federalBrackets: FederalBrackets = {
   ordinary: {
     rates: [10, 12, 22, 24, 32, 35, 37],
     status: {
       [FilingStatus.S]: {
-        brackets: [11600, 47150, 100525, 191950, 243725, 609350],
+        brackets: [11925, 48475, 103350, 197300, 250525, 626350],
         deductions: [
           {
             name: 'Standard Deduction (Single)',
-            amount: 14600
+            amount: 15750
           },
           {
             name: 'Standard Deduction (Single) with 1 age or blindness allowance',
-            amount: 16550
+            amount: 17750
           },
           {
             name: 'Standard Deduction (Single) with 2 age or blindness allowances',
-            amount: 18500
+            amount: 19750
           }
         ],
         exemptions: [
@@ -57,27 +57,27 @@ const federalBrackets: FederalBrackets = {
         ]
       },
       [FilingStatus.MFJ]: {
-        brackets: [23200, 94300, 201050, 383900, 487450, 731200],
+        brackets: [23850, 96950, 206700, 394600, 501050, 751600],
         deductions: [
           {
             name: 'Standard Deduction (Married)',
-            amount: 29200
+            amount: 31500
           },
           {
             name: 'Standard Deduction (Married) with 1 age or blindness allowance',
-            amount: 30750
+            amount: 33100
           },
           {
             name: 'Standard Deduction (Married) with 2 age or blindness allowances',
-            amount: 32300
+            amount: 34700
           },
           {
             name: 'Standard Deduction (Married) with 3 age or blindness allowances',
-            amount: 33850
+            amount: 36300
           },
           {
             name: 'Standard Deduction (Married) with 4 age or blindness allowances',
-            amount: 35400
+            amount: 37900
           }
         ],
         exemptions: [
@@ -88,19 +88,19 @@ const federalBrackets: FederalBrackets = {
         ]
       },
       [FilingStatus.W]: {
-        brackets: [23200, 94300, 201050, 383900, 487450, 731200],
+        brackets: [23850, 96950, 206700, 394600, 501050, 751600],
         deductions: [
           {
             name: 'Standard Deduction (Widowed)',
-            amount: 29200
+            amount: 31500
           },
           {
             name: 'Standard Deduction (Widowed) with 1 age or blindness allowance',
-            amount: 30750
+            amount: 33100
           },
           {
             name: 'Standard Deduction (Widowed) with 2 age or blindness allowances',
-            amount: 32300
+            amount: 34700
           }
         ],
         exemptions: [
@@ -111,27 +111,27 @@ const federalBrackets: FederalBrackets = {
         ]
       },
       [FilingStatus.MFS]: {
-        brackets: [11600, 47150, 100525, 191950, 243725, 365600],
+        brackets: [11925, 48475, 103350, 197300, 250525, 375800],
         deductions: [
           {
             name: 'Standard Deduction (Married Filing Separately)',
-            amount: 14600
+            amount: 15750
           },
           {
             name: 'Standard Deduction (Married Filing Separately) with 1 age or blindness allowance',
-            amount: 16150
+            amount: 17350
           },
           {
             name: 'Standard Deduction (Married Filing Separately) with 2 age or blindness allowances',
-            amount: 17700
+            amount: 18950
           },
           {
             name: 'Standard Deduction (Married Filing Separately) with 3 age or blindness allowances',
-            amount: 19250
+            amount: 20550
           },
           {
             name: 'Standard Deduction (Married Filing Separately) with 4 age or blindness allowances',
-            amount: 20800
+            amount: 22150
           }
         ],
         exemptions: [
@@ -142,19 +142,19 @@ const federalBrackets: FederalBrackets = {
         ]
       },
       [FilingStatus.HOH]: {
-        brackets: [16550, 63100, 100500, 191950, 243700, 609350],
+        brackets: [17000, 64850, 103350, 197300, 250500, 626350],
         deductions: [
           {
             name: 'Standard Deduction (Head of Household)',
-            amount: 21900
+            amount: 23625
           },
           {
             name: 'Standard Deduction (Head of Household) with 1 age or blindness allowance',
-            amount: 23850
+            amount: 25625
           },
           {
             name: 'Standard Deduction (Head of Household) with 2 age or blindness allowances',
-            amount: 25800
+            amount: 27625
           }
         ],
         exemptions: [
@@ -170,27 +170,27 @@ const federalBrackets: FederalBrackets = {
     rates: [0, 15, 20],
     status: {
       [FilingStatus.S]: {
-        brackets: [47025, 518900]
+        brackets: [48350, 533400]
       },
       [FilingStatus.MFJ]: {
-        brackets: [94050, 583750]
+        brackets: [96700, 600050]
       },
       [FilingStatus.W]: {
-        brackets: [94050, 583750]
+        brackets: [96700, 600050]
       },
       [FilingStatus.MFS]: {
-        brackets: [47025, 291850]
+        brackets: [48350, 300000]
       },
       [FilingStatus.HOH]: {
-        brackets: [63000, 551350]
+        brackets: [64750, 566700]
       }
     }
   }
 }
 
 export const fica = {
-  maxSSTax: 10453.2,
-  maxIncomeSSTaxApplies: 168600,
+  maxSSTax: 10918.2,
+  maxIncomeSSTaxApplies: 176100,
 
   regularMedicareTaxRate: 1.45 / 100,
   additionalMedicareTaxRate: 0.9 / 100,
@@ -232,12 +232,12 @@ export const netInvestmentIncomeTax = {
 
 export const healthSavingsAccounts = {
   contributionLimit: {
-    'self-only': 4150,
-    family: 8300
+    'self-only': 4300,
+    family: 8550
   }
 }
-// https://www.irs.gov/newsroom/irs-provides-tax-inflation-adjustments-for-tax-year-2024
 // https://www.irs.gov/instructions/i6251
+// AMT exemption amounts and phaseout thresholds from Rev. Proc. 2024-40
 export const amt = {
   excemption: (
     filingStatus: FilingStatus,
@@ -245,18 +245,18 @@ export const amt = {
   ): number | undefined => {
     switch (filingStatus) {
       case FilingStatus.S:
-        if (income <= 609350) {
-          return 85700
+        if (income <= 626350) {
+          return 88100
         }
         break
       case FilingStatus.MFJ:
-        if (income <= 1218700) {
-          return 133300
+        if (income <= 1252700) {
+          return 137000
         }
         break
       case FilingStatus.MFS:
-        if (income <= 66650) {
-          return 63250
+        if (income <= 626350) {
+          return 68500
         }
     }
     // TODO: Handle "Exemption Worksheet"
@@ -266,16 +266,16 @@ export const amt = {
   // Used for calculating Line 7 on form 6251. See instructions
   cap: (filingStatus: FilingStatus): number => {
     if (filingStatus === FilingStatus.MFS) {
-      return 116300
+      return 119550
     }
-    return 232600
+    return 239100
   }
 }
 
 // https://www.irs.gov/credits-deductions/individuals/earned-income-tax-credit/earned-income-and-earned-income-tax-credit-eitc-tables#EITC%20Tables
-// line 11 caps based on step one in instructions
-const line11Caps = [18591, 49084, 55768, 59899]
-const line11MfjCaps = [25511, 56004, 62688, 66819]
+// line 11 caps based on step one in instructions (Rev. Proc. 2024-40)
+const line11Caps = [19104, 50434, 57310, 61555]
+const line11MfjCaps = [26214, 57554, 64430, 68675]
 
 type Point = [number, number]
 
@@ -292,33 +292,34 @@ const toPieceWise = (points: Point[]): Piecewise =>
     }))
 
 // These points are taken directly from IRS publication
-// IRS Rev. Proc. 2022-38 for tax year 2023
-// https://www.irs.gov/pub/irs-drop/rp-22-38.pdf
+// IRS Rev. Proc. 2024-40 for tax year 2025
+// Credit rates: 0 children 7.65%, 1 child 34%, 2 children 40%, 3+ children 45%
+// Phase-out rates: 0 children 7.65%, 1 child 15.98%, 2+ children 21.06%
 const unmarriedFormulas: Piecewise[] = (() => {
   const points: Point[][] = [
     [
       [0, 0],
-      [7840, 600],
-      [9800, 600],
-      [17640, 0]
+      [8490, 649],
+      [10620, 649],
+      [19104, 0]
     ], // 0
     [
       [0, 0],
-      [11750, 3995],
-      [21560, 3995],
-      [46560, 0]
+      [12730, 4328],
+      [23350, 4328],
+      [50434, 0]
     ], // 1
     [
       [0, 0],
-      [16510, 6604],
-      [21560, 6604],
-      [52918, 0]
+      [17880, 7152],
+      [23350, 7152],
+      [57310, 0]
     ], // 2
     [
       [0, 0],
-      [16510, 7430],
-      [21560, 7430],
-      [56838, 0]
+      [17880, 8046],
+      [23350, 8046],
+      [61555, 0]
     ] // 3 or more
   ]
   return points.map((ps: Point[]) => toPieceWise(ps))
@@ -328,27 +329,27 @@ const marriedFormulas: Piecewise[] = (() => {
   const points: Point[][] = [
     [
       [0, 0],
-      [7840, 600],
-      [16370, 3995],
-      [24210, 0]
+      [8490, 649],
+      [17730, 649],
+      [26214, 0]
     ], // 0
     [
       [0, 0],
-      [11750, 3995],
-      [28120, 3995],
-      [53120, 0]
+      [12730, 4328],
+      [30470, 4328],
+      [57554, 0]
     ], // 1
     [
       [0, 0],
-      [16510, 6604],
-      [28120, 6604],
-      [59478, 0]
+      [17880, 7152],
+      [30470, 7152],
+      [64430, 0]
     ], // 2
     [
       [0, 0],
-      [16510, 7430],
-      [28120, 7430],
-      [63398, 0]
+      [17880, 8046],
+      [30470, 8046],
+      [68675, 0]
     ] // 3 or more
   ]
   return points.map((ps) => toPieceWise(ps))
@@ -376,7 +377,7 @@ export const EIC: EICDef = {
     [FilingStatus.MFS]: undefined,
     [FilingStatus.MFJ]: line11MfjCaps
   },
-  maxInvestmentIncome: 11000,
+  maxInvestmentIncome: 11950,
   formulas: {
     [FilingStatus.S]: unmarriedFormulas,
     [FilingStatus.W]: unmarriedFormulas,

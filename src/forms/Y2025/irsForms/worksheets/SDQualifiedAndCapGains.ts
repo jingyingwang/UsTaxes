@@ -8,11 +8,11 @@ import { Worksheet } from '../F1040Attachment'
 type Bracket = [number, number]
 type Cutoffs = { [key in FilingStatus]: Bracket }
 const cutoffAmounts: Cutoffs = {
-  [FilingStatus.S]: [40400, 445850],
-  [FilingStatus.MFJ]: [80800, 501600],
-  [FilingStatus.MFS]: [40400, 250800],
-  [FilingStatus.W]: [80800, 501600],
-  [FilingStatus.HOH]: [54100, 473750]
+  [FilingStatus.S]: [48350, 533400],
+  [FilingStatus.MFJ]: [96700, 600050],
+  [FilingStatus.MFS]: [48350, 300000],
+  [FilingStatus.W]: [96700, 600050],
+  [FilingStatus.HOH]: [64750, 566700]
 }
 
 export default class QualDivAndCGWorksheet extends Worksheet {
