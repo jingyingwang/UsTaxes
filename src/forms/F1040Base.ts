@@ -115,6 +115,21 @@ export default abstract class F1040Base extends Form {
   f1099ssas = (): Income1099SSA[] =>
     this.f1099sByType(Income1099Type.SSA) as Income1099SSA[]
 
+  totalTaxExemptInterest = (): number =>
+    this.f1099Ints().reduce(
+      (sum, f) => sum + (f.form.taxExemptInterest ?? 0),
+      0
+    )
+
+  totalEarlyWithdrawalPenalty = (): number =>
+    this.f1099Ints().reduce(
+      (sum, f) => sum + (f.form.earlyWithdrawalPenalty ?? 0),
+      0
+    )
+
+  totalForeignTaxPaid = (): number =>
+    this.f1099Divs().reduce((sum, f) => sum + (f.form.foreignTaxPaid ?? 0), 0)
+
   fullName = (person: Person): string =>
     `${person.firstName} ${person.lastName}`
 

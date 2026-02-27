@@ -17,9 +17,10 @@ export default class Schedule1 extends F1040Attachment {
   }
 
   isNeeded = (): boolean =>
-    this.f1040.studentLoanInterestWorksheet !== undefined &&
-    this.f1040.studentLoanInterestWorksheet.notMFS() &&
-    this.f1040.studentLoanInterestWorksheet.isNotDependent()
+    (this.f1040.studentLoanInterestWorksheet !== undefined &&
+      this.f1040.studentLoanInterestWorksheet.notMFS() &&
+      this.f1040.studentLoanInterestWorksheet.isNotDependent()) ||
+    this.f1040.totalEarlyWithdrawalPenalty() > 0
 
   l1 = (): number | undefined => undefined
   l2a = (): number | undefined => undefined
@@ -64,7 +65,11 @@ export default class Schedule1 extends F1040Attachment {
   l15 = (): number | undefined => undefined
   l16 = (): number | undefined => undefined
   l17 = (): number | undefined => undefined
-  l18 = (): number | undefined => undefined
+  // Early withdrawal penalty from 1099-INT Box 2
+  l18 = (): number | undefined => {
+    const total = this.f1040.totalEarlyWithdrawalPenalty()
+    return total > 0 ? total : undefined
+  }
   l19 = (): number | undefined => undefined
   l20 = (): number | undefined => this.f1040.studentLoanInterestWorksheet?.l9()
   l21 = (): number | undefined => undefined
