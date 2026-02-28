@@ -53,6 +53,7 @@ import { SCorpIncome } from './income/SCorpIncome'
 import { EstateAndTrustIncome } from './income/EstateAndTrustIncome'
 import { BusinessIncome } from './income/BusinessIncome'
 import PDFUpload from './import/PDFUpload'
+import CAStateInfo from './state/CAStateInfo'
 import { TaxYear } from 'ustaxes/core/data'
 import { AdvanceChildTaxCredit } from './Y2021/AdvanceChildTaxCredit'
 import { YearsTaxesState } from 'ustaxes/redux'
@@ -211,6 +212,10 @@ export const drawerSections: Section[] = [
   {
     title: 'Amended Return',
     items: [item('Form 1040-X', Urls.amendedReturn, <AmendedReturn />)]
+  },
+  {
+    title: 'State',
+    items: [item('California (CA 540)', Urls.state.caInfo, <CAStateInfo />)]
   },
   {
     title: 'Results',

@@ -127,3 +127,5 @@ export const amendedReturnData =
   fns.AmendedReturnData as ValidateFunction<types.AmendedReturnData>
 export const editAmendedReturnAction =
   fns.EditAmendedReturnAction as ValidateFunction<types.EditAmendedReturnAction>
+export const caStateInput =
+  fns.CAStateInput as ValidateFunction<types.CAStateInput>

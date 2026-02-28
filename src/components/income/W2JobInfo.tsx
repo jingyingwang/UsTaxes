@@ -51,6 +51,7 @@ interface IncomeW2UserInput {
   state?: State
   stateWages: string
   stateWithholding: string
+  sdiWithholding: string
   box12: W2Box12Info<string>
 }
 
@@ -67,6 +68,7 @@ const blankW2UserInput: IncomeW2UserInput = {
   medicareWithholding: '',
   stateWages: '',
   stateWithholding: '',
+  sdiWithholding: '',
   box12: {}
 }
 
@@ -84,6 +86,7 @@ const toIncomeW2 = (formData: IncomeW2UserInput): IncomeW2 => ({
   state: formData.state,
   stateWages: parseFormNumberOrThrow(formData.stateWages),
   stateWithholding: parseFormNumberOrThrow(formData.stateWithholding),
+  sdiWithholding: parseFormNumber(formData.sdiWithholding),
   personRole: formData.personRole ?? PersonRole.PRIMARY,
   box12: _.mapValues(formData.box12, (v) => parseFormNumber(v))
 })
@@ -100,6 +103,7 @@ const toIncomeW2UserInput = (data: IncomeW2): IncomeW2UserInput => ({
   state: data.state,
   stateWages: data.stateWages?.toString() ?? '',
   stateWithholding: data.stateWithholding?.toString() ?? '',
+  sdiWithholding: data.sdiWithholding?.toString() ?? '',
   box12: _.mapValues(data.box12, (v) => v?.toString())
 })
 
@@ -295,6 +299,13 @@ export default function W2JobInfo(): ReactElement {
           label={boxLabel('17', 'State income tax')}
           patternConfig={Patterns.currency}
           required={true}
+          sizes={{ xs: 12, lg: 6 }}
+        />
+        <LabeledInput
+          name="sdiWithholding"
+          label={boxLabel('14', 'SDI/VPDI withheld (CA, NJ, etc.)')}
+          patternConfig={Patterns.currency}
+          required={false}
           sizes={{ xs: 12, lg: 6 }}
         />
         <GenericLabeledDropdown

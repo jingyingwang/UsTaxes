@@ -58,3 +58,4 @@ export const RoyaltyIncome: any
 export const EditRoyaltyIncomeAction: any
 export const AmendedReturnData: any
 export const EditAmendedReturnAction: any
+export const CAStateInput: any

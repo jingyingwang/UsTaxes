@@ -110,6 +110,7 @@ export interface IncomeW2 {
   state?: State
   stateWages?: number
   stateWithholding?: number
+  sdiWithholding?: number // W-2 Box 14: CA State Disability Insurance withheld
   box12?: W2Box12Info
 }
 
@@ -956,6 +957,15 @@ export interface StateResidency {
   state: State
 }
 
+// California-specific input data for CA 540 credits and payments
+export interface CAStateInput {
+  // Renter's credit: taxpayer rented a CA dwelling as principal residence for 6+ months
+  isRenter: boolean
+  // Child and dependent care expenses eligible for CA credit
+  // (uses federal Form 2441 data when available, this allows CA-specific override)
+  qualifyingCareExpenses?: number
+}
+
 // Defines usable tag names for each question later defined,
 // and maps to a type which is the expected response type.
 export interface QuestionTag {
@@ -1070,6 +1080,7 @@ export interface Information<D = Date> {
   f8801Input?: F8801Input
   amendedReturns: AmendedReturnData[]
   depreciableAssets: DepreciableAssetInput<D>[]
+  caStateInput?: CAStateInput
 }
 
 export type InformationDateString = Information<string>

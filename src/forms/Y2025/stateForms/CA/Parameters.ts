@@ -64,12 +64,36 @@ const mentalHealthServicesRate = 0.01
 // Personal exemption credit per exemption (taxpayer, spouse, dependents)
 const personalExemptionCredit = 144
 
+// Renter's credit amounts and AGI limits (2025)
+const renterCreditSingle = 60
+const renterCreditJoint = 120
+
+const renterCreditAGILimit: Record<FilingStatus, number> = {
+  [FilingStatus.S]: 50746,
+  [FilingStatus.MFJ]: 101492,
+  [FilingStatus.W]: 101492,
+  [FilingStatus.HOH]: 101492,
+  [FilingStatus.MFS]: 50746
+}
+
+// Child and Dependent Care Expenses Credit
+// CA credit is a percentage of the federal credit amount.
+// The percentage varies by federal AGI. Simplified: for AGI ≤ $100,000 → 50% of
+// federal percentage; scales down to 34% for higher incomes.
+const childCareExpenseLimit = 3000 // per child, max 2 children ($6000)
+const childCareMaxChildren = 2
+
 const parameters = {
   brackets,
   standardDeduction,
   mentalHealthServicesThreshold,
   mentalHealthServicesRate,
-  personalExemptionCredit
+  personalExemptionCredit,
+  renterCreditSingle,
+  renterCreditJoint,
+  renterCreditAGILimit,
+  childCareExpenseLimit,
+  childCareMaxChildren
 }
 
 export default parameters

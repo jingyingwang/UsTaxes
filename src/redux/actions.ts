@@ -41,7 +41,8 @@ import {
   EditNOLCarryforwardAction,
   F8801Input,
   AmendedReturnData,
-  EditAmendedReturnAction
+  EditAmendedReturnAction,
+  CAStateInput
 } from 'ustaxes/core/data'
 
 import {
@@ -166,7 +167,8 @@ export enum ActionName {
   SET_F8801_INPUT = 'SET_F8801_INPUT',
   ADD_AMENDED_RETURN = 'AMENDED_RETURN/ADD',
   EDIT_AMENDED_RETURN = 'AMENDED_RETURN/EDIT',
-  REMOVE_AMENDED_RETURN = 'AMENDED_RETURN/REMOVE'
+  REMOVE_AMENDED_RETURN = 'AMENDED_RETURN/REMOVE',
+  SET_CA_STATE_INPUT = 'SET_CA_STATE_INPUT'
 }
 
 interface Save<T, R> {
@@ -357,6 +359,7 @@ type EditAmendedReturn = Save<
   EditAmendedReturnAction
 >
 type RemoveAmendedReturn = Save<typeof ActionName.REMOVE_AMENDED_RETURN, number>
+type SetCAStateInput = Save<typeof ActionName.SET_CA_STATE_INPUT, CAStateInput>
 
 export type Actions =
   | SaveRefundInfo
@@ -451,6 +454,7 @@ export type Actions =
   | AddAmendedReturn
   | EditAmendedReturn
   | RemoveAmendedReturn
+  | SetCAStateInput
 
 export type SignalAction = (year: TaxYear) => Actions
 export type ActionCreator<A> = (formData: A) => SignalAction
@@ -915,4 +919,8 @@ export const editAmendedReturn: ActionCreator<EditAmendedReturnAction> =
 export const removeAmendedReturn: ActionCreator<number> = makeActionCreator(
   ActionName.REMOVE_AMENDED_RETURN,
   indexValidator
+)
+
+export const setCAStateInput: ActionCreator<CAStateInput> = makeActionCreator(
+  ActionName.SET_CA_STATE_INPUT
 )

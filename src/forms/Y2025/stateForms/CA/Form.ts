@@ -3,6 +3,7 @@ import StateFormBase from 'ustaxes/core/stateForms/StateFormBase'
 import { Field } from 'ustaxes/core/pdfFiller'
 import { FilingStatus, State } from 'ustaxes/core/data'
 import { computeBracketTax } from 'ustaxes/core/stateForms/stateBrackets'
+import { sumFields } from 'ustaxes/core/irsForms/util'
 import { StateF1040 } from '../types'
 import parameters from './Parameters'
 
@@ -46,15 +47,96 @@ export class CAForm extends StateFormBase {
   }
 
   /**
-   * Personal exemption credit: $144 per exemption
-   * (1 for taxpayer + 1 for spouse if filing jointly + dependents)
+   * CA Renter's Credit: nonrefundable credit for qualifying renters.
+   * $60 for single/HOH/QW, $120 for MFJ. AGI limits apply.
+   * Not available to MFS filers.
+   */
+  renterCredit = (): number => {
+    const caInput = this.info.caStateInput
+    if (!caInput?.isRenter) return 0
+
+    const fs = this.filingStatus()
+    if (fs === FilingStatus.MFS) return 0
+
+    const agi = this.federalAGI()
+    const limit = parameters.renterCreditAGILimit[fs]
+    if (agi > limit) return 0
+
+    if (fs === FilingStatus.MFJ || fs === FilingStatus.W) {
+      return parameters.renterCreditJoint
+    }
+    return parameters.renterCreditSingle
+  }
+
+  /**
+   * CA Child and Dependent Care Expenses Credit.
+   * Based on qualifying care expenses from CA state input or federal Form 2441.
+   * Simplified: CA credit percentage is approximately 50% of the federal
+   * credit percentage for most filers (up to 50% of expenses, capped).
+   */
+  childDependentCareCredit = (): number => {
+    const caInput = this.info.caStateInput
+    const form2441 = this.info.form2441Input
+
+    // Use CA-specific override if provided, otherwise sum from Form 2441
+    let expenses = caInput?.qualifyingCareExpenses ?? 0
+    if (expenses === 0 && form2441) {
+      expenses = form2441.careExpenses.reduce((sum, e) => sum + e.amount, 0)
+    }
+    if (expenses <= 0) return 0
+
+    const numDependents = Math.min(
+      this.info.taxPayer.dependents.length,
+      parameters.childCareMaxChildren
+    )
+    if (numDependents === 0) return 0
+
+    const maxExpenses = numDependents * parameters.childCareExpenseLimit
+    const eligibleExpenses = Math.min(expenses, maxExpenses)
+
+    // CA credit rate: simplified to a flat percentage for initial implementation.
+    // The actual CA Schedule (FTB 3506) uses a sliding scale based on federal AGI.
+    // Using a conservative 34% rate (minimum CA percentage).
+    const caRate = 0.34
+    return Math.round(eligibleExpenses * caRate)
+  }
+
+  /**
+   * Total SDI withheld from W-2s for CA.
+   * SDI (State Disability Insurance) reported in W-2 Box 14.
+   */
+  sdiWithholding = (): number =>
+    this.methods
+      .stateW2s()
+      .reduce((total, w2) => total + (w2.sdiWithholding ?? 0), 0)
+
+  /**
+   * Personal exemption credit + renter's credit + child/dependent care credit.
    */
   stateCredits = (): number => {
     const base = 1
     const spouse = this.info.taxPayer.spouse ? 1 : 0
     const dependents = this.info.taxPayer.dependents.length
-    return (base + spouse + dependents) * parameters.personalExemptionCredit
+    const personalExemption =
+      (base + spouse + dependents) * parameters.personalExemptionCredit
+
+    return sumFields([
+      personalExemption,
+      this.renterCredit(),
+      this.childDependentCareCredit()
+    ])
   }
+
+  /**
+   * Total payments: state income tax withholding + SDI withholding.
+   * CA treats SDI as a payment that reduces tax owed.
+   */
+  totalPayments = (): number =>
+    sumFields([
+      this.stateWithholding(),
+      this.sdiWithholding(),
+      this.stateEstimatedPayments()
+    ])
 
   fields = (): Field[] => [
     this.federalAGI(),
@@ -64,6 +146,7 @@ export class CAForm extends StateFormBase {
     this.stateCredits(),
     this.taxAfterCredits(),
     this.stateWithholding(),
+    this.sdiWithholding(),
     this.refundAmount(),
     this.amountOwed()
   ]

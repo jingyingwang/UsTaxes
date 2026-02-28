@@ -748,6 +748,13 @@ const formReducer = (
       }
     }
 
+    case ActionName.SET_CA_STATE_INPUT: {
+      return {
+        ...newState,
+        caStateInput: action.formData
+      }
+    }
+
     default: {
       return newState
     }

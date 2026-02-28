@@ -82,7 +82,8 @@ const moduleCode = standaloneCode(ajv, {
   RoyaltyIncome: '#/definitions/RoyaltyIncome',
   EditRoyaltyIncomeAction: '#/definitions/EditRoyaltyIncomeAction',
   AmendedReturnData: '#/definitions/AmendedReturnData',
-  EditAmendedReturnAction: '#/definitions/EditAmendedReturnAction'
+  EditAmendedReturnAction: '#/definitions/EditAmendedReturnAction',
+  CAStateInput: '#/definitions/CAStateInput'
 })
 
 fs.writeFileSync(outputPath, moduleCode)

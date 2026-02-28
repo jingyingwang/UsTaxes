@@ -49,6 +49,9 @@ const Urls = {
   createPdf: '/createpdf',
   settings: '/settings',
   help: '/help',
+  state: {
+    caInfo: '/state/california'
+  },
   Y2021: {
     credits: `/Y2021/credits`
   },
