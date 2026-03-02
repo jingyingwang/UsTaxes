@@ -57,7 +57,7 @@ export default class Schedule3 extends F1040Attachment {
   l4 = (): number | undefined => undefined
   l5 = (): number | undefined => undefined
   l6a = (): number | undefined => undefined // TODO: other credits
-  l6b = (): number | undefined => undefined // TODO: other credits
+  l6b = (): number | undefined => this.f1040.f8839?.l16() // Adoption credit (Form 8839)
   l6c = (): number | undefined => undefined // TODO: other credits
   l6d = (): number | undefined => undefined // TODO: other credits
   l6e = (): number | undefined => undefined // TODO: other credits

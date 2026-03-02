@@ -812,6 +812,26 @@ export interface Form2441Input {
   // Total employer-provided dependent care benefits (W-2 box 10)
   dependentCareBenefits: number
 }
+// Form 8839 - Qualified Adoption Expenses
+export interface AdoptionChild {
+  childName: string
+  yearOfBirth: number
+  isSpecialNeeds: boolean
+  isForeignAdoption: boolean
+  // Part II: Qualifying adoption expenses paid for this child
+  qualifyingExpenses: number
+  // Part III: Employer-provided adoption benefits received for this child (W-2 Box 12, Code T attributed to this child)
+  employerBenefitsReceived: number
+  // Part III: Employer-provided adoption benefits excluded from income in prior years for this child
+  priorYearEmployerBenefitsExcluded: number
+}
+
+export interface F8839Input {
+  adoptions: AdoptionChild[] // up to 3 per form
+  // Prior year adoption credit carryforward (Part II, line 13)
+  priorYearCreditCarryforward: number
+}
+
 // Form 1040X - Amended Return data
 export interface AmendedReturnLine {
   lineDescription: string
@@ -1068,6 +1088,7 @@ export interface Information<D = Date> {
   capitalLossCarryforward?: CapitalLossCarryforward
   netOperatingLossCarryforwards: NOLCarryforward[]
   f8801Input?: F8801Input
+  f8839Input?: F8839Input
   amendedReturns: AmendedReturnData[]
   depreciableAssets: DepreciableAssetInput<D>[]
 }

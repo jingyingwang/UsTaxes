@@ -62,6 +62,7 @@ import F6252 from './F6252'
 import F6781 from './F6781'
 import F8824 from './F8824'
 import F8829 from './F8829'
+import F8839 from './F8839'
 import F8880 from './F8880'
 import ScheduleF from './ScheduleF'
 import ScheduleH from './ScheduleH'
@@ -127,6 +128,7 @@ export default class F1040 extends F1040Base {
   f8959: F8959
   f8960: F8960
   f8962?: F8962
+  f8839?: F8839
   f8880?: F8880
   f5329: F5329
   f5329Spouse?: F5329
@@ -194,6 +196,9 @@ export default class F1040 extends F1040Base {
 
     this.f2210 = new F2210(this)
     this.f8801 = new F8801(this)
+    if (this.info.f8839Input !== undefined) {
+      this.f8839 = new F8839(this)
+    }
     this.f8880 = new F8880(this)
     this.f8959 = new F8959(this)
     this.f8960 = new F8960(this)
@@ -277,6 +282,7 @@ export default class F1040 extends F1040Base {
       this.f8606,
       this.f8606Spouse,
       this.f8814,
+      this.f8839,
       this.f8880,
       this.f8888,
       this.f8889,
